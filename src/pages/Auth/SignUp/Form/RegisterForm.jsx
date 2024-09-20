@@ -1,0 +1,133 @@
+import React, { useState } from 'react';
+import { Button, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
+
+function RegisterForm() {
+    const [formData, setFormData] = useState({
+        email: '',
+        firstName: '',
+        lastName: '',
+        middleName: '',
+        address: '',
+        mobile: '',
+        password: '',
+        confirmPassword: ''
+    });
+
+    // State to hold validation errors
+    const [errors, setErrors] = useState({});
+
+    // Handle input change
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    // Handle form submission
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const { email, firstName, lastName, middleName, address, mobile, password, confirmPassword } = formData;
+        const newErrors = {};
+
+        // Basic validation
+        if (!email || !/\S+@\S+\.\S+/.test(email)) newErrors.email = 'Valid email is required';
+        if (!firstName) newErrors.firstName = 'First Name is required';
+        if (!lastName) newErrors.lastName = 'Last Name is required';
+        if (!middleName) newErrors.middleName = 'Middle Name is required';
+        if (!address) newErrors.address = 'Address is required';
+        if (!mobile) newErrors.mobile = 'Mobile is required';
+        if (!password || password.length < 6) newErrors.password = 'Password must be at least 6 characters';
+        if (password !== confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
+
+        setErrors(newErrors);
+        if (Object.keys(newErrors).length === 0) {
+        // Handle successful form submission
+        console.log(formData)
+        }
+    };
+
+    return (
+        <form onSubmit={handleSubmit}>
+        <Stack spacing={2}>
+            <TextField
+            label="Enter Email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            error={Boolean(errors.email)}
+            helperText={errors.email}
+            />
+            <TextField
+            label="Firt Name"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+            error={Boolean(errors.firstName)}
+            helperText={errors.firstName}
+            />
+            <TextField
+            label="Last Name"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+            error={Boolean(errors.lastName)}
+            helperText={errors.lastName}
+            />
+            <TextField
+            label="Middle Name"
+            name="middleName"
+            value={formData.middleName}
+            onChange={handleChange}
+            error={Boolean(errors.middleName)}
+            helperText={errors.middleName}
+            />
+            <TextField
+            label="Address"
+            name="address"
+            value={formData.address}
+            onChange={handleChange}
+            error={Boolean(errors.address)}
+            helperText={errors.address}
+            />
+            <TextField
+            label="Mobile Number"
+            name="mobile"
+            value={formData.mobile}
+            onChange={handleChange}
+            error={Boolean(errors.mobile)}
+            helperText={errors.mobile}
+            />
+            <TextField
+            label="Enter Password"
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            error={Boolean(errors.password)}
+            helperText={errors.password}
+            />
+            <TextField
+            label="Confirm Password"
+            type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            error={Boolean(errors.confirmPassword)}
+            helperText={errors.confirmPassword}
+            />
+            <Button type="submit" variant="contained" color='warning'>Submit</Button>
+            <Typography
+            variant="body2"
+            color="primary"
+            component={Link}
+            to="/login"
+            textAlign="center"
+            sx={{ textDecoration: 'none' }}
+            >
+            I Already Have an Account
+            </Typography>
+        </Stack>
+        </form>
+    );
+}
+
+export default RegisterForm

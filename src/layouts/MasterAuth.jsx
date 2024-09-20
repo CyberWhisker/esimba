@@ -1,7 +1,5 @@
 import React from 'react';
-import { Box, createTheme, ThemeProvider } from '@mui/material';
-import TopBar from '../components/TopBar';
-import Footer from '../components/Footer';
+import { Box, Container, createTheme, ThemeProvider } from '@mui/material';
 
 const lightTheme = createTheme({
     palette: {
@@ -33,17 +31,15 @@ function Master({ children }) {
     return (
         <ThemeProvider theme={darkTheme}>
             <Box sx={{
-                zIndex: 100, 
-                height: '100vh', 
+                minHeight: '100vh',
+                zIndex: 100,  
                 display: 'flex', 
                 justifyContent: 'space-between', 
-                flexDirection: 'column'
+                flexDirection: 'column',
             }}>
-                <TopBar/>
-                <Box sx={{mt: 8, flex: 1}}>
+                <Container sx={{flex: 1}}>
                     {children}
-                </Box>
-                <Footer/>
+                </Container>
             </Box>
         </ThemeProvider>
     );
