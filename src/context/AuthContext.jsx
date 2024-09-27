@@ -1,39 +1,41 @@
-import { Box } from '@mui/material'
+import { LinearProgress } from '@mui/material'
 import React, { createContext, useEffect, useState } from 'react'
+import { loginUser, registerUser } from '../api/userApi'
+import { toast } from 'react-toastify'
+import { useNavigation } from 'react-router-dom'
 
 export const AuthContext = createContext()
 
-export const AuthProvider = () => {
-    const [isLoading, setIsLoading] = useState()
-    const [auth, setAuth] = useState()
-    
-    const login = async () => {
-        console.log("Login COntroller")
-    }
-
-    const register = async () => {
-        console.log("Register COntroller")
-    }
+export const AuthProvider = ({children}) => {
+    const [isLoading, setIsLoading] = useState(true)
+    const [auth, setAuth] = useState(null)
 
     const logout = async () => {
-        console.log("LogOut COntroller")
+        localStorage.removeItem('auth')
+        setAuth(null)
     }
 
     const checkStorage = async () => {
-
+        setIsLoading(true)
+        const user = localStorage.getItem('auth')
+        if (user) {
+            setAuth(JSON.parse(user))
+        }
+        setIsLoading(false)
     }
 
     useEffect(() => {
-
+        checkStorage()
     },[])
-
     if (isLoading) {
         return (
-            <AuthContext.Provider>AuthContext</AuthContext.Provider>
+            <LinearProgress/>
         )
     }
 
     return (
-        <AuthContext.Provider>AuthContext</AuthContext.Provider>
+        <AuthContext.Provider value={{logout, auth, setAuth}}>
+            {children}
+        </AuthContext.Provider>
     )
 }

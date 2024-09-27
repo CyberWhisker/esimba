@@ -1,18 +1,30 @@
-import { Box, Button, Stack, Typography } from '@mui/material'
+import { Box, Button, Grid2, Stack, Typography } from '@mui/material'
 import React from 'react'
 import Master from '../../layouts/Master'
 import { Link } from 'react-router-dom'
+import Logo from '/appImg/Logo.png'
+import CustomCard from '../../components/CustomCard'
 
 function Landing() {
   return (
     <Master>
-        <Box sx={{textAlign: 'center', paddingY: 10}}>
-            <Typography variant='h1' fontWeight={'bold'}>Welcome</Typography>
-            <Stack spacing={2} direction={'row'} justifyContent={'center'} sx={{paddingTop: 10}}>
-                <Button variant='contained' color='warning' size='large' sx={{minWidth: '30vh'}} component={Link} to='/1/request'>Request Certificate</Button>
-                <Button variant='contained' size='large' sx={{minWidth: '30vh'}}  component={Link} to='/1/schedule'>Schedule Event</Button>
+      <Grid2 container spacing={2} sx={{height: '100%'}}>
+
+        <Grid2 size='grow' sx={{ justifyContent:'center', display: 'flex'}}>
+          <img src={Logo} style={{height: '40vh'}}/>
+        </Grid2>
+
+        <Grid2 size='grow' sx={{ justifyContent:'center', alignItems: 'center', display: 'flex'}}>
+          <CustomCard>
+            <Stack spacing={2}>
+              <Typography variant='h4'>About</Typography>
+              <Typography>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam doloremque harum nobis, nisi cupiditate dolore magnam placeat eligendi dolor molestias quod saepe itaque ducimus. Ut magni ipsa delectus natus dignissimos?</Typography>
+              <Button color='warning' variant='contained' component={Link} to='/dashboard'>Continue</Button>
             </Stack>
-        </Box>
+          </CustomCard>
+        </Grid2>
+
+      </Grid2>
     </Master>
   )
 }

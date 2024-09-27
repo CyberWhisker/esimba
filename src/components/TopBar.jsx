@@ -1,43 +1,112 @@
-import React from 'react';
-import { AppBar, Toolbar, Typography, useScrollTrigger, Slide, Menu, MenuItem, Button, Alert, Box, ListItemIcon, ListItemText } from '@mui/material';
+import React, { useContext } from 'react';
+import { AppBar, Toolbar, Typography, useScrollTrigger, Slide, Menu, MenuItem, Button, Alert, Box, ListItemIcon, ListItemText, Stack, Tooltip, IconButton, Avatar } from '@mui/material';
 import { styled } from '@mui/system';
 import Logo from '/appImg/Logo.png'
 import { AddAlertOutlined } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
+import { LandingNav, UserNav } from './NavList';
+import { AuthContext } from '../context/AuthContext';
 
-const TransparentAppBar = styled(AppBar)(({ theme }) => ({
-  backgroundColor: 'rgba(128, 0, 0, 0.5)', 
-  backdropFilter: 'blur(10px)', 
-  boxShadow: 'none', 
-  transition: 'background-color 0.3s ease',
-  position: 'fixed', 
-  width: '100%', 
-  top: 0, 
-}));
+
 
 const TopBar = () => {
-  const trigger = useScrollTrigger({ disableHysteresis: true, threshold: 0 });
-
+    const {auth, logout} = useContext(AuthContext)
     return (
-        <Slide appear={false} direction="down" in={!trigger}>
-            <TransparentAppBar>
-                <Toolbar sx={{justifyContent: 'space-between'}}>
-                    <img alt='Logo' src={Logo} style={{height: 50}}/>
-                    <Box sx={{display: 'flex', flexDirection: 'row', gap: 2}}>
-                        <MenuItem component={Link} to='/'>Home</MenuItem>
-                        <MenuItem>About</MenuItem>
-                        <MenuItem>Contact Us</MenuItem>
-                    </Box>
-                    <MenuItem>
-                        <ListItemIcon>
-                            <AddAlertOutlined/>
-                        </ListItemIcon>
-                        <ListItemText>Alert</ListItemText>
-                    </MenuItem>
-                </Toolbar>
-            </TransparentAppBar>
-        </Slide>
+        <AppBar 
+        position='relative' sx={{
+        backgroundColor: 'rgba(128, 0, 0, 0.2)',
+        backdropFilter: 'blur(10px)'
+        }}
+        >
+            <Toolbar sx={{justifyContent: 'space-between'}}>
+                <Box>
+                    {auth?.user.role != 'admin' && (
+                        <img alt='Logo' src={Logo} style={{height: '8vh'}}/>
+                    )}
+                </Box>
+                {auth?.user.role == 'user' && (
+                    <Stack direction={'row'} spacing={2}>
+                        <UserNav/>
+                    </Stack>
+                )}
+                {!auth && (
+                    <Stack direction={'row'} spacing={2}>
+                        <LandingNav/>
+                    </Stack>
+                )}
+                {auth && (
+                    <IsLogged auth={auth} logout={logout}/>
+                )}
+                {!auth && (
+                    <NotLogged />
+                )}
+            </Toolbar>
+        </AppBar>
     );
 };
+
+function IsLogged ({logout, auth}) {
+
+    const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const handleOpenUserMenu = (event) => {
+      setAnchorElUser(event.currentTarget);
+    };
+  
+    const handleCloseUserMenu = () => {
+      setAnchorElUser(null);
+    };
+
+    return (
+        <Stack direction={'row'} spacing={2}>
+            <MenuItem>
+                <AddAlertOutlined/>
+            </MenuItem>
+            <Stack direction={'row'} spacing={2}>
+                <Stack>
+                    <Typography>{auth.user.firstName} {auth.user.lastName}</Typography>
+                    <Typography>{auth.user.role}</Typography>
+                </Stack>
+                <Tooltip title="Open settings">
+                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                        <Avatar alt={auth.user.firstName} src={auth.user.profile} />
+                    </IconButton>
+                </Tooltip>
+            </Stack>
+            <Menu
+            sx={{ mt: '45px' }}
+            id="menu-appbar"
+            anchorEl={anchorElUser}
+            anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+            }}
+            keepMounted
+            transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+            }}
+            open={Boolean(anchorElUser)}
+            onClose={handleCloseUserMenu}
+            >
+                <MenuItem onClick={handleCloseUserMenu}>
+                    <Typography sx={{ textAlign: 'center' }}>Profile</Typography>
+                </MenuItem>
+                <MenuItem onClick={handleCloseUserMenu}>
+                    <Typography sx={{ textAlign: 'center' }} onClick={logout}>Logout</Typography>
+                </MenuItem>
+            </Menu>
+        </Stack>
+    )
+}
+
+function NotLogged () {
+
+    return (
+        <Stack direction={'row'} spacing={2}>
+            <Button variant='outlined' color='warning' component={Link} to='register'>Register</Button>
+            <Button variant='contained' color='warning' component={Link} to='login'>Log In</Button>
+        </Stack>
+    )
+}
 
 export default TopBar;

@@ -1,20 +1,7 @@
 import React from 'react';
-import { Box, createTheme, ThemeProvider } from '@mui/material';
+import { Box, Container, createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import TopBar from '../components/TopBar';
 import Footer from '../components/Footer';
-
-const lightTheme = createTheme({
-    palette: {
-      mode: 'light',
-    },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          borderRadius: 15,
-        },
-      },
-    },
-  });
   
   const darkTheme = createTheme({
     palette: {
@@ -32,17 +19,18 @@ const lightTheme = createTheme({
 function Master({ children }) {
     return (
         <ThemeProvider theme={darkTheme}>
+           <CssBaseline />
             <Box sx={{
                 zIndex: 100, 
                 height: '100vh', 
                 display: 'flex', 
                 justifyContent: 'space-between', 
-                flexDirection: 'column'
+                flexDirection: 'column',
             }}>
                 <TopBar/>
-                <Box sx={{mt: 8, flex: 1}}>
+                <Container sx={{mt: 8, flex: 1}}>
                     {children}
-                </Box>
+                </Container>
                 <Footer/>
             </Box>
         </ThemeProvider>

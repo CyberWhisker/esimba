@@ -1,14 +1,18 @@
 import { Button, Divider, Stack, TextField, Typography } from '@mui/material'
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useContext, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { AuthContext } from '../../../../context/AuthContext';
+import { loginUser } from '../../../../api/userApi';
+import { toast } from 'react-toastify';
 
 function LoginForm() {
+    const {setAuth} = useContext(AuthContext)
     const [formData, setFormData] = useState({
         email: '',
         password: '',
     });
-    
     const [errors, setErrors] = useState({});
+    const navigate = useNavigate();
     
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -55,7 +59,16 @@ function LoginForm() {
         }
     
         // Handle form submission logic here
-    
+        
+        const {data, error} = await loginUser(formData)
+        if (error) {
+            toast.error(error)
+        } else {
+            toast.success("Successfully login")
+            localStorage.setItem('auth', JSON.stringify(data))
+            setAuth(data)
+            navigate('/dashboard')
+        }
     };
     return (
         <Stack direction={'column'} spacing={2}>
@@ -72,6 +85,7 @@ function LoginForm() {
                 label='Enter Password'
                 name='password'
                 onChange={handleChange}
+                type='password'
                 helperText={errors.password}
                 error={!!errors.password}
             />

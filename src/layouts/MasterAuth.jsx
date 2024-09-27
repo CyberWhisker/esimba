@@ -1,18 +1,6 @@
 import React from 'react';
-import { Box, Container, createTheme, ThemeProvider } from '@mui/material';
-
-const lightTheme = createTheme({
-    palette: {
-      mode: 'light',
-    },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          borderRadius: 15,
-        },
-      },
-    },
-  });
+import { Box, Container, createTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import CustomToast from '../components/CustomToast';
   
   const darkTheme = createTheme({
     palette: {
@@ -29,19 +17,21 @@ const lightTheme = createTheme({
 
 function Master({ children }) {
     return (
-        <ThemeProvider theme={darkTheme}>
-            <Box sx={{
-                minHeight: '100vh',
-                zIndex: 100,  
-                display: 'flex', 
-                justifyContent: 'space-between', 
-                flexDirection: 'column',
-            }}>
-                <Container sx={{flex: 1}}>
-                    {children}
-                </Container>
-            </Box>
-        </ThemeProvider>
+      <ThemeProvider theme={darkTheme}>
+        <CssBaseline />
+        <Box sx={{
+            minHeight: '100vh',
+            zIndex: 100,  
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            flexDirection: 'column',
+        }}>
+          <Container sx={{flex: 1}}>
+            {children}
+          </Container>
+        </Box>
+        <CustomToast/>
+      </ThemeProvider>
     );
 }
 

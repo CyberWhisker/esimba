@@ -1,21 +1,24 @@
-import React, { useState } from 'react';
-import { Button, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { Button, Stack, TextField, Typography } from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../../../context/AuthContext';
+import { registerUser } from '../../../../api/userApi';
+import { toast } from 'react-toastify';
 
 function RegisterForm() {
+    const {setAuth} = useContext(AuthContext)
     const [formData, setFormData] = useState({
         email: '',
         firstName: '',
         lastName: '',
         middleName: '',
         address: '',
-        mobile: '',
+        phone: '',
         password: '',
         confirmPassword: ''
     });
-
-    // State to hold validation errors
     const [errors, setErrors] = useState({});
+    const navigate = useNavigate();
 
     // Handle input change
     const handleChange = (e) => {
@@ -23,9 +26,9 @@ function RegisterForm() {
     };
 
     // Handle form submission
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        const { email, firstName, lastName, middleName, address, mobile, password, confirmPassword } = formData;
+        const { email, firstName, lastName, middleName, address, phone, password, confirmPassword } = formData;
         const newErrors = {};
 
         // Basic validation
@@ -34,98 +37,107 @@ function RegisterForm() {
         if (!lastName) newErrors.lastName = 'Last Name is required';
         if (!middleName) newErrors.middleName = 'Middle Name is required';
         if (!address) newErrors.address = 'Address is required';
-        if (!mobile) newErrors.mobile = 'Mobile is required';
+        if (!phone) newErrors.phone = 'Phone Number is required';
         if (!password || password.length < 6) newErrors.password = 'Password must be at least 6 characters';
         if (password !== confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
 
         setErrors(newErrors);
         if (Object.keys(newErrors).length === 0) {
-        // Handle successful form submission
-        console.log(formData)
+            // Handle successful form submission
+            const {data, error} = await registerUser(formData)
+            if (error) {
+                toast.error(error)
+            } else {
+                toast.success("Successfully registered")
+                localStorage.setItem('auth', JSON.stringify(data))
+                setAuth(data)
+                navigate('/dashboard')
+            }
         }
     };
 
     return (
         <form onSubmit={handleSubmit}>
-        <Stack spacing={2}>
-            <TextField
-            label="Enter Email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            error={Boolean(errors.email)}
-            helperText={errors.email}
-            />
-            <TextField
-            label="Firt Name"
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleChange}
-            error={Boolean(errors.firstName)}
-            helperText={errors.firstName}
-            />
-            <TextField
-            label="Last Name"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleChange}
-            error={Boolean(errors.lastName)}
-            helperText={errors.lastName}
-            />
-            <TextField
-            label="Middle Name"
-            name="middleName"
-            value={formData.middleName}
-            onChange={handleChange}
-            error={Boolean(errors.middleName)}
-            helperText={errors.middleName}
-            />
-            <TextField
-            label="Address"
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-            error={Boolean(errors.address)}
-            helperText={errors.address}
-            />
-            <TextField
-            label="Mobile Number"
-            name="mobile"
-            value={formData.mobile}
-            onChange={handleChange}
-            error={Boolean(errors.mobile)}
-            helperText={errors.mobile}
-            />
-            <TextField
-            label="Enter Password"
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            error={Boolean(errors.password)}
-            helperText={errors.password}
-            />
-            <TextField
-            label="Confirm Password"
-            type="password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            error={Boolean(errors.confirmPassword)}
-            helperText={errors.confirmPassword}
-            />
-            <Button type="submit" variant="contained" color='warning'>Submit</Button>
-            <Typography
-            variant="body2"
-            color="primary"
-            component={Link}
-            to="/login"
-            textAlign="center"
-            sx={{ textDecoration: 'none' }}
-            >
-            I Already Have an Account
-            </Typography>
-        </Stack>
+            <Stack spacing={2}>
+                <Typography variant='h5' fontWeight={'bold'}>Register</Typography>
+                <TextField
+                label="Enter Email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                error={Boolean(errors.email)}
+                helperText={errors.email}
+                />
+                <TextField
+                label="First Name"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                error={Boolean(errors.firstName)}
+                helperText={errors.firstName}
+                />
+                <TextField
+                label="Last Name"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                error={Boolean(errors.lastName)}
+                helperText={errors.lastName}
+                />
+                <TextField
+                label="Middle Name"
+                name="middleName"
+                value={formData.middleName}
+                onChange={handleChange}
+                error={Boolean(errors.middleName)}
+                helperText={errors.middleName}
+                />
+                <TextField
+                label="Address"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                error={Boolean(errors.address)}
+                helperText={errors.address}
+                />
+                <TextField
+                label="Phone Number"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                error={Boolean(errors.phone)}
+                helperText={errors.phone}
+                />
+                <TextField
+                label="Enter Password"
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                error={Boolean(errors.password)}
+                helperText={errors.password}
+                />
+                <TextField
+                label="Confirm Password"
+                type="password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                error={Boolean(errors.confirmPassword)}
+                helperText={errors.confirmPassword}
+                />
+                <Button type="submit" variant="contained" color='warning'>Submit</Button>
+                <Typography
+                variant="body2"
+                color="primary"
+                component={Link}
+                to="/login"
+                textAlign="center"
+                sx={{ textDecoration: 'none' }}
+                >
+                I Already Have an Account
+                </Typography>
+            </Stack>
         </form>
     );
 }

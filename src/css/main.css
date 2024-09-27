@@ -11,8 +11,8 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
-    background-image: url('/public/appImg/Background.jpg');
+    min-height: 100vh;
+    background-image: url('/appImg/Background.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;

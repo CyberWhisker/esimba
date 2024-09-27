@@ -1,13 +1,14 @@
-import { AppBar, Typography } from '@mui/material'
+import { AppBar, Box, CssBaseline, Typography } from '@mui/material'
 import React from 'react'
 
 function Footer() {
   return (
     <AppBar position='relative' sx={{
-        p:3,
-        backgroundColor: 'rgba(128, 0, 0, 0.5)', 
+      backgroundColor: 'rgba(128, 0, 0, 0.2)',
+      p:3,
+      backdropFilter: 'blur(10px)'
     }}>
-        <Typography textAlign={'center'} fontWeight={'bold'}>Follow us on esimba.com</Typography>
+      <Typography textAlign={'center'} fontWeight={'bold'}>Follow us on esimba.com</Typography>
     </AppBar>
   )
 }
