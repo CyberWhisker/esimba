@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
-import { AppBar, Toolbar, Typography, useScrollTrigger, Slide, Menu, MenuItem, Button, Alert, Box, ListItemIcon, ListItemText, Stack, Tooltip, IconButton, Avatar } from '@mui/material';
-import { styled } from '@mui/system';
+import { AppBar, Toolbar, Typography, Menu, MenuItem, Button, Box, Stack, Tooltip, IconButton, Avatar } from '@mui/material';
 import Logo from '/appImg/Logo.png'
 import { AddAlertOutlined } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
@@ -20,11 +19,11 @@ const TopBar = () => {
         >
             <Toolbar sx={{justifyContent: 'space-between'}}>
                 <Box>
-                    {auth?.user.role != 'admin' && (
+                    {auth?.user.role == 3 && (
                         <img alt='Logo' src={Logo} style={{height: '8vh'}}/>
                     )}
                 </Box>
-                {auth?.user.role == 'user' && (
+                {auth?.user.role == 3 && (
                     <Stack direction={'row'} spacing={2}>
                         <UserNav/>
                     </Stack>
@@ -64,7 +63,11 @@ function IsLogged ({logout, auth}) {
             <Stack direction={'row'} spacing={2}>
                 <Stack>
                     <Typography>{auth.user.firstName} {auth.user.lastName}</Typography>
-                    <Typography>{auth.user.role}</Typography>
+                    <Typography>
+                        {auth.user.role === 1 && 'Super Admin'}
+                        {auth.user.role === 2 && 'Admin'}
+                        {auth.user.role === 3 && 'User'}
+                    </Typography>
                 </Stack>
                 <Tooltip title="Open settings">
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -100,11 +103,10 @@ function IsLogged ({logout, auth}) {
 }
 
 function NotLogged () {
-
     return (
         <Stack direction={'row'} spacing={2}>
-            <Button variant='outlined' color='warning' component={Link} to='register'>Register</Button>
-            <Button variant='contained' color='warning' component={Link} to='login'>Log In</Button>
+            <Button variant='outlined' color='warning' component={Link} to='/register'>Register</Button>
+            <Button variant='contained' color='warning' component={Link} to='/login'>Log In</Button>
         </Stack>
     )
 }

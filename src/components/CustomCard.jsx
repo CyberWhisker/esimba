@@ -5,7 +5,6 @@ function CustomCard({children}) {
     return (
         <Card
         sx={{
-            padding: 2,
             backgroundColor: 'rgba(128, 0, 0, 0.5)', 
             backdropFilter: 'blur(10px)', 
             boxShadow: 'none', 

@@ -1,11 +1,12 @@
 import React, { useContext, useState } from 'react';
 import { Button, Stack, TextField, Typography } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AuthContext } from '../../../../context/AuthContext';
 import { registerUser } from '../../../../api/userApi';
 import { toast } from 'react-toastify';
 
 function RegisterForm() {
+    const {id} = useParams();
     const {setAuth} = useContext(AuthContext)
     const [formData, setFormData] = useState({
         email: '',
@@ -15,7 +16,9 @@ function RegisterForm() {
         address: '',
         phone: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        role: id ? 2 : 3,
+        subcription: id,
     });
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();

@@ -40,9 +40,9 @@ function SideBar() {
             button: ({ level, active }) => {
               if (level === 0) {
                 return {
-                  backgroundColor: active ? theme.palette.primary.main : undefined, // Active color
+                  backgroundColor: active ? theme.palette.warning.main : undefined, // Active color
                   '&:hover': {
-                    backgroundColor: theme.palette.primary.main, // Hover color
+                    backgroundColor: theme.palette.warning.main, // Hover color
                   },
                   color: '#fff', // Text color for better contrast
                 };
@@ -70,10 +70,10 @@ function AdminNavList() {
   return (
     <>
       {/* MenuItem with Link component */}
-      <MenuItem icon={<Dashboard />} component={<Link to='/' />} active={location.pathname === '/'}>
+      <MenuItem icon={<Dashboard />} component={<Link to='/dashboard' />} active={location.pathname === '/'}>
         Dashboard
       </MenuItem>
-      <MenuItem icon={<Person />} component={<Link to='/user' />} active={location.pathname.startsWith('/user')}>
+      <MenuItem icon={<Person />} component={<Link to='/user' />} active={location.pathname.startsWith('/user')} color='warning'>
         User
       </MenuItem>
       <SubMenu label='Request' icon={<Pending />} active={location.pathname.startsWith('/appointment') || location.pathname.startsWith('/certificate')}>

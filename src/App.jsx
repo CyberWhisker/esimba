@@ -11,13 +11,14 @@ function App() {
         {/* Auth */}
         <Route path='/login' element={<SignInPage />}/>
         <Route path='/register' element={<SignUpPage />}/>
+        <Route path='/register/:id' element={<SignUpPage />}/>
         {/* Main */}
         <Route path='/' element={<Landing/>}/>
         <Route path='/membership' element={<Membership/>}/>
 
         <Route path='/dashboard' element={
           auth ? 
-          (auth.user.role == 'admin' ?
+          (auth.user.role != 3 ?
             <AdminDashboard/> :
             <UserDashboard/>
           ) : 

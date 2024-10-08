@@ -19,6 +19,7 @@ export const loginUser = async (formData) => {
 }
 
 export const registerUser = async (formData) => {
+    console.log(formData)
     try {
         const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/api/user/register`, {
             method: 'POST',

@@ -10,7 +10,7 @@ function Landing() {
     <Master>
       <Grid2 container spacing={2} sx={{height: '100%'}}>
 
-        <Grid2 size='grow' sx={{ justifyContent:'center', display: 'flex'}}>
+        <Grid2 size='grow' sx={{ justifyContent:'center', display: 'flex', alignItems: 'center'}}>
           <img src={Logo} style={{height: '40vh'}}/>
         </Grid2>
 

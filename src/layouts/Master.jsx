@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Container, createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import TopBar from '../components/TopBar';
 import Footer from '../components/Footer';
+import CustomToast from '../components/CustomToast';
   
   const darkTheme = createTheme({
     palette: {
@@ -33,6 +34,7 @@ function Master({ children }) {
                 </Container>
                 <Footer/>
             </Box>
+            <CustomToast/>
         </ThemeProvider>
     );
 }

@@ -3,6 +3,7 @@ import { Box, Container, createTheme, CssBaseline, ThemeProvider } from '@mui/ma
 import Footer from '../components/Footer';
 import SideBar from '../components/SideBar';
 import TopBar from '../components/TopBar';
+import CustomToast from '../components/CustomToast';
 
 const darkTheme = createTheme({
   palette: {
@@ -51,6 +52,7 @@ function MasterAdmin({ children }) {
           <Footer/>
         </Box>
       </Box>
+      <CustomToast/>
     </ThemeProvider>
   );
 }

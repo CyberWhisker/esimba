@@ -1,18 +1,48 @@
 import React, { useEffect, useState } from 'react'
 import MasterAdmin from '../../layouts/MasterAdmin'
-import { Box, Button, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
+import { Box, Button, Drawer, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
 import { Add } from '@mui/icons-material'
 import { DataGrid, GridMoreVertIcon, GridToolbar } from '@mui/x-data-grid'
 import CustomCard from '../../components/CustomCard'
 import { fetchUsers } from '../../api/userApi'
 import { toast } from 'react-toastify'
+import Store from './Form/Store'
+import Update from './Form/Update'
+import AlertModal from '../../components/AlertModal'
+import Delete from './Form/Delete'
 
 function AdminUser() {
+    const theme = useTheme();
     const [anchorEl, setAnchorEl] = useState(null);
     const [data, setData] = useState([])
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
     const [selected, setSelected] = useState(null);
-    const theme = useTheme();
+
+    const [storeModal, setStoreModal] = useState(false);
+    const [updateModal, setUpdateModal] = useState(false);
+    const [deleteModal, setDeleteModal] = useState(false);
+
+    const handleStoreModal = () => {
+        setStoreModal(true)
+    }
+
+    const handleUpdateModal = () => {
+        handleMenuClose()
+        setUpdateModal(true)
+    }
+
+    const handleDeleteModal = () => {
+        handleMenuClose()
+        setDeleteModal(true)
+    }
+
+
+    const hanldeCloseModal = () => {
+        setStoreModal(false)
+        setUpdateModal(false)
+        setDeleteModal(false)
+    }
+
     const handleMenuOpen = (event, item) => {
         setAnchorEl(event.currentTarget)
         setSelected(item)
@@ -23,6 +53,7 @@ function AdminUser() {
     }
 
     const handleGetData = async () => {
+        setLoading(true)
         const {data, error} = await fetchUsers()
         if (error) {
             toast.error(error)
@@ -39,6 +70,7 @@ function AdminUser() {
     const rows = data.map((item) => ({
         ...item,
         id: item._id,
+        roleName: item.role == 1 && 'Super Admin' || item.role == 2 && 'Admin' || item.role == 3 && 'User'
     }))
 
     const columns = [
@@ -85,7 +117,7 @@ function AdminUser() {
             headerClassName: 'headerStyle',
         },
         {
-            field: 'role',
+            field: 'roleName',
             headerName: 'Role',
             flex: 1,
             headerAlign: 'center',
@@ -109,13 +141,13 @@ function AdminUser() {
             <Stack spacing={2}>
                 <Stack direction={'row'} spacing={2}>
                     <Typography variant='h4' fontWeight={'bold'}>User List: </Typography>
-                    <Button variant='contained' endIcon={<Add/>}>User</Button>
+                    <Button variant='contained' endIcon={<Add/>} onClick={handleStoreModal} color='warning'>Add User</Button>
                 </Stack>
                 <CustomCard>
                     <Box
                     sx={{
                         '& .headerStyle': {
-                        backgroundColor: theme.palette.primary.main,
+                        backgroundColor: theme.palette.warning.main,
                         },
                         height: '60vh'
                     }}
@@ -142,14 +174,23 @@ function AdminUser() {
                     open={Boolean(anchorEl)}
                     onClose={handleMenuClose}
                 >
-                    <MenuItem onClick={() => console.log('Update')}>
+                    <MenuItem onClick={handleUpdateModal}>
                         <Typography color="warning.main">Edit</Typography>
                     </MenuItem>
-                    <MenuItem onClick={() => console.log('Delete')}>
+                    <MenuItem onClick={handleDeleteModal}>
                         <Typography color="error.main">Delete</Typography>
                     </MenuItem>
                 </Menu>
             </Stack>
+            <Drawer open={storeModal} anchor='right' onClose={hanldeCloseModal}>
+                <Store onClose={hanldeCloseModal} handleGetData={handleGetData}/>
+            </Drawer>
+            <Drawer open={updateModal} anchor='right' onClose={hanldeCloseModal}>
+                <Update selected={selected} onClose={hanldeCloseModal}/>
+            </Drawer>
+            <AlertModal open={deleteModal} onClose={hanldeCloseModal}>
+                <Delete onClose={hanldeCloseModal}/>
+            </AlertModal>
         </MasterAdmin>
     )
 }
