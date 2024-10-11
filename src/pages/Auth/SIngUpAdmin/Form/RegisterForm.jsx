@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Button, Stack, TextField, Typography } from '@mui/material';
+import { Button, Divider, Stack, TextField, Typography } from '@mui/material';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AuthContext } from '../../../../context/AuthContext';
 import { registerUser } from '../../../../api/userApi';
@@ -9,15 +9,19 @@ function RegisterForm() {
     const {id} = useParams();
     const {setAuth} = useContext(AuthContext)
     const [formData, setFormData] = useState({
-        email: '',
         firstName: '',
         lastName: '',
         middleName: '',
         address: '',
         phone: '',
+        chapelName: '',
+        chapelAddress: '',
+        chapelZipCode: '',
+        code: '',
+        email: '',
         password: '',
         confirmPassword: '',
-        role: id ? 2 : 3,
+        role: 2,
         subscription: id,
     });
     const [errors, setErrors] = useState({});
@@ -31,7 +35,7 @@ function RegisterForm() {
     // Handle form submission
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const { email, firstName, lastName, middleName, address, phone, password, confirmPassword } = formData;
+        const { email, firstName, lastName, middleName, address, phone, password, confirmPassword, chapelName, chapelAddress, code } = formData;
         const newErrors = {};
 
         // Basic validation
@@ -40,6 +44,9 @@ function RegisterForm() {
         if (!lastName) newErrors.lastName = 'Last Name is required';
         if (!middleName) newErrors.middleName = 'Middle Name is required';
         if (!address) newErrors.address = 'Address is required';
+        if (!chapelName) newErrors.chapelName = 'Chapel Name is required';
+        if (!chapelAddress) newErrors.chapelAddress = 'Chapel Address is required';
+        if (!code) newErrors.code = 'Zip Code is required';
         if (!phone) newErrors.phone = 'Phone Number is required';
         if (!password || password.length < 6) newErrors.password = 'Password must be at least 6 characters';
         if (password !== confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
@@ -63,14 +70,8 @@ function RegisterForm() {
         <form onSubmit={handleSubmit}>
             <Stack spacing={2}>
                 <Typography variant='h5' fontWeight={'bold'}>Register</Typography>
-                <TextField
-                label="Enter Email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                error={Boolean(errors.email)}
-                helperText={errors.email}
-                />
+                <Divider/>
+                <Typography>Personal Information</Typography>
                 <TextField
                 label="First Name"
                 name="firstName"
@@ -110,6 +111,42 @@ function RegisterForm() {
                 onChange={handleChange}
                 error={Boolean(errors.phone)}
                 helperText={errors.phone}
+                />
+                <Divider/>
+                <Typography>Chapel Information</Typography>
+                <TextField
+                label="Chapel Name"
+                name="chapelName"
+                value={formData.chapelName}
+                onChange={handleChange}
+                error={Boolean(errors.chapelName)}
+                helperText={errors.chapelName}
+                />
+                <TextField
+                label="Chapel Address"
+                name="chapelAddress"
+                value={formData.chapelAddress}
+                onChange={handleChange}
+                error={Boolean(errors.chapelAddress)}
+                helperText={errors.chapelAddress}
+                />
+                <TextField
+                label="Zip Code"
+                name="code"
+                value={formData.code}
+                onChange={handleChange}
+                error={Boolean(errors.code)}
+                helperText={errors.code}
+                />
+                <Divider/>
+                <Typography>Account Information</Typography>
+                <TextField
+                label="Enter Email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                error={Boolean(errors.email)}
+                helperText={errors.email}
                 />
                 <TextField
                 label="Enter Password"

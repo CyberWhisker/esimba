@@ -12,9 +12,10 @@ const TopBar = () => {
     const {auth, logout} = useContext(AuthContext)
     return (
         <AppBar 
-        position='relative' sx={{
-        backgroundColor: 'rgba(128, 0, 0, 0.2)',
-        backdropFilter: 'blur(10px)'
+        position='relative' 
+        sx={{
+            backgroundColor: 'rgba(128, 0, 0, 0.2)',
+            backdropFilter: 'blur(10px)'
         }}
         >
             <Toolbar sx={{justifyContent: 'space-between'}}>

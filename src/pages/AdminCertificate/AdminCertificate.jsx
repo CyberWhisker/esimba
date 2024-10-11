@@ -1,17 +1,46 @@
 import React, { useEffect, useState } from 'react'
 import MasterAdmin from '../../layouts/MasterAdmin'
-import { Box, Button, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
+import { Box, Button, Drawer, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
 import { Add } from '@mui/icons-material'
 import { DataGrid, GridMoreVertIcon, GridToolbar } from '@mui/x-data-grid'
 import CustomCard from '../../components/CustomCard'
-import { toast } from 'react-toastify'
+import AlertModal from '../../components/AlertModal'
+import Store from './Form/Store'
+import Update from './Form/Update'
+import Delete from './Form/Delete'
 
 function AdminCertificate() {
+    const theme = useTheme();
     const [anchorEl, setAnchorEl] = useState(null);
     const [data, setData] = useState([])
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
     const [selected, setSelected] = useState(null);
-    const theme = useTheme();
+
+    const [storeModal, setStoreModal] = useState(false);
+    const [updateModal, setUpdateModal] = useState(false);
+    const [deleteModal, setDeleteModal] = useState(false);
+
+    const handleStoreModal = () => {
+        setStoreModal(true)
+    }
+
+    const handleUpdateModal = () => {
+        handleMenuClose()
+        setUpdateModal(true)
+    }
+
+    const handleDeleteModal = () => {
+        handleMenuClose()
+        setDeleteModal(true)
+    }
+
+
+    const handleCloseModal = () => {
+        setStoreModal(false)
+        setUpdateModal(false)
+        setDeleteModal(false)
+    }
+
     const handleMenuOpen = (event, item) => {
         setAnchorEl(event.currentTarget)
         setSelected(item)
@@ -21,11 +50,12 @@ function AdminCertificate() {
         setAnchorEl(null)
     }
 
-    const handleGetUsers = async () => {
+    const handleGetData = async () => {
+        setLoading(false)
     }
 
     useEffect(() => {
-        handleGetUsers()
+        handleGetData()
     },[])
 
     const rows = data.map((item) => ({
@@ -100,16 +130,16 @@ function AdminCertificate() {
         <MasterAdmin>
             <Stack spacing={2}>
                 <Stack direction={'row'} spacing={2}>
-                    <Typography variant='h4' fontWeight={'bold'}>Certificate List: </Typography>
-                    <Button variant='contained' endIcon={<Add/>}>Certificate</Button>
+                    <Typography variant='h4' fontWeight={'bold'}>Certificate Request List: </Typography>
+                    <Button variant='contained' endIcon={<Add/>} color='warning' onClick={handleStoreModal}>Add Request</Button>
                 </Stack>
                 <CustomCard>
                     <Box
                     sx={{
                         '& .headerStyle': {
-                        backgroundColor: theme.palette.primary.main,
+                        backgroundColor: theme.palette.warning.main,
                         },
-                        height: '60vh'
+                        height: '70vh'
                     }}
                     >
                         <DataGrid
@@ -134,14 +164,24 @@ function AdminCertificate() {
                     open={Boolean(anchorEl)}
                     onClose={handleMenuClose}
                 >
-                    <MenuItem onClick={() => console.log('Update')}>
+                    <MenuItem onClick={handleUpdateModal}>
                         <Typography color="warning.main">Edit</Typography>
                     </MenuItem>
-                    <MenuItem onClick={() => console.log('Delete')}>
+                    <MenuItem onClick={handleDeleteModal}>
                         <Typography color="error.main">Delete</Typography>
                     </MenuItem>
                 </Menu>
             </Stack>
+
+            <Drawer open={storeModal} anchor='right' onClose={handleCloseModal}>
+                <Store onClose={handleCloseModal} handleGetData={handleGetData}/>
+            </Drawer>
+            <Drawer open={updateModal} anchor='right' onClose={handleCloseModal}>
+                <Update selected={selected} onClose={handleCloseModal} handleGetData={handleGetData}/>
+            </Drawer>
+            <AlertModal open={deleteModal} onClose={handleCloseModal}>
+                <Delete onClose={handleCloseModal} selected={selected} handleGetData={handleGetData}/>
+            </AlertModal>
         </MasterAdmin>
     )
 }

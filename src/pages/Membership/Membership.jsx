@@ -11,7 +11,7 @@ function Membership() {
       <Grid2 container spacing={2} sx={{height: '100%'}} direction={{xs: 'column', lg: 'row'}}>
         <Grid2 size='grow'>
           <CustomCard>
-            <Stack spacing={2}>
+            <Stack spacing={2} p={2}>
               <Typography fontWeight={'bold'} variant='h4'>Free</Typography>
               <Typography fontWeight={'bold'} variant='h4'>₱ 0.00 per month</Typography>
               <Divider/>
@@ -37,7 +37,7 @@ function Membership() {
         </Grid2>
         <Grid2 size='grow'>
           <CustomCard>
-            <Stack spacing={2}>
+            <Stack spacing={2} p={2}>
               <Typography fontWeight={'bold'} variant='h4'>Premium</Typography>
               <Typography fontWeight={'bold'} variant='h4'>₱ 50.00 per month</Typography>
               <Divider/>

@@ -50,6 +50,7 @@ function AppointmentList () {
       <Box sx={{
         display: 'flex',
         justifyContent: 'space-between',
+        p: 1
       }}>
         <Typography>Pending Appointments</Typography>
         <ChevronRight/>
@@ -66,6 +67,7 @@ function CertificateList () {
       <Box sx={{
         display: 'flex',
         justifyContent: 'space-between',
+        p: 1
       }}>
         <Typography>Certifcate Request</Typography>
         <ChevronRight/>
@@ -82,6 +84,7 @@ function RecordList () {
       <Box sx={{
         display: 'flex',
         justifyContent: 'space-between',
+        p: 1
       }}>
         <Typography>Records</Typography>
         <ChevronRight/>
@@ -99,6 +102,7 @@ function ScheduleList () {
         <Box sx={{
           display: 'flex',
           justifyContent: 'space-between',
+          p: 1
         }}>
           <Typography>Church Calendar</Typography>
           <ChevronRight/>

@@ -16,7 +16,7 @@ function Landing() {
 
         <Grid2 size='grow' sx={{ justifyContent:'center', alignItems: 'center', display: 'flex'}}>
           <CustomCard>
-            <Stack spacing={2}>
+            <Stack spacing={2} p={2}>
               <Typography variant='h4'>About</Typography>
               <Typography>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam doloremque harum nobis, nisi cupiditate dolore magnam placeat eligendi dolor molestias quod saepe itaque ducimus. Ut magni ipsa delectus natus dignissimos?</Typography>
               <Button color='warning' variant='contained' component={Link} to='/dashboard'>Continue</Button>

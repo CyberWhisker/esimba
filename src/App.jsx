@@ -1,7 +1,11 @@
 import React, { useContext } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { RequestBaptismForm, RequestConfirmationForm, RequestDeathForm, UserDashboard, RequestMarriageForm, SignInPage, SignUpPage, UserCertificate, ScheduleBaptismForm, ScheduleDeathForm, ScheduleMarriageForm, ScheduleConfirmationForm, UserSchedule, AdminDashboard, AdminUser, AdminAppointment, AdminCertificate, AdminRecord, Landing, Membership } from './pages'
+import { RequestBaptismForm, RequestConfirmationForm, RequestDeathForm, UserDashboard, RequestMarriageForm, SignInPage, SignUpPage, UserCertificate, ScheduleBaptismForm, ScheduleDeathForm, ScheduleMarriageForm, ScheduleConfirmationForm, UserSchedule, AdminDashboard, AdminUser, AdminAppointment, AdminCertificate, AdminRecord, Landing, Membership, AdminFile } from './pages'
 import { AuthContext } from './context/AuthContext';
+import SignUpAdmin from './pages/Auth/SIngUpAdmin/SignUpAdmin';
+import { Baptism } from './layouts/Pdf';
+import { PDFViewer } from '@react-pdf/renderer';
+import { Box } from '@mui/material';
 
 function App() {
   const {auth} = useContext(AuthContext);
@@ -11,7 +15,7 @@ function App() {
         {/* Auth */}
         <Route path='/login' element={<SignInPage />}/>
         <Route path='/register' element={<SignUpPage />}/>
-        <Route path='/register/:id' element={<SignUpPage />}/>
+        <Route path='/register/:id' element={<SignUpAdmin />}/>
         {/* Main */}
         <Route path='/' element={<Landing/>}/>
         <Route path='/membership' element={<Membership/>}/>
@@ -41,6 +45,8 @@ function App() {
         <Route path='/appointment' element={<AdminAppointment />}/>
         <Route path='/certificate' element={<AdminCertificate />}/>
         <Route path='/record' element={<AdminRecord />}/>
+
+        <Route path='/pdf' element={<AdminFile/> }/>
       </Routes>
     </BrowserRouter>
   )

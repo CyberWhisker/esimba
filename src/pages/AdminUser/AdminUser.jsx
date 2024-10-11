@@ -37,7 +37,7 @@ function AdminUser() {
     }
 
 
-    const hanldeCloseModal = () => {
+    const handleCloseModal = () => {
         setStoreModal(false)
         setUpdateModal(false)
         setDeleteModal(false)
@@ -149,7 +149,7 @@ function AdminUser() {
                         '& .headerStyle': {
                         backgroundColor: theme.palette.warning.main,
                         },
-                        height: '60vh'
+                        height: '70vh'
                     }}
                     >
                         <DataGrid
@@ -182,14 +182,14 @@ function AdminUser() {
                     </MenuItem>
                 </Menu>
             </Stack>
-            <Drawer open={storeModal} anchor='right' onClose={hanldeCloseModal}>
-                <Store onClose={hanldeCloseModal} handleGetData={handleGetData}/>
+            <Drawer open={storeModal} anchor='right' onClose={handleCloseModal}>
+                <Store onClose={handleCloseModal} handleGetData={handleGetData}/>
             </Drawer>
-            <Drawer open={updateModal} anchor='right' onClose={hanldeCloseModal}>
-                <Update selected={selected} onClose={hanldeCloseModal}/>
+            <Drawer open={updateModal} anchor='right' onClose={handleCloseModal}>
+                <Update selected={selected} onClose={handleCloseModal} handleGetData={handleGetData}/>
             </Drawer>
-            <AlertModal open={deleteModal} onClose={hanldeCloseModal}>
-                <Delete onClose={hanldeCloseModal}/>
+            <AlertModal open={deleteModal} onClose={handleCloseModal}>
+                <Delete onClose={handleCloseModal} selected={selected} handleGetData={handleGetData}/>
             </AlertModal>
         </MasterAdmin>
     )

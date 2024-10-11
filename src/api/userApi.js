@@ -52,3 +52,39 @@ export const fetchUsers = async () => {
         return {data: [], error: error}
     }
 }
+
+export const updateUser = async (formData) => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/api/user/${formData._id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        })
+        if (!response.ok) {
+            return {data: [], error: "Something went wrong"}
+        } else {
+            const data = await response.json()
+            return {data: data, error: null}
+        }
+    } catch (error) {
+        return {data: [], error: error}
+    }
+}
+
+export const deleteUser = async (formData) => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/api/user/${formData._id}`, {
+            method: 'DELETE',
+        })
+        if (!response.ok) {
+            return {data: [], error: "Something went wrong"}
+        } else {
+            const data = await response.json()
+            return {data: data, error: null}
+        }
+    } catch (error) {
+        return {data: [], error: error}
+    }
+}

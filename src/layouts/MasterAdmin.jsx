@@ -30,14 +30,13 @@ function MasterAdmin({ children }) {
       <CssBaseline />
       <Box sx={{
         zIndex: 100, 
-        height: '100vh', 
+        minHeight: '100vh', 
         display: 'flex', // Make the sidebar and content side by side
         flexDirection: 'row', 
       }}>
         {/* Pass toggle function and state to the sidebar */}
         <SideBar isOpen={isSidebarOpen} onToggle={handleToggleSidebar} />
         <Box 
-          component="main" 
           sx={{
             flexGrow: 1, // Take remaining space
             display: 'flex',
@@ -46,7 +45,7 @@ function MasterAdmin({ children }) {
           }}
         >
           <TopBar/>
-          <Container sx={{mt: 2, flex: 1}}>
+          <Container>
             {children}
           </Container>
           <Footer/>
