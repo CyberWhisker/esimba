@@ -8,6 +8,7 @@ import AlertModal from '../../components/AlertModal'
 import Store from './Form/Store'
 import Update from './Form/Update'
 import Delete from './Form/Delete'
+import SelectCertificate from './Form/SelectCertificate'
 
 function AdminRecord() {
     const theme = useTheme();
@@ -16,9 +17,14 @@ function AdminRecord() {
     const [loading, setLoading] = useState(false)
     const [selected, setSelected] = useState(null);
 
+    const [certifacteModal, setCertificateModal] = useState(false);
     const [storeModal, setStoreModal] = useState(false);
     const [updateModal, setUpdateModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
+
+    const handleCertificateModal = () => {
+        setCertificateModal(true)
+    }
 
     const handleStoreModal = () => {
         setStoreModal(true)
@@ -36,6 +42,7 @@ function AdminRecord() {
 
 
     const handleCloseModal = () => {
+        setCertificateModal(false)
         setStoreModal(false)
         setUpdateModal(false)
         setDeleteModal(false)
@@ -132,7 +139,7 @@ function AdminRecord() {
             <Stack spacing={2}>
                 <Stack direction={'row'} spacing={2}>
                     <Typography variant='h4' fontWeight={'bold'}>Record List: </Typography>
-                    <Button variant='contained' endIcon={<Add/>} color='warning' onClick={handleStoreModal}>Add Record</Button>
+                    <Button variant='contained' endIcon={<Add/>} color='warning' onClick={handleCertificateModal}>Add Record</Button>
                     <Button variant='contained'>PDF</Button>
                 </Stack>
                 <CustomCard>
@@ -175,6 +182,9 @@ function AdminRecord() {
                 </Menu>
             </Stack>
 
+            <AlertModal open={certifacteModal} anchor='right' onClose={handleCloseModal}>
+                <SelectCertificate onClose={handleCloseModal} handleGetData={handleGetData}/>
+            </AlertModal>
             <Drawer open={storeModal} anchor='right' onClose={handleCloseModal}>
                 <Store onClose={handleCloseModal} handleGetData={handleGetData}/>
             </Drawer>

@@ -1,11 +1,10 @@
 import React, { useContext } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { RequestBaptismForm, RequestConfirmationForm, RequestDeathForm, UserDashboard, RequestMarriageForm, SignInPage, SignUpPage, UserCertificate, ScheduleBaptismForm, ScheduleDeathForm, ScheduleMarriageForm, ScheduleConfirmationForm, UserSchedule, AdminDashboard, AdminUser, AdminAppointment, AdminCertificate, AdminRecord, Landing, Membership, AdminFile } from './pages'
+import { RequestBaptismForm, RequestConfirmationForm, RequestDeathForm, UserDashboard, RequestMarriageForm, SignInPage, SignUpPage, UserCertificate, ScheduleBaptismForm, ScheduleDeathForm, ScheduleMarriageForm, ScheduleConfirmationForm, UserSchedule, AdminDashboard, AdminUser, AdminAppointment, AdminRecord, Landing, Membership, AdminFile, AdminForm } from './pages'
 import { AuthContext } from './context/AuthContext';
 import SignUpAdmin from './pages/Auth/SIngUpAdmin/SignUpAdmin';
-import { Baptism } from './layouts/Pdf';
-import { PDFViewer } from '@react-pdf/renderer';
-import { Box } from '@mui/material';
+import { AdminBaptism, AdminConfirmation, AdminDeath, AdminMarriage } from './pages/AdminCertificate';
+import { AdminRequestAppointment, AdminRequestCertificate } from './pages/AdminRequest';
 
 function App() {
   const {auth} = useContext(AuthContext);
@@ -42,9 +41,16 @@ function App() {
         <Route path='/:id/schedule/confirmation' element={<ScheduleConfirmationForm />}/>
 
         <Route path='/user' element={<AdminUser />}/>
-        <Route path='/appointment' element={<AdminAppointment />}/>
-        <Route path='/certificate' element={<AdminCertificate />}/>
+        <Route path='/request/appointment' element={<AdminRequestAppointment />}/>
+        <Route path='/request/certificate' element={<AdminRequestCertificate />}/>
+
+        <Route path='/certificate/baptism' element={<AdminBaptism />}/>
+        <Route path='/certificate/marriage' element={<AdminMarriage />}/>
+        <Route path='/certificate/death' element={<AdminDeath />}/>
+        <Route path='/certificate/confirmation' element={<AdminConfirmation />}/>
+
         <Route path='/record' element={<AdminRecord />}/>
+        <Route path='/record/form/:type' element={<AdminForm/> }/>
 
         <Route path='/pdf' element={<AdminFile/> }/>
       </Routes>

@@ -1,5 +1,5 @@
 import { Box, Divider, Stack, useTheme } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Menu, MenuItem, Sidebar, SubMenu } from 'react-pro-sidebar';
 import Logo from '/appImg/Logo.png';
 import { CalendarMonth, ChevronLeft, Dashboard, Note, Pending, Person, PinDrop } from '@mui/icons-material';
@@ -48,9 +48,9 @@ function SideBar() {
                 };
               } else if (level === 1) { // Custom styles for SubMenu items
                 return {
-                  backgroundColor: 'rgba(128, 0, 0, 0.6)', // SubMenu background color
+                  backgroundColor: active ? theme.palette.warning.main : 'rgba(128, 0, 0, 0.6)', // SubMenu background color
                   '&:hover': {
-                    backgroundColor: 'rgba(128, 0, 0, 0.7)', // SubMenu hover color
+                    backgroundColor: theme.palette.warning.main, // Hover color
                   },
                   color: '#fff', // Text color for better contrast
                 };
@@ -67,26 +67,60 @@ function SideBar() {
 
 function AdminNavList() {
   const location = useLocation();
+  const [openCertificate, setOpenCertificate] = useState(location.pathname.startsWith('/certificate'))
+  const [openRequest, setOpenRequest] = useState(location.pathname.startsWith('/request'))
+
+  const handleOpenCertificate = () => {
+    setOpenCertificate(!openCertificate)
+  }
+
+  const handleOpenRequest = () => {
+    setOpenRequest(!openRequest)
+  }
+
+  useEffect(() => {
+    if (location.pathname.startsWith('/certificate')) {
+      setOpenCertificate(true)
+    }
+
+    if (location.pathname.startsWith('/request')) {
+      setOpenRequest(true)
+    }
+  }, [])
   return (
     <>
       {/* MenuItem with Link component */}
       <MenuItem icon={<Dashboard />} component={<Link to='/dashboard' />} active={location.pathname === '/'}>
         Dashboard
       </MenuItem>
-      <MenuItem icon={<Person />} component={<Link to='/user' />} active={location.pathname.startsWith('/user')} color='warning'>
+      <MenuItem icon={<Person />} component={<Link to='/user' />} active={location.pathname.startsWith('/user')}>
         User
       </MenuItem>
-      <SubMenu label='Request' icon={<Pending />} active={location.pathname.startsWith('/appointment') || location.pathname.startsWith('/certificate')}>
-        <MenuItem icon={<PinDrop />} component={<Link to='/appointment' />} active={true}>
+
+      <SubMenu label='Request' icon={<Pending />} open={openRequest} onClick={handleOpenRequest}>
+        <MenuItem icon={<PinDrop />} component={<Link to='/request/appointment' />} active={location.pathname == '/request/appointment'}>
           Appointment
         </MenuItem>
-        <MenuItem icon={<Note />} component={<Link to='/certificate' />}>
+        <MenuItem icon={<Note />} component={<Link to='/request/certificate' />} active={location.pathname == '/request/certificate'}>
           Certificate
         </MenuItem>
       </SubMenu>
-      <MenuItem icon={<Note />} component={<Link to='/record' />}>
-        Records
-      </MenuItem>
+
+      <SubMenu label='Certificate' icon={<Pending />} open={openCertificate} onClick={handleOpenCertificate}>
+        <MenuItem icon={<Note />} component={<Link to='/certificate/baptism' />} active={location.pathname == '/certificate/baptism'}>
+          Baptism 
+        </MenuItem>
+        <MenuItem icon={<Note />} component={<Link to='/certificate/death' />} active={location.pathname == '/certificate/death'}>
+          Death 
+        </MenuItem>
+        <MenuItem icon={<Note />} component={<Link to='/certificate/marriage' />} active={location.pathname == '/certificate/marriage'}>
+          Marriage 
+        </MenuItem>
+        <MenuItem icon={<Note />} component={<Link to='/certificate/confirmation' />} active={location.pathname == '/certificate/confirmation'}>
+          Confirmation 
+        </MenuItem>
+      </SubMenu>
+
       <MenuItem icon={<CalendarMonth />} component={<Link to='/schedule' />}>
         Schedules
       </MenuItem>

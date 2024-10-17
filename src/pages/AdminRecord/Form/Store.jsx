@@ -39,12 +39,28 @@ function Store({ onClose, handleGetData }) {
             <Stack spacing={1}>
                 <Typography variant='h4' fontWeight={'bold'}>Store User</Typography>
                 <Divider/>
+                <Typography>Certificate Type</Typography>
+                <TextField label='Select Certificate' name='type' value={''} select>
+                    <MenuItem value='baptism'>Baptism Certificate</MenuItem>
+                    <MenuItem value='death'>Death Certificate</MenuItem>
+                    <MenuItem value='confirmation'>Confirmation Certificate</MenuItem>
+                    <MenuItem value='marraige'>Marraige Certificate</MenuItem>
+                </TextField>
+                <Divider/>
                 <Typography>Personal Information</Typography>
                 <TextField label='First Name' name='firstName' onChange={handleChange}/>
                 <TextField label='Last Name' name='lastName' onChange={handleChange}/>
                 <TextField label='Middle Name' name='middleName' onChange={handleChange}/>
                 <TextField label='Address' name='address' onChange={handleChange}/>
-                <TextField label='Phone' name='phone' onChange={handleChange}/>
+                <Divider/>
+                <Typography>Mother's Information</Typography>
+                <TextField label='First Name' name='motherFirstName' onChange={handleChange}/>
+                <TextField label='Last Name' name='motherLastName' onChange={handleChange}/>
+                <TextField label='Middle Name' name='motherMiddleName' onChange={handleChange}/>
+                <Typography>Fathers's Information</Typography>
+                <TextField label='First Name' name='fatherFirstName' onChange={handleChange}/>
+                <TextField label='Last Name' name='fatherLastName' onChange={handleChange}/>
+                <TextField label='Middle Name' name='fatherMiddleName' onChange={handleChange}/>
                 <Divider/>
                 <Typography>Account Information</Typography>
                 <TextField label='Email' name='email' onChange={handleChange}/>

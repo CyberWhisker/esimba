@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, Typography, Button, Divider } from '@mui/material';
 import { toast } from 'react-toastify';
-import { deleteUser } from '../../../api/userApi';
 
 const headerStyle = {
   p: 2,
@@ -21,15 +20,6 @@ function Delete({selected, onClose, handleGetData}) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const {data, error} = await deleteUser(selected)
-    if (error) {
-      onClose();
-      toast.error("Something went wrong!")
-    } else {
-      onClose();
-      toast.success("Successfully deleted")
-      handleGetData();
-    }
 
   }
 
