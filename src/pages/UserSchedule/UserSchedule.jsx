@@ -9,10 +9,10 @@ function UserSchedule() {
         <Box sx={{textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems:'center', paddingY: 10}}>
             <Typography variant='h1' fontWeight={'bold'}>Request Schedule</Typography>
             <Stack spacing={2} direction={'column'} justifyContent={'center'} mt={10} width={'50vh'}>
-                <Button variant='contained' size='large' sx={{minWidth: '30vh'}} color='warning' component={Link} to='/2/schedule/baptism'>Baptism</Button>
-                <Button variant='contained' size='large' sx={{minWidth: '30vh'}} color='warning' component={Link} to='/2/schedule/marriage'>Marriage</Button>
-                <Button variant='contained' size='large' sx={{minWidth: '30vh'}} color='warning' component={Link} to='/2/schedule/death'>Death</Button>
-                <Button variant='contained' size='large' sx={{minWidth: '30vh'}} color='warning' component={Link} to='/2/schedule/confirmation'>Confirmation</Button>
+                <Button variant='contained' size='large' sx={{minWidth: '30vh'}} color='warning' component={Link} to='/user/schedule/baptism'>Baptism</Button>
+                <Button variant='contained' size='large' sx={{minWidth: '30vh'}} color='warning' component={Link} to='/user/schedule/marriage'>Marriage</Button>
+                <Button variant='contained' size='large' sx={{minWidth: '30vh'}} color='warning' component={Link} to='/user/schedule/death'>Death</Button>
+                <Button variant='contained' size='large' sx={{minWidth: '30vh'}} color='warning' component={Link} to='/user/schedule/confirmation'>Confirmation</Button>
             </Stack>
         </Box>
     </Master>

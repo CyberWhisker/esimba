@@ -67,7 +67,12 @@ function LoginForm() {
             toast.success("Successfully login")
             localStorage.setItem('auth', JSON.stringify(data))
             setAuth(data)
-            navigate('/dashboard')
+            console.log(data)
+            if (data.user.role == 3) {
+                navigate('/user/dashboard')
+            } else {
+                navigate('/admin/dashboard')
+            }
         }
     };
     return (

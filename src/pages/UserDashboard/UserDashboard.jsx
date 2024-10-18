@@ -9,8 +9,8 @@ function UserDashboard() {
             <Box sx={{textAlign: 'center', paddingY: 10}}>
                 <Typography variant='h1' fontWeight={'bold'}>Welcome</Typography>
                 <Stack spacing={2} direction={'row'} justifyContent={'center'} sx={{paddingTop: 10}}>
-                    <Button variant='contained' color='warning' size='large' sx={{minWidth: '30vh'}} component={Link} to='/1/request'>Request Certificate</Button>
-                    <Button variant='contained' size='large' sx={{minWidth: '30vh'}}  component={Link} to='/1/schedule'>Schedule Event</Button>
+                    <Button variant='contained' color='warning' size='large' sx={{minWidth: '30vh'}} component={Link} to='/user/request'>Request Certificate</Button>
+                    <Button variant='contained' size='large' sx={{minWidth: '30vh'}}  component={Link} to='/user/schedule'>Schedule Event</Button>
                 </Stack>
             </Box>
         </Master>

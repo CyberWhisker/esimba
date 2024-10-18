@@ -121,7 +121,7 @@ function AdminNavList() {
         </MenuItem>
       </SubMenu>
 
-      <MenuItem icon={<CalendarMonth />} component={<Link to='/schedule' />}>
+      <MenuItem icon={<CalendarMonth />} component={<Link to='/schedule' />} active={location.pathname == '/schedule'}>
         Schedules
       </MenuItem>
     </>
