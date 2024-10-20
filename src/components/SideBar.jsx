@@ -90,7 +90,7 @@ function AdminNavList() {
   return (
     <>
       {/* MenuItem with Link component */}
-      <MenuItem icon={<Dashboard />} component={<Link to='/dashboard' />} active={location.pathname === '/'}>
+      <MenuItem icon={<Dashboard />} component={<Link to='/admin/dashboard' />} active={location.pathname === '/'}>
         Dashboard
       </MenuItem>
       <MenuItem icon={<Person />} component={<Link to='/user' />} active={location.pathname.startsWith('/user')}>

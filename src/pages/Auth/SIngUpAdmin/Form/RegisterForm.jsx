@@ -61,7 +61,7 @@ function RegisterForm() {
                 toast.success("Successfully registered")
                 localStorage.setItem('auth', JSON.stringify(data))
                 setAuth(data)
-                navigate('/dashboard')
+                navigate('/admin/dashboard')
             }
         }
     };
