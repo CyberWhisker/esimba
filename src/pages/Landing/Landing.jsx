@@ -1,11 +1,13 @@
 import { Box, Button, Grid2, Stack, Typography } from '@mui/material'
-import React from 'react'
+import React, { useContext } from 'react'
 import Master from '../../layouts/Master'
 import { Link } from 'react-router-dom'
 import Logo from '/appImg/Logo.png'
 import CustomCard from '../../components/CustomCard'
+import { AuthContext } from '../../context/AuthContext'
 
 function Landing() {
+  const {auth} = useContext(AuthContext)
   return (
     <Master>
       <Grid2 container spacing={2} sx={{height: '100%'}}>
@@ -19,7 +21,7 @@ function Landing() {
             <Stack spacing={2} p={2}>
               <Typography variant='h4'>About</Typography>
               <Typography>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam doloremque harum nobis, nisi cupiditate dolore magnam placeat eligendi dolor molestias quod saepe itaque ducimus. Ut magni ipsa delectus natus dignissimos?</Typography>
-              <Button color='warning' variant='contained' component={Link} to='/user/dashboard'>Continue</Button>
+              <Button color='warning' variant='contained' component={Link} to={auth.user.role ? '/admin/dashboard': '/user/dashboard'}>Continue</Button>
             </Stack>
           </CustomCard>
         </Grid2>

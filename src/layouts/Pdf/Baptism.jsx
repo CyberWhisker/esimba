@@ -1,5 +1,6 @@
 import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import bgImage from '/pdfImg/BaptismImg.jpg';
+import moment from 'moment';
 // import bgImage from '/appImg/Logo.png';
 
 // Create styles
@@ -77,59 +78,61 @@ const styles = StyleSheet.create({
 });
 
 // Create Document Component
-const Baptism = () => (
-  <Document>
-    <Page size="A4" style={styles.page}>
-      {/* Background Image */}
-      <Image src={bgImage} style={styles.background} />
+const Baptism = ({selected}) => {
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        {/* Background Image */}
+        <Image src={bgImage} style={styles.background} />
 
-      {/* Content Sections */}
-      <View style={styles.churchFont}>
-        <Text style={{fontWeight: 'bold'}}>Church Name awdawdawd</Text>
-      </View>
-      <View style={styles.nameFont}>
-        <Text>First Name Last Name</Text>
-      </View>
-      <View style={styles.motherFont}>
-        <Text>Mother Name</Text>
-      </View>
-      <View style={styles.fatherFont}>
-        <Text>Father Name</Text>
-      </View>
-      <View style={styles.address}>
-        <Text>Birth Date</Text>
-      </View>
-      <View style={styles.birthBaptismDate}>
-        <Text>Baptism Date</Text>
-        <Text style={{marginLeft: 190}}>Address</Text>
-      </View>
-      <View style={styles.revFont}>
-        <Text>Rev Name</Text>
-      </View>
-      <View style={styles.sponsorsFont}>
-        <Text>Sponsors Name</Text>
-      </View>
-      <View style={styles.sponsorsFont2}>
-        <Text>Sponsors Name</Text>
-      </View>
-      <View style={styles.bookPageFont}>
-        <Text>1</Text>
-        <Text style={{marginLeft: 110}}>1</Text>
-      </View>
-      <View style={styles.lineFont}>
-        <Text>5</Text>
-      </View>
-      <View style={styles.issuedFont}>
-        <Text>Date</Text>
-      </View>
-      <View style={styles.purposeFont}>
-        <Text>Purpose</Text>
-      </View>
-      <View style={styles.priestFont}>
-        <Text>Priest Name</Text>
-      </View>
-    </Page>
-  </Document>
-);
+        {/* Content Sections */}
+        <View style={styles.churchFont}>
+          <Text style={{fontWeight: 'bold'}}>Church Name awdawdawd</Text>
+        </View>
+        <View style={styles.nameFont}>
+          <Text>{selected.name}</Text>
+        </View>
+        <View style={styles.motherFont}>
+          <Text>{selected.motherName}</Text>
+        </View>
+        <View style={styles.fatherFont}>
+          <Text>{selected.fatherName}</Text>
+        </View>
+        <View style={styles.address}>
+          <Text>{moment(selected.birthDate).format('MMMM DD YYYY')}</Text>
+        </View>
+        <View style={styles.birthBaptismDate}>
+          <Text>{selected.birthAddress}</Text>
+          <Text style={{marginLeft: 190}}>{moment(selected.baptismDate).format('MMMM DD YYYY')}</Text>
+        </View>
+        <View style={styles.revFont}>
+          <Text>{selected.priest}</Text>
+        </View>
+        <View style={styles.sponsorsFont}>
+          <Text>{selected.sponsor1}</Text>
+        </View>
+        <View style={styles.sponsorsFont2}>
+          <Text>{selected.sponsor2}</Text>
+        </View>
+        <View style={styles.bookPageFont}>
+          <Text>1</Text>
+          <Text style={{marginLeft: 110}}>1</Text>
+        </View>
+        <View style={styles.lineFont}>
+          <Text>5</Text>
+        </View>
+        <View style={styles.issuedFont}>
+          <Text>{moment().format('MMMM DD YYYY')}</Text>
+        </View>
+        <View style={styles.purposeFont}>
+          <Text>{selected.purpose}</Text>
+        </View>
+        <View style={styles.priestFont}>
+          <Text>{selected.priest}</Text>
+        </View>
+      </Page>
+    </Document>
+  );
+}
 
 export default Baptism;

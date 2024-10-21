@@ -5,9 +5,11 @@ import { DataGrid, GridMoreVertIcon, GridToolbar } from '@mui/x-data-grid'
 import CustomCard from '../../../components/CustomCard'
 import AlertModal from '../../../components/AlertModal'
 import Store from './Form/Store'
-import Update from './Form/Update'
 import Delete from './Form/Delete'
 import MasterAdmin from '../../../layouts/MasterAdmin'
+import { fetchRequestAppointment, updateRequest } from '../../../api/requestApi'
+import { toast } from 'react-toastify'
+import moment from 'moment'
 
 function RequestAppointment() {
     const theme = useTheme();
@@ -24,9 +26,35 @@ function RequestAppointment() {
         setStoreModal(true)
     }
 
-    const handleUpdateModal = () => {
+    const handleApprove = async () => {
+      const newData = {
+        ...selected,
+        status: 'Approve'
+      }
+      const {data, error} = await updateRequest(newData)
+      if (error) {
+        toast.error(error)
+      } else {
+        toast.success("Request Approve")
+        handleGetData()     
+        handleMenuClose()   
+      }
+    }
+
+    const handleCancel = async () => {
+      toast.error("Request Cancel")
+      const newData = {
+        ...selected,
+        status: 'Cancel'
+      }
+      const {data, error} = await updateRequest(newData)
+      if (error) {
+        toast.error(error)
+      } else {
+        toast.success("Request Approve")
+        handleGetData()        
         handleMenuClose()
-        setUpdateModal(true)
+      }
     }
 
     const handleDeleteModal = () => {
@@ -51,6 +79,13 @@ function RequestAppointment() {
     }
 
     const handleGetData = async () => {
+        setLoading(true)
+        const {data, error} = await fetchRequestAppointment()
+        if (error) {
+          toast.error(error)
+        } else {
+          setData(data)
+        }
         setLoading(false)
     }
 
@@ -61,6 +96,8 @@ function RequestAppointment() {
     const rows = data.map((item) => ({
         ...item,
         id: item._id,
+        name: `${item.user.firstName} ${item.user.lastName}`,
+        baptismDate: moment(item.data.baptismDate).format('MMMM DD YYYY')
     }))
 
     const columns = [
@@ -72,29 +109,15 @@ function RequestAppointment() {
         headerClassName: 'headerStyle',
       },
       {
-        field: 'firstName',
-        headerName: 'First Name',
+        field: 'name',
+        headerName: 'Name',
         flex: 1,
         headerAlign: 'center',
         headerClassName: 'headerStyle',
       },
       {
-        field: 'lastName',
-        headerName: 'Last Name',
-        flex: 1,
-        headerAlign: 'center',
-        headerClassName: 'headerStyle',
-      },
-      {
-        field: 'middleName',
-        headerName: 'Middle Name',
-        flex: 1,
-        headerAlign: 'center',
-        headerClassName: 'headerStyle',
-      },
-      {
-        field: 'type',
-        headerName: 'Type',
+        field: 'certificate',
+        headerName: 'Certificate',
         flex: 1,
         headerAlign: 'center',
         headerClassName: 'headerStyle',
@@ -107,7 +130,7 @@ function RequestAppointment() {
         headerClassName: 'headerStyle',
       },
       {
-        field: 'date',
+        field: 'baptismDate',
         headerName: 'Date',
         flex: 1,
         headerAlign: 'center',
@@ -164,20 +187,20 @@ function RequestAppointment() {
           open={Boolean(anchorEl)}
           onClose={handleMenuClose}
         >
-          <MenuItem onClick={handleUpdateModal}>
-            <Typography color="warning.main">Edit</Typography>
+          <MenuItem onClick={handleApprove}>
+            <Typography color="success.main">Approve</Typography>
+          </MenuItem>
+          <MenuItem onClick={handleCancel}>
+            <Typography color="warning.main">Cancel</Typography>
           </MenuItem>
           <MenuItem onClick={handleDeleteModal}>
-            <Typography color="error.main">Delete</Typography>
+            <Typography color="error.main">Remove</Typography>
           </MenuItem>
         </Menu>
       </Stack>
 
       <Drawer open={storeModal} anchor='right' onClose={handleCloseModal}>
         <Store onClose={handleCloseModal} handleGetData={handleGetData}/>
-      </Drawer>
-      <Drawer open={updateModal} anchor='right' onClose={handleCloseModal}>
-        <Update selected={selected} onClose={handleCloseModal} handleGetData={handleGetData}/>
       </Drawer>
       <AlertModal open={deleteModal} onClose={handleCloseModal}>
         <Delete onClose={handleCloseModal} selected={selected} handleGetData={handleGetData}/>

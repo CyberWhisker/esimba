@@ -21,7 +21,4 @@ export { default as ScheduleConfirmationForm } from './UserSchedule/Form/Confirm
 // Admin
 export { default as AdminDashboard } from './AdminDashboard/AdminDashboard'
 export { default as AdminUser } from './AdminUser/AdminUser'
-export { default as AdminRecord } from './AdminRecord/AdminRecord'
 export { default as AdminSchedule } from './AdminSchedule/AdminSchedule'
-export { default as AdminFile } from './AdminFile/AdminFile'
-export { default as AdminForm } from './AdminRecord/Form/Form'

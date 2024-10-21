@@ -1,21 +1,17 @@
 import { Box, Button, Divider, MenuItem, Stack, TextField, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+import { fetchUsers } from '../../../../api/userApi'
+import { updateBaptism } from '../../../../api/baptismApi'
+import moment from 'moment'
+import { updateConfirmation } from '../../../../api/confirmationApi'
 
-function Update({ onClose, handleGetData }) {
-    const [dataForm, setDataForm] = useState({
-        firstName: '',
-        lastName: '',
-        middleName: '',
-        email: '',
-        address: '',
-        phone: '',
-        role: '',
-        password: '',
-        subscription: '',
-    })
+function Update({ onClose, handleGetData, selected }) {
+    const [userData, setUserData] = useState([]);
+    const [loading, setLoading] = useState(true)
+    const [dataForm, setDataForm] = useState(selected)
 
     const handleChange = (e) => {
         setDataForm({
@@ -24,37 +20,65 @@ function Update({ onClose, handleGetData }) {
         })
     }
 
-    const handleSubmit = async () => {
+    const handleChangeDate = (name, value) => {
+        setDataForm({
+            ...dataForm,
+            [name]: value
+        })
     }
+
+    const handleSubmit = async () => {
+        const {data, error} = await updateConfirmation(dataForm)
+        if (error) {
+            toast.error(error)
+        } else {
+            toast.success("Successfully Added")
+        }
+        handleGetData();
+        onClose()
+    }
+
+    const handleGetUser = async () => {
+        setLoading(true)
+        const {data, error} = await fetchUsers();
+        if (error) {
+            toast.error(error);
+        } else {
+            setUserData(data)
+        }
+        setLoading(false)
+    }
+
+    useEffect(() => {
+        handleGetUser()
+    }, [])
     return (
         <LocalizationProvider dateAdapter={AdapterMoment}>
             <Box sx={{ width: '60vh', p: 2 }}>
                 <Stack spacing={1}>
-                    <Typography variant='h4' fontWeight={'bold'}>Update Certificate</Typography>
+                    <Typography variant='h4' fontWeight={'bold'}>Store Certificate</Typography>
                     <Divider/>
                     <Typography>Personal Information</Typography>
-                    <TextField label='First Name' name='firstName' onChange={handleChange}/>
-                    <TextField label='Last Name' name='lastName' onChange={handleChange}/>
-                    <TextField label='Middle Name' name='middleName' onChange={handleChange}/>
-                    <DatePicker label='Birth Date' name='birthDate' onChange={handleChange}/>
-                    <TextField label='Birth Address' name='birthAddress' onChange={handleChange}/>
+                    <TextField label='Select User' name='user' onChange={handleChange} select value={loading ? '': dataForm.user._id}>
+                        {userData.map((item, index) => (
+                            <MenuItem key={index} value={item._id}>{item.firstName} {item.lastName}</MenuItem>
+                        ))}
+                    </TextField>
+                    <DatePicker label='Birth Date' name='birthDate' value={moment(dataForm.birthDate)} onChange={value => handleChangeDate('birthDate', value)}/>
+                    <TextField label='Birth Address' name='birthAddress' onChange={handleChange} value={dataForm.birthAddress}/>
                     <Divider/>
                     <Typography>Mother's Information</Typography>
-                    <TextField label='Full Name' name='motherFirstName' onChange={handleChange}/>
+                    <TextField label='Full Name' name='motherName' onChange={handleChange} value={dataForm.motherName}/>
                     <Divider/>
                     <Typography>Father's Information</Typography>
-                    <TextField label='Full Name' name='fatherFirstName' onChange={handleChange}/>
+                    <TextField label='Full Name' name='fatherName' onChange={handleChange} value={dataForm.fatherName}/>
                     <Divider/>
-                    <Typography>Confirmation Information</Typography>
-                    <DatePicker label='Baptized Date' name='baptizeDate' onChange={handleChange}/>
-                    <TextField label='Baptized Address' name='baptizeAddress' onChange={handleChange}/>
-                    <TextField label='Church Name' name='churchName' onChange={handleChange}/>
-                    <TextField label='Priest Name' name='priest' onChange={handleChange}/>
-                    <TextField label='Sponsor Name' name='sponsor1' onChange={handleChange}/>
-                    <TextField label='Sponsor Name' name='sponsor2' onChange={handleChange}/>
-                    <TextField label='Book Number' name='bookNumber' onChange={handleChange}/>
-                    <TextField label='Page Number' name='pageNumber' onChange={handleChange}/>
-                    <TextField label='Line Number' name='lineNumber' onChange={handleChange}/>
+                    <Typography>Baptism Information</Typography>
+                    <DatePicker label='Baptized Date' name='baptizeDate' onChange={value => handleChangeDate('baptismDate', value)} value={moment(dataForm.baptismDate)}/>
+                    <TextField label='Baptized Address' name='baptizeAddress' onChange={handleChange} value={dataForm.chapel.address}/>
+                    <TextField label='Priest' name='priest' onChange={handleChange} value={dataForm.priest}/>
+                    <TextField label='Sponsor Name' name='sponsor1' onChange={handleChange} value={dataForm.sponsor1}/>
+                    <TextField label='Sponsor Name' name='sponsor2' onChange={handleChange} value={dataForm.sponsor2}/>
                     <Button variant='contained' onClick={handleSubmit}>Submit</Button>
                 </Stack>
             </Box>

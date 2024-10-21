@@ -1,20 +1,25 @@
 import { Box, Button, Divider, MenuItem, Stack, TextField, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+import { fetchUsers } from '../../../../api/userApi'
+import { AuthContext } from '../../../../context/AuthContext'
+import { storeConfirmation } from '../../../../api/confirmationApi'
 
 function Store({ onClose, handleGetData }) {
+    const {auth} = useContext(AuthContext)
+    const [userData, setUserData] = useState([]);
     const [dataForm, setDataForm] = useState({
-        firstName: '',
-        lastName: '',
-        middleName: '',
-        email: '',
-        address: '',
-        phone: '',
-        role: '',
-        password: '',
-        subscription: '',
+        user: '',
+        chapel: auth.user.parish[0]._id,
+        birthDate: null,
+        baptismDate: null,
+        birthAddress: '',
+        motherName: '',
+        fatherName: '',
+        sponsor1: '',
+        sponsor2: '',
     })
 
     const handleChange = (e) => {
@@ -24,8 +29,36 @@ function Store({ onClose, handleGetData }) {
         })
     }
 
-    const handleSubmit = async () => {
+    const handleChangeDate = (name, value) => {
+        setDataForm({
+            ...dataForm,
+            [name]: value
+        })
     }
+
+    const handleSubmit = async () => {
+        const {data, error} = await storeConfirmation(dataForm)
+        if (error) {
+            toast.error(error)
+        } else {
+            toast.success("Successfully Added")
+        }
+        handleGetData();
+        onClose()
+    }
+
+    const handleGetUser = async () => {
+        const {data, error} = await fetchUsers();
+        if (error) {
+            toast.error(error);
+        } else {
+            setUserData(data)
+        }
+    }
+
+    useEffect(() => {
+        handleGetUser()
+    })
     return (
         <LocalizationProvider dateAdapter={AdapterMoment}>
             <Box sx={{ width: '60vh', p: 2 }}>
@@ -33,28 +66,26 @@ function Store({ onClose, handleGetData }) {
                     <Typography variant='h4' fontWeight={'bold'}>Store Certificate</Typography>
                     <Divider/>
                     <Typography>Personal Information</Typography>
-                    <TextField label='First Name' name='firstName' onChange={handleChange}/>
-                    <TextField label='Last Name' name='lastName' onChange={handleChange}/>
-                    <TextField label='Middle Name' name='middleName' onChange={handleChange}/>
-                    <DatePicker label='Birth Date' name='birthDate' onChange={handleChange}/>
+                    <TextField label='Select User' name='user' onChange={handleChange} select value={dataForm.user}>
+                        {userData.map((item, index) => (
+                            <MenuItem key={index} value={item._id}>{item.firstName} {item.lastName}</MenuItem>
+                        ))}
+                    </TextField>
+                    <DatePicker label='Birth Date' name='birthDate' onChange={value => handleChangeDate('birthDate', value)}/>
                     <TextField label='Birth Address' name='birthAddress' onChange={handleChange}/>
                     <Divider/>
                     <Typography>Mother's Information</Typography>
-                    <TextField label='Full Name' name='motherFirstName' onChange={handleChange}/>
+                    <TextField label='Full Name' name='motherName' onChange={handleChange}/>
                     <Divider/>
                     <Typography>Father's Information</Typography>
-                    <TextField label='Full Name' name='fatherFirstName' onChange={handleChange}/>
+                    <TextField label='Full Name' name='fatherName' onChange={handleChange}/>
                     <Divider/>
                     <Typography>Confirmation Information</Typography>
-                    <DatePicker label='Baptized Date' name='baptizeDate' onChange={handleChange}/>
+                    <DatePicker label='Baptized Date' name='baptizeDate' onChange={value => handleChangeDate('baptismDate', value)}/>
                     <TextField label='Baptized Address' name='baptizeAddress' onChange={handleChange}/>
-                    <TextField label='Church Name' name='churchName' onChange={handleChange}/>
-                    <TextField label='Priest Name' name='priest' onChange={handleChange}/>
+                    <TextField label='Priest' name='priest' onChange={handleChange}/>
                     <TextField label='Sponsor Name' name='sponsor1' onChange={handleChange}/>
                     <TextField label='Sponsor Name' name='sponsor2' onChange={handleChange}/>
-                    <TextField label='Book Number' name='bookNumber' onChange={handleChange}/>
-                    <TextField label='Page Number' name='pageNumber' onChange={handleChange}/>
-                    <TextField label='Line Number' name='lineNumber' onChange={handleChange}/>
                     <Button variant='contained' onClick={handleSubmit}>Submit</Button>
                 </Stack>
             </Box>

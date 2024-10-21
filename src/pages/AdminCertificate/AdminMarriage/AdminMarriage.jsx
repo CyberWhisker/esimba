@@ -8,6 +8,11 @@ import Store from './Form/Store'
 import Update from './Form/Update'
 import Delete from './Form/Delete'
 import MasterAdmin from '../../../layouts/MasterAdmin'
+import moment from 'moment'
+import { PDFDownloadLink } from '@react-pdf/renderer'
+import { Marriage } from '../../../layouts/Pdf'
+import { toast } from 'react-toastify'
+import { fetchMarriage } from '../../../api/marriageApi'
 
 function AdminMarriage() {
     const theme = useTheme();
@@ -51,7 +56,14 @@ function AdminMarriage() {
     }
 
     const handleGetData = async () => {
-        setLoading(false)
+      setLoading(true)
+      const {data, error} = await fetchMarriage()
+      if (error) {
+        toast.error(error)
+      } else {
+        setData(data)
+      }
+      setLoading(false)
     }
 
     useEffect(() => {
@@ -61,50 +73,63 @@ function AdminMarriage() {
     const rows = data.map((item) => ({
         ...item,
         id: item._id,
+        name: `${item.user.firstName} ${item.user.lastName}`,
+        createdAt: moment(item.createdAt).format('MMMM DD YYYY'),
+        updatedAt: moment(item.updatedAt).format('MMMM DD YYYY')
     }))
 
     const columns = [
       {
-        field: 'firstName',
-        headerName: 'First Name',
+        field: 'id',
+        headerName: 'ID',
         flex: 1,
         headerAlign: 'center',
         headerClassName: 'headerStyle',
       },
       {
-        field: 'lastName',
-        headerName: 'Last Name',
+        field: 'name',
+        headerName: 'Name',
         flex: 1,
         headerAlign: 'center',
         headerClassName: 'headerStyle',
       },
       {
-        field: 'middleName',
-        headerName: 'Middle Name',
+        field: 'createdAt',
+        headerName: 'Created At',
         flex: 1,
         headerAlign: 'center',
         headerClassName: 'headerStyle',
       },
       {
-        field: 'type',
-        headerName: 'Type',
+        field: 'updatedAt',
+        headerName: 'Updated AT',
         flex: 1,
         headerAlign: 'center',
         headerClassName: 'headerStyle',
       },
       {
-        field: 'status',
-        headerName: 'Status',
+        field: 'pdf',
+        headerName: 'Download',
         flex: 1,
         headerAlign: 'center',
         headerClassName: 'headerStyle',
-      },
-      {
-        field: 'date',
-        headerName: 'Date',
-        flex: 1,
-        headerAlign: 'center',
-        headerClassName: 'headerStyle',
+        renderCell: (params) => (
+          <Box sx={{ textAlign: 'center' }}>
+            <PDFDownloadLink
+              document={<Marriage selected={params.row}/>}
+              fileName="baptism_certificate.pdf"
+              style={{
+                textDecoration: 'none',
+              }}
+            >
+              {({ loading }) => (
+                <Button variant="contained" disabled={loading}>
+                  {loading ? 'Generating PDF...' : 'Download'}
+                </Button>
+              )}
+            </PDFDownloadLink>
+          </Box>
+        )
       },
       {
         field: 'setting',

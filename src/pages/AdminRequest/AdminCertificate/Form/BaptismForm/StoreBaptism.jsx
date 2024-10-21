@@ -15,7 +15,7 @@ function StoreBaptism({onClose, handleGetData}) {
         parish: auth.user.parish[0]._id,
         certificate: 'Baptism',
         status: 'Pending',
-        request: 'Appointment',
+        request: 'Certificate',
         purpose: '',
         data: {
             birthDate: null,
@@ -98,7 +98,7 @@ function StoreBaptism({onClose, handleGetData}) {
             <Divider/>
             <Typography>Baptism Information</Typography>
             <DatePicker label='Baptized Date' name='baptismDate' onChange={value => handleDate('baptismDate', value)}/>
-            <TextField label='Baptized Address' name='baptismAddress' onChange={handleData}/>
+            <TextField label='Baptized Address' name='baptizeAddress' onChange={handleData}/>
             <TextField label='Priest' name='priest' onChange={handleData}/>
             <TextField label='Sponsor Name' name='sponsor1' onChange={handleData}/>
             <TextField label='Sponsor Name' name='sponsor2' onChange={handleData}/>

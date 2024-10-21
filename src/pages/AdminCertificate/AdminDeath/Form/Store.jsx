@@ -1,20 +1,20 @@
 import { Box, Button, Divider, MenuItem, Stack, TextField, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+import { fetchUsers } from '../../../../api/userApi'
+import { AuthContext } from '../../../../context/AuthContext'
+import { storeDeath } from '../../../../api/deathApi'
 
 function Store({ onClose, handleGetData }) {
+    const {auth} = useContext(AuthContext)
+    const [userData, setUserData] = useState([]);
     const [dataForm, setDataForm] = useState({
-        firstName: '',
-        lastName: '',
-        middleName: '',
-        email: '',
-        address: '',
-        phone: '',
-        role: '',
-        password: '',
-        subscription: '',
+        user: '',
+        chapel: auth.user.parish[0]._id,
+        birthDate: null,
+        baptismDate: null,
     })
 
     const handleChange = (e) => {
@@ -24,8 +24,36 @@ function Store({ onClose, handleGetData }) {
         })
     }
 
-    const handleSubmit = async () => {
+    const handleChangeDate = (name, value) => {
+        setDataForm({
+            ...dataForm,
+            [name]: value
+        })
     }
+
+    const handleSubmit = async () => {
+        const {data, error} = await storeDeath(dataForm)
+        if (error) {
+            toast.error(error)
+        } else {
+            toast.success("Successfully Added")
+            handleGetData();
+            onClose()
+        }
+    }
+
+    const handleGetUser = async () => {
+        const {data, error} = await fetchUsers();
+        if (error) {
+            toast.error(error);
+        } else {
+            setUserData(data)
+        }
+    }
+
+    useEffect(() => {
+        handleGetUser()
+    },[])
     return (
         <LocalizationProvider dateAdapter={AdapterMoment}>
             <Box sx={{ width: '60vh', p: 2 }}>
@@ -33,32 +61,32 @@ function Store({ onClose, handleGetData }) {
                     <Typography variant='h4' fontWeight={'bold'}>Store Certificate</Typography>
                     <Divider/>
                     <Typography>Personal Information</Typography>
-                    <TextField label='First Name' name='firstName' onChange={handleChange}/>
-                    <TextField label='Last Name' name='lastName' onChange={handleChange}/>
-                    <TextField label='Middle Name' name='middleName' onChange={handleChange}/>
-                    <DatePicker label='Birth Date' name='birthDate' onChange={handleChange}/>
+                    <TextField label='Select User' name='user' onChange={handleChange} select value={dataForm.user}>
+                        {userData.map((item, index) => (
+                            <MenuItem key={index} value={item._id}>{item.firstName} {item.lastName}</MenuItem>
+                        ))}
+                    </TextField>
+                    <DatePicker label='Birth Date' name='birthDate' onChange={value => handleChangeDate('birthDate', value)}/>
+                    <TextField label='Age' name='age' onChange={handleChange}/>
                     <TextField label='Birth Address' name='birthAddress' onChange={handleChange}/>
                     <Divider/>
-                    <Typography>Wife/Husband's Information</Typography>
+                    <Typography>Partner's Information</Typography>
                     <TextField label='Full Name' name='partnerName' onChange={handleChange}/>
                     <Divider/>
                     <Typography>Mother's Information</Typography>
-                    <TextField label='Full Name' name='motherFirstName' onChange={handleChange}/>
+                    <TextField label='Full Name' name='motherName' onChange={handleChange}/>
                     <Divider/>
                     <Typography>Father's Information</Typography>
-                    <TextField label='Full Name' name='fatherFirstName' onChange={handleChange}/>
+                    <TextField label='Full Name' name='fatherName' onChange={handleChange}/>
                     <Divider/>
                     <Typography>Death Information</Typography>
-                    <DatePicker label='Death Date' name='deathDate' onChange={handleChange}/>
-                    <TextField label='Age' name='age' onChange={handleChange}/>
-                    <TextField label='Cause of Death' name='cause' onChange={handleChange}/>
-                    <DatePicker label='Death Buried' name='dateBuried' onChange={handleChange}/>
-                    <TextField label='Roman Catholic Cemetery' name='romanAddress' onChange={handleChange}/>
-                    <TextField label='Municipal Cemetery' name='municipalAddress' onChange={handleChange}/>
-                    <TextField label='Private Cemetery' name='privateAddress' onChange={handleChange}/>
-                    <TextField label='Book Number' name='bookNumber' onChange={handleChange}/>
-                    <TextField label='Page Number' name='pageNumber' onChange={handleChange}/>
-                    <TextField label='Line Number' name='lineNumber' onChange={handleChange}/>
+                    <DatePicker label='Death Date' name='deathDate' onChange={value => handleChangeDate('deathDate', value)}/>
+                    <TextField label='Cause of Death' name='causeOfDeath' onChange={handleChange}/>
+                    <DatePicker label='Burial Date' name='burialDate' onChange={value => handleChangeDate('deathDate', value)}/>
+                    <TextField label='Priest' name='priest' onChange={handleChange}/>
+                    <TextField label='Roman Catholic Cemetary' name='romanCemetary' onChange={handleChange}/>
+                    <TextField label='Municipal Cemetary' name='municipalCemetary' onChange={handleChange}/>
+                    <TextField label='Private Cemetary' name='privateCemetary' onChange={handleChange}/>
                     <Button variant='contained' onClick={handleSubmit}>Submit</Button>
                 </Stack>
             </Box>

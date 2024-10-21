@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { RequestBaptismForm, RequestConfirmationForm, RequestDeathForm, UserDashboard, RequestMarriageForm, SignInPage, SignUpPage, UserCertificate, ScheduleBaptismForm, ScheduleDeathForm, ScheduleMarriageForm, ScheduleConfirmationForm, UserSchedule, AdminDashboard, AdminUser, AdminRecord, Landing, Membership, AdminFile, AdminForm, AdminSchedule } from './pages'
+import { RequestBaptismForm, RequestConfirmationForm, RequestDeathForm, UserDashboard, RequestMarriageForm, SignInPage, SignUpPage, UserCertificate, ScheduleBaptismForm, ScheduleDeathForm, ScheduleMarriageForm, ScheduleConfirmationForm, UserSchedule, AdminDashboard, AdminUser, Landing, Membership, AdminSchedule } from './pages'
 import { AuthContext } from './context/AuthContext';
 import SignUpAdmin from './pages/Auth/SIngUpAdmin/SignUpAdmin';
 import { AdminBaptism, AdminConfirmation, AdminDeath, AdminMarriage } from './pages/AdminCertificate';
@@ -19,38 +19,31 @@ function App() {
         <Route path='/' element={<Landing/>}/>
         <Route path='/membership' element={<Membership/>}/>
 
-        <Route path='/user' element={<AdminUser />}/>
-        <Route path='/request/appointment' element={<AdminRequestAppointment />}/>
-        <Route path='/request/certificate' element={<AdminRequestCertificate />}/>
-
-        <Route path='/certificate/baptism' element={<AdminBaptism />}/>
-        <Route path='/certificate/marriage' element={<AdminMarriage />}/>
-        <Route path='/certificate/death' element={<AdminDeath />}/>
-        <Route path='/certificate/confirmation' element={<AdminConfirmation />}/>
-        <Route path='/schedule' element={<AdminSchedule />}/>
-
-        <Route path='/record' element={<AdminRecord />}/>
-        <Route path='/record/form/:type' element={<AdminForm/> }/>
-
-        <Route path='/pdf' element={<AdminFile/> }/>
-
         {/* User Routes */}
-        <Route path='/user/dashboard' element={<UserDashboard/>} />
+        <Route path='/user/dashboard' element={auth ? <UserDashboard/> : <SignInPage/>} />
         {/* Schedule */}
-        <Route path='/user/schedule' element={<UserSchedule />}/>
-        <Route path='/user/schedule/baptism' element={<ScheduleBaptismForm />}/>
-        <Route path='/user/schedule/death' element={<ScheduleDeathForm />}/>
-        <Route path='/user/schedule/marriage' element={<ScheduleMarriageForm />}/>
-        <Route path='/user/schedule/confirmation' element={<ScheduleConfirmationForm />}/>
+        <Route path='/user/schedule' element={auth ? <UserSchedule /> : <SignInPage/>}/>
+        <Route path='/user/schedule/baptism' element={auth ? <ScheduleBaptismForm /> : <SignInPage/>}/>
+        <Route path='/user/schedule/death' element={auth ? <ScheduleDeathForm /> : <SignInPage/>}/>
+        <Route path='/user/schedule/marriage' element={auth ? <ScheduleMarriageForm /> : <SignInPage/>}/>
+        <Route path='/user/schedule/confirmation' element={auth ? <ScheduleConfirmationForm /> : <SignInPage/>}/>
         {/* Request */}
-        <Route path='/user/request' element={<UserCertificate />}/>
-        <Route path='/user/request/baptism' element={<RequestBaptismForm />}/>
-        <Route path='/user/request/death' element={<RequestDeathForm />}/>
-        <Route path='/user/request/marriage' element={<RequestMarriageForm />}/>
-        <Route path='/user/request/confirmation' element={<RequestConfirmationForm />}/>
+        <Route path='/user/request' element={auth ? <UserCertificate /> : <SignInPage/>}/>
+        <Route path='/user/request/baptism' element={auth ? <RequestBaptismForm /> : <SignInPage/>}/>
+        <Route path='/user/request/death' element={auth ? <RequestDeathForm /> : <SignInPage/>}/>
+        <Route path='/user/request/marriage' element={auth ? <RequestMarriageForm /> : <SignInPage/>}/>
+        <Route path='/user/request/confirmation' element={auth ? <RequestConfirmationForm /> : <SignInPage/>}/>
 
         {/* Admin Routes */}
-        <Route path='/admin/dashboard' element={<AdminDashboard/>} />
+        <Route path='/admin/dashboard' element={auth ? <AdminDashboard/> : <SignInPage/>} />
+        <Route path='/user' element={<AdminUser />}/>
+        <Route path='/request/appointment' element={auth ? <AdminRequestAppointment /> : <SignInPage/>}/>
+        <Route path='/request/certificate' element={auth ? <AdminRequestCertificate />  : <SignInPage/>}/>
+        <Route path='/certificate/baptism' element={auth ? <AdminBaptism /> : <SignInPage/>}/>
+        <Route path='/certificate/marriage' element={auth ? <AdminMarriage /> : <SignInPage/>}/>
+        <Route path='/certificate/death' element={auth ? <AdminDeath /> : <SignInPage/>}/>
+        <Route path='/certificate/confirmation' element={auth ? <AdminConfirmation /> : <SignInPage/>}/>
+        <Route path='/schedule' element={auth ? <AdminSchedule /> : <SignInPage/>}/>
       </Routes>
     </BrowserRouter>
   )

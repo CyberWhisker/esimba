@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
 });
 
 // Create Document Component
-const Death = () => (
+const Death = ({selected}) => (
   <Document>
     <Page size="A4" style={styles.page}>
       {/* Background Image */}
@@ -91,7 +91,7 @@ const Death = () => (
 
       {/* Content Sections */}
       <View style={styles.section1}>
-        <Text style={{fontWeight: 'bold'}}>Church Name awdawdawd</Text>
+        <Text style={{fontWeight: 'bold'}}>{selected.chapel.chapel}</Text>
       </View>
       <View style={styles.section2}>
         <Text>First Name Last Name</Text>

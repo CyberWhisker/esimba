@@ -1,6 +1,8 @@
 import React from 'react';
 import { Box, Typography, Button, Divider } from '@mui/material';
 import { toast } from 'react-toastify';
+import { deleteDeath } from '../../../../api/deathApi';
+import { deleteMarraige } from '../../../../api/marriageApi';
 
 const headerStyle = {
   p: 2,
@@ -20,7 +22,14 @@ function Delete({selected, onClose, handleGetData}) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    const {data, error} = await deleteMarraige(selected)
+    if (error) {
+      toast.error(error)
+    } else {
+      toast.success("Successfully Deleted")
+      handleGetData()
+      onClose()
+    }
   }
 
   return (
