@@ -11,25 +11,27 @@ function Membership() {
       <Grid2 container spacing={2} sx={{height: '100%'}} direction={{xs: 'column', lg: 'row'}}>
         <Grid2 size='grow'>
           <CustomCard>
-            <Stack spacing={2} p={2}>
-              <Typography fontWeight={'bold'} variant='h4'>Free</Typography>
-              <Typography fontWeight={'bold'} variant='h4'>₱ 0.00 per month</Typography>
-              <Divider/>
-              <Stack direction={'row'} spacing={2}>
-                <CheckCircle/>
-                <Typography>3 Months Trial</Typography>
-              </Stack>
-              <Stack direction={'row'} spacing={2}>
-                <CheckCircle/>
-                <Typography>Document Management</Typography>
-              </Stack>
-              <Stack direction={'row'} spacing={2}>
-                <CheckCircle/>
-                <Typography>Schedule Management</Typography>
-              </Stack>
-              <Stack direction={'row'} spacing={2}>
-                <CheckCircle/>
-                <Typography>Online Transaction</Typography>
+            <Stack justifyContent={'space-between'} direction={'column'} height={'100%'} p={2} spacing={2}>
+              <Stack spacing={2}>
+                <Typography fontWeight={'bold'} variant='h4'>Free</Typography>
+                <Typography fontWeight={'bold'} variant='h4'>₱ 0.00 per month</Typography>
+                <Divider/>
+                <Stack direction={'row'} spacing={2}>
+                  <CheckCircle/>
+                  <Typography>Certificate Issuance</Typography>
+                </Stack>
+                <Stack direction={'row'} spacing={2}>
+                  <CheckCircle/>
+                  <Typography>Event Management </Typography>
+                </Stack>
+                <Stack direction={'row'} spacing={2}>
+                  <CheckCircle/>
+                  <Typography>Basic Member Management </Typography>
+                </Stack>
+                <Stack direction={'row'} spacing={2}>
+                  <CheckCircle/>
+                  <Typography>Limited Users (75 users only)</Typography>
+                </Stack>
               </Stack>
               <Button color='warning' variant='contained' component={Link} to={'/register/2'}>Sign up for Free</Button>
             </Stack>
@@ -37,25 +39,31 @@ function Membership() {
         </Grid2>
         <Grid2 size='grow'>
           <CustomCard>
-            <Stack spacing={2} p={2}>
-              <Typography fontWeight={'bold'} variant='h4'>Premium</Typography>
-              <Typography fontWeight={'bold'} variant='h4'>₱ 50.00 per month</Typography>
-              <Divider/>
-              <Stack direction={'row'} spacing={2}>
-                <CheckCircle/>
-                <Typography>Document Management</Typography>
-              </Stack>
-              <Stack direction={'row'} spacing={2}>
-                <CheckCircle/>
-                <Typography>Schedule Management</Typography>
-              </Stack>
-              <Stack direction={'row'} spacing={2}>
-                <CheckCircle/>
-                <Typography>Online Transaction</Typography>
-              </Stack>
-              <Stack direction={'row'} spacing={2}>
-                <CheckCircle/>
-                <Typography>Best Deal</Typography>
+            <Stack justifyContent={'space-between'} direction={'column'} height={'100%'} p={2} spacing={2}>
+              <Stack spacing={2}>
+                <Typography fontWeight={'bold'} variant='h4'>Premium</Typography>
+                <Typography fontWeight={'bold'} variant='h4'>₱ 50.00 per month</Typography>
+                <Divider/>
+                <Stack direction={'row'} spacing={2}>
+                  <CheckCircle/>
+                  <Typography>Certificate Issuance</Typography>
+                </Stack>
+                <Stack direction={'row'} spacing={2}>
+                  <CheckCircle/>
+                  <Typography>Event Management</Typography>
+                </Stack>
+                <Stack direction={'row'} spacing={2}>
+                  <CheckCircle/>
+                  <Typography>Accept Online Mass Intentions and Donations</Typography>
+                </Stack>
+                <Stack direction={'row'} spacing={2}>
+                  <CheckCircle/>
+                  <Typography>Advanced Member Management</Typography>
+                </Stack>
+                <Stack direction={'row'} spacing={2}>
+                  <CheckCircle/>
+                  <Typography>unlimited users</Typography>
+                </Stack>
               </Stack>
               <Button variant='contained' component={Link} to={'/register/1'}>Start Now</Button>
             </Stack>

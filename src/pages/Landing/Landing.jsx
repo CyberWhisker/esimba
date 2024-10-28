@@ -20,8 +20,8 @@ function Landing() {
           <CustomCard>
             <Stack spacing={2} p={2}>
               <Typography variant='h4'>About</Typography>
-              <Typography>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam doloremque harum nobis, nisi cupiditate dolore magnam placeat eligendi dolor molestias quod saepe itaque ducimus. Ut magni ipsa delectus natus dignissimos?</Typography>
-              <Button color='warning' variant='contained' component={Link} to={auth.user.role ? '/admin/dashboard': '/user/dashboard'}>Continue</Button>
+              <Typography>eSimba is a SaaS platform that streamlines parish management by automating event scheduling and certificate issuance. Designed for parishes in Marinduque, it simplifies administration, reduces errors, and offers convenient online access for parishioners to book events and request certificates, allowing parishes to focus more on community and spiritual support.</Typography>
+              <Button color='warning' variant='contained' component={Link} to='/user/dashboard'>Continue</Button>
             </Stack>
           </CustomCard>
         </Grid2>

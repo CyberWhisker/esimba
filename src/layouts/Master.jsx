@@ -3,38 +3,61 @@ import { Box, Container, createTheme, CssBaseline, ThemeProvider } from '@mui/ma
 import TopBar from '../components/TopBar';
 import Footer from '../components/Footer';
 import CustomToast from '../components/CustomToast';
-  
-  const darkTheme = createTheme({
+import backgroundImg from '/appImg/Background.jpg';
+
+const darkTheme = createTheme({
     palette: {
-      mode: 'dark',
+        mode: 'dark',
     },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          borderRadius: 15
+    components: {
+        MuiCard: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 15,
+                },
+            },
         },
-      },
     },
-  });
+});
 
 function Master({ children }) {
     return (
         <ThemeProvider theme={darkTheme}>
-           <CssBaseline />
-            <Box sx={{
-                zIndex: 100, 
-                height: '100vh', 
-                display: 'flex', 
-                justifyContent: 'space-between', 
-                flexDirection: 'column',
-            }}>
-                <TopBar/>
-                <Container sx={{mt: 8, flex: 1}}>
-                    {children}
-                </Container>
-                <Footer/>
+            <CssBaseline />
+            <Box
+                sx={{
+                  minHeight: '100vh',
+                  position: 'relative',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+            >
+                {/* Background Image Layer */}
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundImage: `url(${backgroundImg})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        opacity: 0.3,
+                        zIndex: -1,
+                    }}
+                />
+
+                {/* Content Layer */}
+                <Box sx={{ zIndex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh', }}>
+                    <TopBar />
+                    <Container sx={{ mt: 8, flex: 1 }}>
+                        {children}
+                    </Container>
+                    <Footer />
+                </Box>
             </Box>
-            <CustomToast/>
+            <CustomToast />
         </ThemeProvider>
     );
 }

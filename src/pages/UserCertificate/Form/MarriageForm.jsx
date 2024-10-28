@@ -1,10 +1,12 @@
-import { Avatar, Box, Button, Card, MenuItem, Stack, TextField, Typography } from '@mui/material'
+import { Box, Button, Card, Divider, Grid2, Stack, TextField, Typography } from '@mui/material'
 import React from 'react'
 import Master from '../../../layouts/Master'
 import { ArrowBackRounded } from '@mui/icons-material'
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { useNavigate } from 'react-router-dom'
+import { PDFViewer } from '@react-pdf/renderer'
+import Marriage from '../../../layouts/Pdf/Marriage'
 
 function MarriageForm() {
   const navigate = useNavigate();
@@ -13,7 +15,7 @@ function MarriageForm() {
       <Stack sx={{py: 4}} spacing={2}>
         <Stack direction={'row'} spacing={2}>
           <Button startIcon={<ArrowBackRounded/>} variant='contained' onClick={() => navigate(-1)}>Go Back</Button>
-          <Typography variant='h4' fontWeight={'bold'}>Fill-out Form: Marriage</Typography>
+          <Typography variant='h4' fontWeight={'bold'}>Marriage Certificate Request</Typography>
         </Stack>
         <Card elevation={5} sx={{
           padding: 2,
@@ -22,7 +24,19 @@ function MarriageForm() {
           boxShadow: 'none', 
           transition: 'background-color 0.3s ease',
         }}>
-          <FormSection/>
+          {/* <FormSection/> */}
+          <Grid2 container>
+            <Grid2 size='grow'>
+              <Box sx={{display: 'flex', justifyContent: 'center'}}>
+                <Document/>
+              </Box>
+            </Grid2>
+            <Grid2 size='grow'>
+              <Box sx={{display: 'flex', justifyContent: 'center'}}>
+                <FormSection/>
+              </Box>
+            </Grid2>
+          </Grid2>
         </Card>
       </Stack>
     </Master>
@@ -32,31 +46,29 @@ function MarriageForm() {
 function FormSection () {
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
-      <form>
-        <Stack spacing={2}>
-          <Stack direction={'row'} spacing={2}>
-            <TextField label='First Name' sx={{width: '100%'}}/>
-            <TextField label='Last Name' sx={{width: '100%'}}/>
-          </Stack>
-          <Stack direction={'row'} spacing={2}>
-            <DatePicker label='Date of Birth' sx={{width: '100%'}}/>
-            <DatePicker label='Date of Marriage' sx={{width: '100%'}}/>
-          </Stack>
-          <Stack direction={'row'} spacing={2}>
-            <TextField label='Place of Birth' sx={{width: '100%'}}/>
-            <TextField label='Name of Parish' sx={{width: '100%'}} select>
-              <MenuItem>No Record Found</MenuItem>
-            </TextField>
-          </Stack>
-          <Stack direction={'row'} spacing={2}>
-            <TextField label="Mother's Name" sx={{width: '100%'}}/>
-            <TextField label="Father's Name" sx={{width: '100%'}}/>
-          </Stack>
-          <TextField label='Purpose'/>
-          <Button variant='contained'>Submit</Button>
+      <form  style={{width: '100%'}}>
+        <Stack direction={'column'} spacing={1}>
+          <Typography variant='h4' fontWeight={'bold'}>Payment</Typography>
+          <Divider/>
+          <Typography>User Information</Typography>
+          <TextField label='First Name'/>
+          <TextField label='Middle Name'/>
+          <TextField label='Last Name'/>
+          <Divider/>
+          <Typography>Upload GCash Reciept</Typography>
+          <TextField type='file'/>
+          <Button type='submit' variant='contained' color='warning'>Proceed</Button>
         </Stack>
       </form>
     </LocalizationProvider>
+  )
+}
+
+function Document () {
+  return (
+    <PDFViewer height={400}>
+      <Marriage selected={[]}/>
+    </PDFViewer>
   )
 }
 

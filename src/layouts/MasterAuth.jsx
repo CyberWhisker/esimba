@@ -1,38 +1,63 @@
 import React from 'react';
 import { Box, Container, createTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import TopBar from '../components/TopBar';
+import Footer from '../components/Footer';
 import CustomToast from '../components/CustomToast';
-  
-  const darkTheme = createTheme({
-    palette: {
-      mode: 'dark',
-    },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          borderRadius: 15
-        },
-      },
-    },
-  });
+import backgroundImg from '/appImg/Background.jpg';
 
-function Master({ children }) {
+const darkTheme = createTheme({
+    palette: {
+        mode: 'dark',
+    },
+    components: {
+        MuiCard: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 15,
+                },
+            },
+        },
+    },
+});
+
+function MasterAuth({ children }) {
     return (
-      <ThemeProvider theme={darkTheme}>
-        <CssBaseline />
-        <Box sx={{
-            minHeight: '100vh',
-            zIndex: 100,  
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            flexDirection: 'column',
-        }}>
-          <Container sx={{flex: 1}}>
-            {children}
-          </Container>
-        </Box>
-        <CustomToast/>
-      </ThemeProvider>
+        <ThemeProvider theme={darkTheme}>
+            <CssBaseline />
+            <Box
+                sx={{
+                  minHeight: '100vh',
+                  position: 'relative',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+            >
+                {/* Background Image Layer */}
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundImage: `url(${backgroundImg})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        opacity: 0.3,
+                        zIndex: -1,
+                    }}
+                />
+
+                {/* Content Layer */}
+                <Box sx={{ zIndex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh', }}>
+                    <Container >
+                        {children}
+                    </Container>
+                </Box>
+            </Box>
+            <CustomToast />
+        </ThemeProvider>
     );
 }
 
-export default Master;
+export default MasterAuth;

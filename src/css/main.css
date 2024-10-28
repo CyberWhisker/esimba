@@ -1,24 +1,24 @@
-body {
+/* body {
   margin: 0;
   padding: 0;
-  position: relative; /* Needed to position the pseudo-element absolutely */
+  position: relative;
   z-index: 1;
-}
+} */
   
-body::before {
+/* body::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  min-height: 100vh;
+  min-height: 100%;
   background-image: url('/appImg/Background.jpg');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  opacity: 0.5; /* Adjust the opacity of the background image */
-  z-index: -1; /* Ensure it sits behind other content */
-}
+  opacity: 0.5;
+  z-index: -1;
+} */
   
 body {
   color: black; /* Example text color, adjust as needed */

@@ -1,10 +1,12 @@
-import { Box, Button, Card, Stack, Typography } from '@mui/material'
+import { Box, Button, Card, Divider, Grid2, Stack, TextField, Typography } from '@mui/material'
 import React from 'react'
 import Master from '../../../layouts/Master'
 import { ArrowBackRounded } from '@mui/icons-material'
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { useNavigate } from 'react-router-dom'
-import { DataGrid, GridToolbar } from '@mui/x-data-grid'
-import { useDemoData } from '@mui/x-data-grid-generator';
+import { PDFViewer } from '@react-pdf/renderer'
+import Confirmation from '../../../layouts/Pdf/Confirmation'
 
 function ConfirmationForm() {
   const navigate = useNavigate();
@@ -13,7 +15,7 @@ function ConfirmationForm() {
       <Stack sx={{py: 4}} spacing={2}>
         <Stack direction={'row'} spacing={2}>
           <Button startIcon={<ArrowBackRounded/>} variant='contained' onClick={() => navigate(-1)}>Go Back</Button>
-          <Typography variant='h4' fontWeight={'bold'}>Confirmation List:</Typography>
+          <Typography variant='h4' fontWeight={'bold'}>Confirmation Certificate Request</Typography>
         </Stack>
         <Card elevation={5} sx={{
           padding: 2,
@@ -22,7 +24,19 @@ function ConfirmationForm() {
           boxShadow: 'none', 
           transition: 'background-color 0.3s ease',
         }}>
-          <FormSection/>
+          {/* <FormSection/> */}
+          <Grid2 container>
+            <Grid2 size='grow'>
+              <Box sx={{display: 'flex', justifyContent: 'center'}}>
+                <Document/>
+              </Box>
+            </Grid2>
+            <Grid2 size='grow'>
+              <Box sx={{display: 'flex', justifyContent: 'center'}}>
+                <FormSection/>
+              </Box>
+            </Grid2>
+          </Grid2>
         </Card>
       </Stack>
     </Master>
@@ -30,61 +44,32 @@ function ConfirmationForm() {
 }
 
 function FormSection () {
-    const { data } = useDemoData({
-      dataSet: 'Commodity',
-      rowLength: 5,
-      maxColumns: 6,
-    });
-    const columns = [
-        {
-            field: 'name',
-            headerName: 'Name',
-            flex: 1
-        },
-        {
-            field: 'certificate',
-            headerName: 'Certificate',
-            flex: 1
-        },
-        {
-            field: 'status',
-            headerName: 'Status',
-            flex: 1
-        },
-        {
-            field: 'date',
-            headerName: 'Date',
-            flex: 1
-        },
-        {
-            field: 'setting',
-            headerName: 'Setting',
-            flex: 1
-        },
-    ]
-    const rows = []
-    return (
-        <Box sx={{ width: '100%', height: 340 }}>
-            <DataGrid
-                {...data}
-                initialState={{
-                    ...data.initialState,
-                    filter: {
-                        filterModel: {
-                        items: [],
-                        quickFilterValues: [],
-                        },
-                    },
-                }}
-                slots={{ toolbar: GridToolbar }}
-                slotProps={{
-                    toolbar: {
-                        showQuickFilter: true,
-                    },
-                }}
-            />
-        </Box>
-    )
+  return (
+    <LocalizationProvider dateAdapter={AdapterMoment}>
+      <form  style={{width: '100%'}}>
+        <Stack direction={'column'} spacing={1}>
+          <Typography variant='h4' fontWeight={'bold'}>Payment</Typography>
+          <Divider/>
+          <Typography>User Information</Typography>
+          <TextField label='First Name'/>
+          <TextField label='Middle Name'/>
+          <TextField label='Last Name'/>
+          <Divider/>
+          <Typography>Upload GCash Reciept</Typography>
+          <TextField type='file'/>
+          <Button type='submit' variant='contained' color='warning'>Proceed</Button>
+        </Stack>
+      </form>
+    </LocalizationProvider>
+  )
+}
+
+function Document () {
+  return (
+    <PDFViewer height={400}>
+      <Confirmation selected={[]}/>
+    </PDFViewer>
+  )
 }
 
 export default ConfirmationForm

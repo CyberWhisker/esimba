@@ -19,7 +19,7 @@ function SideBar() {
         sx={{
           backgroundColor: 'rgba(128, 0, 0, 0.8)',
           backdropFilter: 'blur(10px)',
-          height: '100vh',
+          height: '100%',
         }}
       >
         <Stack direction={'row'} justifyContent={open ? 'center' : 'space-between'} p={1} alignItems={'center'}>

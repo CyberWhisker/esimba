@@ -91,7 +91,7 @@ const Death = ({selected}) => (
 
       {/* Content Sections */}
       <View style={styles.section1}>
-        <Text style={{fontWeight: 'bold'}}>{selected.chapel.chapel}</Text>
+        <Text style={{fontWeight: 'bold'}}>{selected?.chapel?.chapel || ''}</Text>
       </View>
       <View style={styles.section2}>
         <Text>First Name Last Name</Text>

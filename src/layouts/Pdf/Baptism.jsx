@@ -90,29 +90,29 @@ const Baptism = ({selected}) => {
           <Text style={{fontWeight: 'bold'}}>Church Name awdawdawd</Text>
         </View>
         <View style={styles.nameFont}>
-          <Text>{selected.name}</Text>
+          <Text>{selected.name || ''}</Text>
         </View>
         <View style={styles.motherFont}>
-          <Text>{selected.motherName}</Text>
+          <Text>{selected.motherName || ''}</Text>
         </View>
         <View style={styles.fatherFont}>
-          <Text>{selected.fatherName}</Text>
+          <Text>{selected.fatherName || ''}</Text>
         </View>
         <View style={styles.address}>
-          <Text>{moment(selected.birthDate).format('MMMM DD YYYY')}</Text>
+          <Text>{moment(selected.birthDate || '').format('MMMM DD YYYY')}</Text>
         </View>
         <View style={styles.birthBaptismDate}>
           <Text>{selected.birthAddress}</Text>
-          <Text style={{marginLeft: 190}}>{moment(selected.baptismDate).format('MMMM DD YYYY')}</Text>
+          <Text style={{marginLeft: 190}}>{moment(selected.baptismDate || '').format('MMMM DD YYYY')}</Text>
         </View>
         <View style={styles.revFont}>
-          <Text>{selected.priest}</Text>
+          <Text>{selected.priest || ''}</Text>
         </View>
         <View style={styles.sponsorsFont}>
-          <Text>{selected.sponsor1}</Text>
+          <Text>{selected.sponsor1 || ''}</Text>
         </View>
         <View style={styles.sponsorsFont2}>
-          <Text>{selected.sponsor2}</Text>
+          <Text>{selected.sponsor2 || ''}</Text>
         </View>
         <View style={styles.bookPageFont}>
           <Text>1</Text>
@@ -125,10 +125,10 @@ const Baptism = ({selected}) => {
           <Text>{moment().format('MMMM DD YYYY')}</Text>
         </View>
         <View style={styles.purposeFont}>
-          <Text>{selected.purpose}</Text>
+          <Text>{selected.purpose || ''}</Text>
         </View>
         <View style={styles.priestFont}>
-          <Text>{selected.priest}</Text>
+          <Text>{selected.priest || ''}</Text>
         </View>
       </Page>
     </Document>
