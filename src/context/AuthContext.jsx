@@ -1,8 +1,5 @@
 import { LinearProgress } from '@mui/material'
 import React, { createContext, useEffect, useState } from 'react'
-import { loginUser, registerUser } from '../api/userApi'
-import { toast } from 'react-toastify'
-import { useNavigation } from 'react-router-dom'
 
 export const AuthContext = createContext()
 
