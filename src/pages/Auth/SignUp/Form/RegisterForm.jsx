@@ -46,7 +46,6 @@ function RegisterForm() {
 
         setErrors(newErrors);
         if (Object.keys(newErrors).length === 0) {
-            // Handle successful form submission
             const {data, error} = await registerUser(formData)
             if (error) {
                 toast.error(error)
@@ -54,7 +53,11 @@ function RegisterForm() {
                 toast.success("Successfully registered")
                 localStorage.setItem('auth', JSON.stringify(data))
                 setAuth(data)
-                navigate('/dashboard')
+                if (data.user.role == 3) {
+                    navigate('/user/dashboard')
+                } else {
+                    navigate('/admin/dashboard')
+                }
             }
         }
     };

@@ -31,6 +31,7 @@ function SignUp() {
             alignItems: 'center',
             flexDirection: 'column',
             height: '100%',
+            py: 2
           }}>
             <Card elevation={5} sx={{
               padding: 2,
