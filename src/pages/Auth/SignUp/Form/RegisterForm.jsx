@@ -1,13 +1,13 @@
 import React, { useContext, useState } from 'react';
-import { Button, Stack, TextField, Typography } from '@mui/material';
+import { Button, Divider, Stack, TextField, Typography } from '@mui/material';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AuthContext } from '../../../../context/AuthContext';
 import { registerUser } from '../../../../api/userApi';
 import { toast } from 'react-toastify';
 
 function RegisterForm() {
-    const {id} = useParams();
-    const {setAuth} = useContext(AuthContext)
+    const { id } = useParams();
+    const { setAuth } = useContext(AuthContext)
     const [formData, setFormData] = useState({
         email: '',
         firstName: '',
@@ -17,10 +17,11 @@ function RegisterForm() {
         phone: '',
         password: '',
         confirmPassword: '',
-        role: id ? 2 : 3,
-        subscription: id,
+        role: 3,
+        subscription: 0
     });
     const [errors, setErrors] = useState({});
+
     const navigate = useNavigate();
 
     // Handle input change
@@ -46,7 +47,7 @@ function RegisterForm() {
 
         setErrors(newErrors);
         if (Object.keys(newErrors).length === 0) {
-            const {data, error} = await registerUser(formData)
+            const { data, error } = await registerUser(formData)
             if (error) {
                 toast.error(error)
             } else {
@@ -66,82 +67,86 @@ function RegisterForm() {
         <form onSubmit={handleSubmit}>
             <Stack spacing={2}>
                 <Typography variant='h5' fontWeight={'bold'}>Register</Typography>
+                <Divider/>
+                <Typography fontWeight={'bold'}>Personal Information</Typography>
                 <TextField
-                label="Enter Email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                error={Boolean(errors.email)}
-                helperText={errors.email}
+                    label="First Name"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    error={Boolean(errors.firstName)}
+                    helperText={errors.firstName}
                 />
                 <TextField
-                label="First Name"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                error={Boolean(errors.firstName)}
-                helperText={errors.firstName}
+                    label="Last Name"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    error={Boolean(errors.lastName)}
+                    helperText={errors.lastName}
                 />
                 <TextField
-                label="Last Name"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                error={Boolean(errors.lastName)}
-                helperText={errors.lastName}
+                    label="Middle Name"
+                    name="middleName"
+                    value={formData.middleName}
+                    onChange={handleChange}
+                    error={Boolean(errors.middleName)}
+                    helperText={errors.middleName}
                 />
                 <TextField
-                label="Middle Name"
-                name="middleName"
-                value={formData.middleName}
-                onChange={handleChange}
-                error={Boolean(errors.middleName)}
-                helperText={errors.middleName}
+                    label="Address"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleChange}
+                    error={Boolean(errors.address)}
+                    helperText={errors.address}
                 />
                 <TextField
-                label="Address"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                error={Boolean(errors.address)}
-                helperText={errors.address}
+                    label="Phone Number"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    error={Boolean(errors.phone)}
+                    helperText={errors.phone}
+                />
+                <Divider/>
+                <Typography fontWeight={'bold'}>Account Information</Typography>
+                <TextField
+                    label="Enter Email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    error={Boolean(errors.email)}
+                    helperText={errors.email}
                 />
                 <TextField
-                label="Phone Number"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                error={Boolean(errors.phone)}
-                helperText={errors.phone}
+                    label="Enter Password"
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    error={Boolean(errors.password)}
+                    helperText={errors.password}
                 />
                 <TextField
-                label="Enter Password"
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                error={Boolean(errors.password)}
-                helperText={errors.password}
-                />
-                <TextField
-                label="Confirm Password"
-                type="password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                error={Boolean(errors.confirmPassword)}
-                helperText={errors.confirmPassword}
+                    label="Confirm Password"
+                    type="password"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    error={Boolean(errors.confirmPassword)}
+                    helperText={errors.confirmPassword}
                 />
                 <Button type="submit" variant="contained" color='warning'>Submit</Button>
                 <Typography
-                variant="body2"
-                color="primary"
-                component={Link}
-                to="/login"
-                textAlign="center"
-                sx={{ textDecoration: 'none' }}
+                    variant="body2"
+                    color="primary"
+                    component={Link}
+                    to="/login"
+                    textAlign="center"
+                    sx={{ textDecoration: 'none' }}
                 >
-                I Already Have an Account
+                    I Already Have an Account
                 </Typography>
             </Stack>
         </form>

@@ -31,6 +31,7 @@ function SignUpAdmin() {
             alignItems: 'center',
             flexDirection: 'column',
             height: '100%',
+            py: 2
           }}>
             <Card elevation={5} sx={{
               padding: 2,
@@ -38,9 +39,7 @@ function SignUpAdmin() {
               backdropFilter: 'blur(10px)', 
               boxShadow: 'none', 
               transition: 'background-color 0.3s ease',
-              width: '50vh', 
-              height: '80vh',
-              overflow: 'auto' 
+              width: '60vh', 
             }}>
               <RegisterForm/>
             </Card>

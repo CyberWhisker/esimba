@@ -6,8 +6,8 @@ import { registerUser } from '../../../../api/userApi';
 import { toast } from 'react-toastify';
 
 function RegisterForm() {
-    const {id} = useParams();
-    const {setAuth} = useContext(AuthContext)
+    const { id } = useParams();
+    const { setAuth } = useContext(AuthContext)
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -54,7 +54,7 @@ function RegisterForm() {
         setErrors(newErrors);
         if (Object.keys(newErrors).length === 0) {
             // Handle successful form submission
-            const {data, error} = await registerUser(formData)
+            const { data, error } = await registerUser(formData)
             if (error) {
                 toast.error(error)
             } else {
@@ -70,112 +70,112 @@ function RegisterForm() {
         <form onSubmit={handleSubmit}>
             <Stack spacing={2}>
                 <Typography variant='h5' fontWeight={'bold'}>Register</Typography>
-                <Divider/>
+                <Divider />
                 <Typography>Personal Information</Typography>
                 <TextField
-                label="First Name"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                error={Boolean(errors.firstName)}
-                helperText={errors.firstName}
+                    label="First Name"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    error={Boolean(errors.firstName)}
+                    helperText={errors.firstName}
                 />
                 <TextField
-                label="Last Name"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                error={Boolean(errors.lastName)}
-                helperText={errors.lastName}
+                    label="Last Name"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    error={Boolean(errors.lastName)}
+                    helperText={errors.lastName}
                 />
                 <TextField
-                label="Middle Name"
-                name="middleName"
-                value={formData.middleName}
-                onChange={handleChange}
-                error={Boolean(errors.middleName)}
-                helperText={errors.middleName}
+                    label="Middle Name"
+                    name="middleName"
+                    value={formData.middleName}
+                    onChange={handleChange}
+                    error={Boolean(errors.middleName)}
+                    helperText={errors.middleName}
                 />
                 <TextField
-                label="Address"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                error={Boolean(errors.address)}
-                helperText={errors.address}
+                    label="Address"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleChange}
+                    error={Boolean(errors.address)}
+                    helperText={errors.address}
                 />
                 <TextField
-                label="Phone Number"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                error={Boolean(errors.phone)}
-                helperText={errors.phone}
+                    label="Phone Number"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    error={Boolean(errors.phone)}
+                    helperText={errors.phone}
                 />
-                <Divider/>
+                <Divider />
                 <Typography>Chapel Information</Typography>
                 <TextField
-                label="Chapel Name"
-                name="chapelName"
-                value={formData.chapelName}
-                onChange={handleChange}
-                error={Boolean(errors.chapelName)}
-                helperText={errors.chapelName}
+                    label="Chapel Name"
+                    name="chapelName"
+                    value={formData.chapelName}
+                    onChange={handleChange}
+                    error={Boolean(errors.chapelName)}
+                    helperText={errors.chapelName}
                 />
                 <TextField
-                label="Chapel Address"
-                name="chapelAddress"
-                value={formData.chapelAddress}
-                onChange={handleChange}
-                error={Boolean(errors.chapelAddress)}
-                helperText={errors.chapelAddress}
+                    label="Chapel Address"
+                    name="chapelAddress"
+                    value={formData.chapelAddress}
+                    onChange={handleChange}
+                    error={Boolean(errors.chapelAddress)}
+                    helperText={errors.chapelAddress}
                 />
                 <TextField
-                label="Zip Code"
-                name="code"
-                value={formData.code}
-                onChange={handleChange}
-                error={Boolean(errors.code)}
-                helperText={errors.code}
+                    label="Zip Code"
+                    name="code"
+                    value={formData.code}
+                    onChange={handleChange}
+                    error={Boolean(errors.code)}
+                    helperText={errors.code}
                 />
-                <Divider/>
+                <Divider />
                 <Typography>Account Information</Typography>
                 <TextField
-                label="Enter Email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                error={Boolean(errors.email)}
-                helperText={errors.email}
+                    label="Enter Email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    error={Boolean(errors.email)}
+                    helperText={errors.email}
                 />
                 <TextField
-                label="Enter Password"
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                error={Boolean(errors.password)}
-                helperText={errors.password}
+                    label="Enter Password"
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    error={Boolean(errors.password)}
+                    helperText={errors.password}
                 />
                 <TextField
-                label="Confirm Password"
-                type="password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                error={Boolean(errors.confirmPassword)}
-                helperText={errors.confirmPassword}
+                    label="Confirm Password"
+                    type="password"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    error={Boolean(errors.confirmPassword)}
+                    helperText={errors.confirmPassword}
                 />
                 <Button type="submit" variant="contained" color='warning'>Submit</Button>
                 <Typography
-                variant="body2"
-                color="primary"
-                component={Link}
-                to="/login"
-                textAlign="center"
-                sx={{ textDecoration: 'none' }}
+                    variant="body2"
+                    color="primary"
+                    component={Link}
+                    to="/login"
+                    textAlign="center"
+                    sx={{ textDecoration: 'none' }}
                 >
-                I Already Have an Account
+                    I Already Have an Account
                 </Typography>
             </Stack>
         </form>

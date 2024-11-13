@@ -1,4 +1,4 @@
-import { Card, Container, Grid} from '@mui/material'
+import { Card, Container, Grid2} from '@mui/material'
 import React from 'react'
 import MasterAuth from '../../../layouts/MasterAuth'
 import { Link } from 'react-router-dom'
@@ -8,8 +8,8 @@ import Logo from '/appImg/Logo.png'
 function SignUp() {
   return (
     <MasterAuth>
-      <Grid container sx={{flex: 1, minHeight: '100vh'}}>
-        <Grid item xs={6}>
+      <Grid2 container sx={{flex: 1, minHeight: '100vh'}}>
+        <Grid2 size={'grow'} item xs={6}>
           <Card elevation={5} sx={{
             borderRadius: 0,
             backgroundColor: 'rgba(128, 0, 0, 0.5)', 
@@ -23,8 +23,8 @@ function SignUp() {
           }}>
             <img alt='Logo' src={Logo} />
           </Card>
-        </Grid>
-        <Grid item xs={6}>
+        </Grid2>
+        <Grid2 size={'grow'} xs={6}>
           <Container sx={{
             justifyContent: 'center',
             display: 'flex',
@@ -39,13 +39,13 @@ function SignUp() {
               backdropFilter: 'blur(10px)', 
               boxShadow: 'none', 
               transition: 'background-color 0.3s ease',
-              width: '50vh', 
+              width: '60vh', 
             }}>
               <RegisterForm/>
             </Card>
           </Container>
-        </Grid>
-    </Grid>
+        </Grid2>
+    </Grid2>
     </MasterAuth>
   )
 }

@@ -4,6 +4,7 @@ import { updateUser } from '../../../api/userApi'
 import { toast } from 'react-toastify'
 
 function Update({selected, handleGetData, onClose}) {
+    console.log(selected)
     const [formData, setFormData] = useState(selected)
     const handleSubmit = async () => {
         const {data, error} = await updateUser(formData)
@@ -41,10 +42,6 @@ function Update({selected, handleGetData, onClose}) {
                     <MenuItem value={1}>Super Admin</MenuItem>
                     <MenuItem value={2}>Admin</MenuItem>
                     <MenuItem value={3}>User</MenuItem>
-                </TextField>
-                <TextField label='Subscription' select value={formData.subscription ?? ''} name='subscription' onChange={handleChange}>
-                    <MenuItem value={1}>Premium</MenuItem>
-                    <MenuItem value={2}>Trial</MenuItem>
                 </TextField>
                 <Button variant='contained' onClick={handleSubmit}>Submit</Button>
             </Stack>
