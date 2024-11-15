@@ -9,6 +9,7 @@ export const AuthProvider = ({children}) => {
 
     const logout = async () => {
         localStorage.removeItem('auth')
+        localStorage.removeItem('authAlert')
         setAuth(null)
     }
 

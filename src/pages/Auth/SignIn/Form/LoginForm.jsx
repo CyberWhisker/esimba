@@ -66,6 +66,7 @@ function LoginForm() {
         } else {
             toast.success("Successfully login")
             localStorage.setItem('auth', JSON.stringify(data))
+            localStorage.setItem('authAlert', JSON.stringify({alert: 0, message: 'Successfully Login'}))
             setAuth(data)
             if (data.user.role == 3) {
                 navigate('/user/dashboard')

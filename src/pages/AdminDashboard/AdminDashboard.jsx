@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import MasterAdmin from '../../layouts/MasterAdmin'
 import { Box, Divider, Grid2, MenuItem, Stack, Typography } from '@mui/material'
 import CustomCard from '../../components/CustomCard'
@@ -6,22 +6,33 @@ import { ChevronRight } from '@mui/icons-material'
 import { DateCalendar, LocalizationProvider } from '@mui/x-date-pickers'
 import moment from 'moment'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+import { toast } from 'react-toastify'
 
 function AdminDashboard() {
+  const handleAuthAlert = async () => {
+    const authAlert = JSON.parse(localStorage.getItem('authAlert'))
+    if (authAlert) {
+      await toast.success(authAlert.message)
+      localStorage.removeItem('authAlert')
+    }
+  }
+  useEffect(() => {
+    handleAuthAlert()
+  }, [])
+
   return (
     <MasterAdmin>
       <Stack spacing={2}>
         <Typography variant='h4' fontWeight={'bold'}>Dashboard</Typography>
-
         <Grid2 container spacing={2}>
           <Grid2 size='grow'>
             <CustomCard>
-              <AppointmentList/>
+              <AppointmentList />
             </CustomCard>
           </Grid2>
           <Grid2 size='grow'>
             <CustomCard>
-              <CertificateList/>
+              <CertificateList />
             </CustomCard>
           </Grid2>
         </Grid2>
@@ -29,12 +40,12 @@ function AdminDashboard() {
         <Grid2 container spacing={2}>
           <Grid2 size='grow'>
             <CustomCard>
-              <RecordList/>
+              <RecordList />
             </CustomCard>
           </Grid2>
           <Grid2 size='grow'>
             <CustomCard>
-              <ScheduleList/>
+              <ScheduleList />
             </CustomCard>
           </Grid2>
         </Grid2>
@@ -44,7 +55,7 @@ function AdminDashboard() {
   )
 }
 
-function AppointmentList () {
+function AppointmentList() {
   return (
     <Stack spacing={2}>
       <Box sx={{
@@ -53,15 +64,15 @@ function AppointmentList () {
         p: 1
       }}>
         <Typography>Pending Appointments</Typography>
-        <ChevronRight/>
+        <ChevronRight />
       </Box>
-      <Divider/>
+      <Divider />
       <MenuItem>Marriage</MenuItem>
     </Stack>
   )
 }
 
-function CertificateList () {
+function CertificateList() {
   return (
     <Stack spacing={2}>
       <Box sx={{
@@ -70,15 +81,15 @@ function CertificateList () {
         p: 1
       }}>
         <Typography>Certifcate Request</Typography>
-        <ChevronRight/>
+        <ChevronRight />
       </Box>
-      <Divider/>
+      <Divider />
       <MenuItem>Marriage</MenuItem>
     </Stack>
   )
 }
 
-function RecordList () {
+function RecordList() {
   return (
     <Stack spacing={2}>
       <Box sx={{
@@ -87,15 +98,15 @@ function RecordList () {
         p: 1
       }}>
         <Typography>Records</Typography>
-        <ChevronRight/>
+        <ChevronRight />
       </Box>
-      <Divider/>
+      <Divider />
       <MenuItem>Marriage</MenuItem>
     </Stack>
   )
 }
 
-function ScheduleList () {
+function ScheduleList() {
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
       <Stack spacing={2}>
@@ -105,9 +116,9 @@ function ScheduleList () {
           p: 1
         }}>
           <Typography>Church Calendar</Typography>
-          <ChevronRight/>
+          <ChevronRight />
         </Box>
-        <Divider/>
+        <Divider />
         <Box sx={{
           display: 'flex',
           flexDirection: 'column',

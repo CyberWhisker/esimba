@@ -1,12 +1,11 @@
 import React, { useContext, useState } from 'react';
 import { Button, Divider, Stack, TextField, Typography } from '@mui/material';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../../context/AuthContext';
 import { registerUser } from '../../../../api/userApi';
 import { toast } from 'react-toastify';
 
 function RegisterForm() {
-    const { id } = useParams();
     const { setAuth } = useContext(AuthContext)
     const [formData, setFormData] = useState({
         email: '',
@@ -53,6 +52,7 @@ function RegisterForm() {
             } else {
                 toast.success("Successfully registered")
                 localStorage.setItem('auth', JSON.stringify(data))
+                localStorage.setItem('authAlert', JSON.stringify({alert: 0, message: 'Successfully Registered'}))
                 setAuth(data)
                 if (data.user.role == 3) {
                     navigate('/user/dashboard')

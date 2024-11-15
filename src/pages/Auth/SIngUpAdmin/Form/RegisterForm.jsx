@@ -60,6 +60,7 @@ function RegisterForm() {
             } else {
                 toast.success("Successfully registered")
                 localStorage.setItem('auth', JSON.stringify(data))
+                localStorage.setItem('authAlert', JSON.stringify({alert: 0, message: 'Successfully Registered'}))
                 setAuth(data)
                 navigate('/admin/dashboard')
             }

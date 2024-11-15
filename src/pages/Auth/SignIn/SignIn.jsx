@@ -8,7 +8,7 @@ function SignIn() {
     return (
         <MasterAuth>
             <Grid2 container sx={{ height: '100vh' }}>
-                <Grid2 size={'grow'} xs={6}>
+                <Grid2 size={'grow'}>
                     <Card elevation={5} sx={{
                         borderRadius: 0,
                         backgroundColor: 'rgba(128, 0, 0, 0.5)',
@@ -23,7 +23,7 @@ function SignIn() {
                         <img alt='Logo' src={Logo} />
                     </Card>
                 </Grid2>
-                <Grid2 size={'grow'} item xs={6}>
+                <Grid2 size={'grow'}>
                     <Container sx={{
                         justifyContent: 'center',
                         display: 'flex',
