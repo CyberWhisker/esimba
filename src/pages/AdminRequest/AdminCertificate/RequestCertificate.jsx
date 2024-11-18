@@ -10,6 +10,7 @@ import MasterAdmin from '../../../layouts/MasterAdmin'
 import { fetchRequestCertificate, updateRequest } from '../../../api/requestApi'
 import { toast } from 'react-toastify'
 import moment from 'moment'
+import StoreCertificate from './Form/StoreCertificate'
 
 function RequestCertificate() {
   const [data, setData] = useState([])
@@ -60,28 +61,11 @@ function DataTable({data, loading, handleGetData}) {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selected, setSelected] = useState(null);
-
-  const [storeModal, setStoreModal] = useState(false);
-  const [updateModal, setUpdateModal] = useState(false);
+  const [certificateModal, setCertificateModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
 
-  const handleStoreModal = () => {
-    setStoreModal(true)
-  }
-
   const handleApprove = async () => {
-    const newData = {
-      ...selected,
-      status: 'Approve'
-    }
-    const { data, error } = await updateRequest(newData)
-    if (error) {
-      toast.error(error)
-    } else {
-      toast.success("Request Approve")
-      handleGetData()
-      handleMenuClose()
-    }
+    setCertificateModal(true)
   }
 
   const handleCancel = async () => {
@@ -107,9 +91,8 @@ function DataTable({data, loading, handleGetData}) {
 
 
   const handleCloseModal = () => {
-    setStoreModal(false)
-    setUpdateModal(false)
     setDeleteModal(false)
+    setCertificateModal(false)
   }
 
   const handleMenuOpen = (event, item) => {
@@ -223,6 +206,10 @@ function DataTable({data, loading, handleGetData}) {
 
       <AlertModal open={deleteModal} onClose={handleCloseModal}>
         <Delete onClose={handleCloseModal} selected={selected} handleGetData={handleGetData} />
+      </AlertModal>
+
+      <AlertModal open={certificateModal} onClose={handleCloseModal}>
+        <StoreCertificate onClose={handleCloseModal} selected={selected} handleGetData={handleGetData} />
       </AlertModal>
     </>
   )

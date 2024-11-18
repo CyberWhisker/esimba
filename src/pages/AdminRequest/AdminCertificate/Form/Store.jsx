@@ -4,11 +4,11 @@ import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 import { fetchUsers } from '../../../../api/userApi'
 import { toast } from 'react-toastify'
-import StoreBaptism from './StoreCertificate/StoreBaptism'
+import StoreBaptism from './FormCertificate/StoreBaptism'
 import { AuthContext } from '../../../../context/AuthContext'
-import StoreDeath from './StoreCertificate/StoreDeath'
-import StoreMarriage from './StoreCertificate/StoreMarriage'
-import StoreConfirmation from './StoreCertificate/StoreConfirmation'
+import StoreDeath from './FormCertificate/StoreDeath'
+import StoreMarriage from './FormCertificate/StoreMarriage'
+import StoreConfirmation from './FormCertificate/StoreConfirmation'
 import { storeRequest } from '../../../../api/requestApi'
 
 function Store({ onClose, handleGetData }) {
@@ -103,13 +103,13 @@ function Store({ onClose, handleGetData }) {
                         <Divider />
                         <Typography>Certificate Type</Typography>
                         <TextField label="Select Certificate" name='certificate' value={formData.certificate} onChange={handleCombinedChange} select >
-                            <MenuItem value="Birth Certificate">Birth Certificate</MenuItem>
+                            <MenuItem value="Baptism Certificate">Baptism Certificate</MenuItem>
                             <MenuItem value="Death Certificate">Death Certificate</MenuItem>
                             <MenuItem value="Marriage Certificate">Marriage Certificate</MenuItem>
                             <MenuItem value="Confirmation Certificate">Confirmation Certificate</MenuItem>
                         </TextField>
                         <Divider />
-                        {formData.certificate == "Birth Certificate" && (
+                        {formData.certificate == "Baptism Certificate" && (
                             <StoreBaptism handleChangeData={handleChangeData} handleChangeDate={handleChangeDate} formData={formData} handleChange={handleChange} />
                         )}
                         {formData.certificate == "Death Certificate" && (
