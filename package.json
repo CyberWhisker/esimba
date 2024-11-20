@@ -28,6 +28,7 @@
     "react-pdf": "^9.1.1",
     "react-pro-sidebar": "^1.1.0",
     "react-router-dom": "^6.26.1",
+    "react-to-print": "^3.0.2",
     "react-toastify": "^10.0.5",
     "react-validation": "^3.0.7"
   },

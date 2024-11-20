@@ -12,7 +12,7 @@ function Store({ onClose, handleGetData }) {
     const [userData, setUserData] = useState([]);
     const [dataForm, setDataForm] = useState({
         user: '',
-        chapel: auth.user.parish[0]._id,
+        chapel: auth.user.parish._id,
         birthDate: null,
         baptismDate: null,
     })

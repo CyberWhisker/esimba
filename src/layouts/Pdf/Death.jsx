@@ -1,5 +1,5 @@
 import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
-import bgImage from '/pdfImg/DeathImg.jpg';
+import bgImage from '/pdfImg/DeathImg.png';
 // import bgImage from '/appImg/Logo.png';
 
 // Create styles
