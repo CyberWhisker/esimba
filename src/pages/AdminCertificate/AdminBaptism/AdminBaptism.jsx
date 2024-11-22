@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Box, Button, Divider, Drawer, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
+import { Box, Button, Drawer, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
 import { Add } from '@mui/icons-material'
 import { DataGrid, GridMoreVertIcon, GridToolbar } from '@mui/x-data-grid'
 import CustomCard from '../../../components/CustomCard'
@@ -12,7 +12,6 @@ import { fetchBaptism } from '../../../api/baptismApi'
 import moment from 'moment'
 import { useReactToPrint } from 'react-to-print'
 import BaptismLayout from '../../../layouts/Pdf/BaptismLayout'
-import DeathLayout from '../../../layouts/Pdf/DeathLayout'
 
 function AdminBaptism() {
   const [data, setData] = useState([])
@@ -43,6 +42,12 @@ function AdminBaptism() {
     handleGetData()
   }, [])
 
+
+  const contentRef = useRef(null)
+  const printFile = useReactToPrint({ contentRef })
+  const handlePrintFile = () => {
+    printFile()
+  }
   return (
     <MasterAdmin>
       <Stack spacing={2}>
@@ -50,8 +55,8 @@ function AdminBaptism() {
           <Typography variant='h4' fontWeight={'bold'}>Baptism Certificate: </Typography>
           <Button variant='contained' endIcon={<Add />} color='warning' onClick={handleStoreModal}>Add Certificate</Button>
         </Stack>
-        {/* <DataTable data={data} handleGetData={handleGetData} loading={loading} /> */}
-        <Certificate />
+        <DataTable data={data} handleGetData={handleGetData} loading={loading} handlePrintFile={handlePrintFile} />
+        <Certificate contentRef={contentRef} />
       </Stack>
 
       <Drawer open={storeModal} anchor='right' onClose={handleCloseModal}>
@@ -61,7 +66,7 @@ function AdminBaptism() {
   )
 }
 
-function DataTable({ data, handleGetData, loading }) {
+function DataTable({ data, handleGetData, loading, handlePrintFile }) {
 
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -131,7 +136,7 @@ function DataTable({ data, handleGetData, loading }) {
       headerClassName: 'headerStyle',
       renderCell: (params) => (
         <Box sx={{ textAlign: 'center' }}>
-          <Button variant='contained'>Certificate</Button>
+          <Button variant='contained' onClick={handlePrintFile}>Certificate</Button>
         </Box>
       )
     },
@@ -209,15 +214,13 @@ function DataTable({ data, handleGetData, loading }) {
   )
 }
 
-function Certificate() {
-
-  const contentRef = useRef(null)
-  const printFile = useReactToPrint({ contentRef })
+function Certificate({ contentRef }) {
   return (
     <div>
-      <Button variant='contained' onClick={printFile}>Print</Button>
-      <div ref={contentRef} style={{ color: 'black' }}>
-        <DeathLayout/>
+      <div style={{ display: 'none' }}>
+        <div ref={contentRef} style={{ color: 'black' }}>
+          <BaptismLayout />
+        </div>
       </div>
     </div>
   )

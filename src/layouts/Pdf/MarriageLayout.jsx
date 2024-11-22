@@ -1,10 +1,10 @@
 import { Box, Divider, Grid2, Stack, Typography } from '@mui/material'
 import React from 'react'
 
-function DeathLayout() {
+function MarriageLayout() {
     return (
         <Box sx={{
-            backgroundImage: 'url(/pdfImg/DeathImg.png)',
+            backgroundImage: 'url(/pdfImg/MarriageImg.png)',
             backgroundSize: 'cover',
             height: '100vh'
         }}>
@@ -12,241 +12,221 @@ function DeathLayout() {
                 pt: 25,
                 px: 7
             }}>
-                <HeaderStyle />
                 <Content />
             </Stack>
         </Box>
     )
 }
 
-function HeaderStyle() {
-    return (
-        <Stack>
-            <Typography fontWeight={'bold'} textAlign={'center'} fontStyle={'italic'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
-                PARISH OF
-            </Typography>
-            <Box sx={{ px: '20vh' }}>
-                <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
-                    Parish Name
-                </Typography>
-                <Divider
-                    sx={{
-                        width: '100%',
-                        borderBottom: '3px dotted rgba(0, 0, 0, 1)',
-                    }}
-                />
-            </Box>
-        </Stack>
-    )
-}
-
 function Content() {
     return (
         <Stack mt={2}>
-            <Grid2 container spacing={2}>
-                <Grid2>
-                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
-                        This certifies that
-                    </Typography>
-                </Grid2>
-                <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
-                    <Divider
-                        sx={{
-                            width: '100%',
-                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
-                        }}
-                    />
-                </Grid2>
-            </Grid2>
 
-            <Grid2 container spacing={2}>
-                <Grid2>
-                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
-                        a resident of
-                    </Typography>
-                </Grid2>
-                <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
-                    <Divider
-                        sx={{
-                            width: '100%',
-                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
-                        }}
-                    />
-                </Grid2>
-            </Grid2>
-
-            <Grid2 container spacing={2}>
-                <Grid2>
-                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
-                        child of
-                    </Typography>
-                </Grid2>
-                <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
-                    <Divider
-                        sx={{
-                            width: '100%',
-                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
-                        }}
-                    />
-                </Grid2>
-                <Grid2>
-                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
-                        and
-                    </Typography>
-                </Grid2>
-                <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
-                    <Divider
-                        sx={{
-                            width: '100%',
-                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
-                        }}
-                    />
-                </Grid2>
-            </Grid2>
-
-            <Grid2 container spacing={2}>
-                <Grid2>
-                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
-                        married to
-                    </Typography>
-                </Grid2>
-                <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
-                    <Divider
-                        sx={{
-                            width: '100%',
-                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
-                        }}
-                    />
-                </Grid2>
-            </Grid2>
-            <Grid2 container spacing={2}>
-                <Grid2>
-                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
-                        died on
-                    </Typography>
-                </Grid2>
-                <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
-                    <Divider
-                        sx={{
-                            width: '100%',
-                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
-                        }}
-                    />
-                </Grid2>
-                <Grid2>
-                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
-                        at the of
-                    </Typography>
-                </Grid2>
-                <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
-                    <Divider
-                        sx={{
-                            width: '100%',
-                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
-                        }}
-                    />
-                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>(day - month - year)</Typography>
-                </Grid2>
-            </Grid2>
-
-            <Grid2 container spacing={2} mt={2}>
-                <Grid2>
-                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
-                        the cause of death was
-                    </Typography>
-                </Grid2>
-                <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
-                    <Divider
-                        sx={{
-                            width: '100%',
-                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
-                        }}
-                    />
-                </Grid2>
-            </Grid2>
-            <Grid2 container spacing={2}>
-                <Grid2>
-                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
-                        was buried on
-                    </Typography>
-                </Grid2>
-                <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
-                    <Divider
-                        sx={{
-                            width: '100%',
-                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
-                        }}
-                    />
-                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>(day - month - year)</Typography>
-                </Grid2>
-                <Grid2>
-                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
-                        in one of the following cemeteries:
-                    </Typography>
-                </Grid2>
-            </Grid2>
-
-            <Grid2 container spacing={2} mt={2}>
-                <Grid2>
-                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
-                        Roman Catholic Cemetery
-                    </Typography>
-                </Grid2>
-                <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
-                    <Divider
-                        sx={{
-                            width: '100%',
-                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
-                        }}
-                    />
-                </Grid2>
-            </Grid2>
-            <Grid2 container spacing={2}>
-                <Grid2>
-                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
-                        Municipal Cemetery of
-                    </Typography>
-                </Grid2>
-                <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
-                    <Divider
-                        sx={{
-                            width: '100%',
-                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
-                        }}
-                    />
-                </Grid2>
-            </Grid2>
-            <Grid2 container spacing={2}>
-                <Grid2>
-                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
-                        Private Cemetery of
-                    </Typography>
-                </Grid2>
-                <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
-                    <Divider
-                        sx={{
-                            width: '100%',
-                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
-                        }}
-                    />
-                </Grid2>
-            </Grid2>
-
-            <Typography my={2} textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
-                This is true copy of the original record as it appears in our Liber Defunctorum,
+            <Typography fontWeight={'bold'} textAlign={'center'} variant='h6' sx={{ my: 2, fontFamily: "'Times New Roman', Times, serif" }}>
+                By these presents, the undersigned certifies that.
             </Typography>
+
+            <Grid2 container spacing={2} mt={2}>
+                <Grid2>
+                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
+                        Name:
+                    </Typography>
+                </Grid2>
+                <Grid2 size='grow'>
+                    <Typography>Groom Name</Typography>
+                    <Divider
+                        sx={{
+                            width: '100%',
+                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
+                        }}
+                    />
+                </Grid2>
+                <Grid2>
+                    <Typography>and</Typography>
+                </Grid2>
+                <Grid2 size='grow'>
+                    <Typography>Bride Name</Typography>
+                    <Divider
+                        sx={{
+                            width: '100%',
+                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
+                        }}
+                    />
+                </Grid2>
+            </Grid2>
+
+            <Grid2 container spacing={2}>
+                <Grid2>
+                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
+                        Age:
+                    </Typography>
+                </Grid2>
+                <Grid2 size='grow'>
+                    <Typography>18</Typography>
+                    <Divider
+                        sx={{
+                            width: '100%',
+                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
+                        }}
+                    />
+                </Grid2>
+            </Grid2>
+
+            <Grid2 container spacing={2}>
+                <Grid2>
+                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
+                        Status:
+                    </Typography>
+                </Grid2>
+                <Grid2 size='grow'>
+                    <Typography>Married</Typography>
+                    <Divider
+                        sx={{
+                            width: '100%',
+                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
+                        }}
+                    />
+                </Grid2>
+            </Grid2>
+
+            <Grid2 container spacing={2}>
+                <Grid2>
+                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
+                        Father:
+                    </Typography>
+                </Grid2>
+                <Grid2 size='grow'>
+                    <Typography>Father Name</Typography>
+                    <Divider
+                        sx={{
+                            width: '100%',
+                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
+                        }}
+                    />
+                </Grid2>
+            </Grid2>
+
+            <Grid2 container spacing={2}>
+                <Grid2>
+                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
+                        Mother:
+                    </Typography>
+                </Grid2>
+                <Grid2 size='grow'>
+                    <Typography>Full Name</Typography>
+                    <Divider
+                        sx={{
+                            width: '100%',
+                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
+                        }}
+                    />
+                </Grid2>
+            </Grid2>
+
+            <Typography mt={2} fontWeight={'bold'} textAlign={'center'} variant='h6' sx={{fontFamily: "'Times New Roman', Times, serif" }}>
+                Were united in Holy Matrimony
+            </Typography>
+
+            <Grid2 container spacing={2}>
+                <Grid2>
+                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
+                        By:
+                    </Typography>
+                </Grid2>
+                <Grid2 size='grow'>
+                    <Typography>Pastor Name</Typography>
+                    <Divider
+                        sx={{
+                            width: '100%',
+                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
+                        }}
+                    />
+                </Grid2>
+            </Grid2>
+
+            <Typography mt={2} textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
+                According to the Rites of the roman Catholic Church and in the Law of the Country
+            </Typography>
+
+            <Grid2 container spacing={2}>
+                <Grid2>
+                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
+                        On:
+                    </Typography>
+                </Grid2>
+                <Grid2 size='grow'>
+                    <Typography>Parish Name</Typography>
+                    <Divider
+                        sx={{
+                            width: '100%',
+                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
+                        }}
+                    />
+                </Grid2>
+            </Grid2>
+
+            <Typography mt={2} fontWeight={'bold'} textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
+                Being witness of the Ceremony
+            </Typography>
+
+            <Grid2 container spacing={2}>
+                <Grid2 size='grow'>
+                    <Typography>Witness 1</Typography>
+                    <Divider
+                        sx={{
+                            width: '100%',
+                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
+                        }}
+                    />
+                </Grid2>
+                <Grid2>
+                    <Typography>and</Typography>
+                </Grid2>
+                <Grid2 size='grow'>
+                    <Typography>Witness 2</Typography>
+                    <Divider
+                        sx={{
+                            width: '100%',
+                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
+                        }}
+                    />
+                </Grid2>
+            </Grid2>
+
+            <Grid2 container spacing={2} mt={4}>
+                <Grid2>
+                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
+                        Certified true copy:
+                    </Typography>
+                </Grid2>
+                <Grid2 size='grow'>
+                    <Typography>Certifies</Typography>
+                    <Divider
+                        sx={{
+                            width: '100%',
+                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
+                        }}
+                    />
+                </Grid2>
+            </Grid2>
+
+            <Grid2 container spacing={2}>
+                <Grid2>
+                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
+                        Date:
+                    </Typography>
+                </Grid2>
+                <Grid2 size='grow'>
+                    <Typography>2</Typography>
+                    <Divider
+                        sx={{
+                            width: '100%',
+                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
+                        }}
+                    />
+                </Grid2>
+            </Grid2>
+
 
             <Grid2 container spacing={2}>
                 <Grid2>
@@ -264,6 +244,7 @@ function Content() {
                     />
                 </Grid2>
             </Grid2>
+
             <Grid2 container spacing={2}>
                 <Grid2>
                     <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
@@ -298,39 +279,7 @@ function Content() {
                 </Grid2>
             </Grid2>
 
-            <Grid2 container spacing={2} mt={4}>
-                <Grid2>
-                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
-                        Date Issued:
-                    </Typography>
-                </Grid2>
-                <Grid2 size='grow'>
-                    <Typography>33</Typography>
-                    <Divider
-                        sx={{
-                            width: '100%',
-                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
-                        }}
-                    />
-                </Grid2>
-            </Grid2>
-            <Grid2 container spacing={2}>
-                <Grid2>
-                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
-                        Purpose:
-                    </Typography>
-                </Grid2>
-                <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
-                    <Divider
-                        sx={{
-                            width: '100%',
-                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
-                        }}
-                    />
-                </Grid2>
-            </Grid2>
-            <Box sx={{ display: 'flex', justifyContent: 'end', mt: 4 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
                 <Stack>
                     <Divider
                         sx={{
@@ -347,4 +296,4 @@ function Content() {
     )
 }
 
-export default DeathLayout
+export default MarriageLayout
