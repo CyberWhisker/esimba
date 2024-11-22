@@ -57,14 +57,16 @@ function Update({ onClose, handleGetData, selected }) {
         <LocalizationProvider dateAdapter={AdapterMoment}>
             <Box sx={{ width: '60vh', p: 2 }}>
                 <Stack spacing={1}>
-                    <Typography variant='h4' fontWeight={'bold'}>Store Certificate</Typography>
+                    <Typography variant='h4' fontWeight={'bold'}>Update Certificate</Typography>
                     <Divider/>
-                    <Typography>Personal Information</Typography>
                     <TextField label='Select User' name='user' onChange={handleChange} select value={loading ? '': dataForm.user._id}>
                         {userData.map((item, index) => (
                             <MenuItem key={index} value={item._id}>{item.firstName} {item.lastName}</MenuItem>
                         ))}
                     </TextField>
+                    <Divider/>
+                    <Typography>Personal Information</Typography>
+                    <TextField label='Name' name='name' onChange={handleChange} value={dataForm.name}/>
                     <DatePicker label='Birth Date' name='birthDate' value={moment(dataForm.birthDate)} onChange={value => handleChangeDate('birthDate', value)}/>
                     <TextField label='Birth Address' name='birthAddress' onChange={handleChange} value={dataForm.birthAddress}/>
                     <Divider/>
@@ -80,6 +82,7 @@ function Update({ onClose, handleGetData, selected }) {
                     <TextField label='Priest' name='priest' onChange={handleChange} value={dataForm.priest}/>
                     <TextField label='Sponsor Name' name='sponsor1' onChange={handleChange} value={dataForm.sponsor1}/>
                     <TextField label='Sponsor Name' name='sponsor2' onChange={handleChange} value={dataForm.sponsor2}/>
+                    <TextField label='Purpose' name='purpose' onChange={handleChange} value={dataForm.purpose}/>
                     <Button variant='contained' onClick={handleSubmit}>Submit</Button>
                 </Stack>
             </Box>

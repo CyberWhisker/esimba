@@ -6,9 +6,7 @@ function StoreBaptism({ handleChangeData, handleChangeDate, handleChange }) {
     return (
         <Stack spacing={1}>
             <Typography>Personal Information</Typography>
-            <TextField label='First Name' name='firstName' onChange={handleChangeData}/>
-            <TextField label='Last Name' name='lastName' onChange={handleChangeData}/>
-            <TextField label='Middle Name' name='middleName' onChange={handleChangeData}/>
+            <TextField label='Full Name' name='name' onChange={handleChangeData}/>
             <DatePicker label='Birth Date' name='birthDate' onChange={value => handleChangeDate('birthDate', value)}/>
             <TextField label='Birth Address' name='birthAddress' onChange={handleChangeData}/>
             <Divider/>

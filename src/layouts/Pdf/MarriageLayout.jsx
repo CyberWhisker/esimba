@@ -1,7 +1,8 @@
 import { Box, Divider, Grid2, Stack, Typography } from '@mui/material'
+import moment from 'moment'
 import React from 'react'
 
-function MarriageLayout() {
+function MarriageLayout({ selected }) {
     return (
         <Box sx={{
             backgroundImage: 'url(/pdfImg/MarriageImg.png)',
@@ -12,13 +13,13 @@ function MarriageLayout() {
                 pt: 25,
                 px: 7
             }}>
-                <Content />
+                <Content selected={selected} />
             </Stack>
         </Box>
     )
 }
 
-function Content() {
+function Content({ selected }) {
     return (
         <Stack mt={2}>
 
@@ -33,7 +34,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Groom Name</Typography>
+                    <Typography>{selected?.name}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -45,7 +46,7 @@ function Content() {
                     <Typography>and</Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Bride Name</Typography>
+                    <Typography>{selected?.partnerName}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -62,7 +63,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>18</Typography>
+                    <Typography>{selected?.age}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -96,7 +97,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Father Name</Typography>
+                    <Typography>{selected?.fatherName}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -113,7 +114,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
+                    <Typography>{selected?.motherName}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -123,7 +124,7 @@ function Content() {
                 </Grid2>
             </Grid2>
 
-            <Typography mt={2} fontWeight={'bold'} textAlign={'center'} variant='h6' sx={{fontFamily: "'Times New Roman', Times, serif" }}>
+            <Typography mt={2} fontWeight={'bold'} textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Were united in Holy Matrimony
             </Typography>
 
@@ -134,7 +135,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Pastor Name</Typography>
+                    <Typography>{selected?.priest}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -155,7 +156,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Parish Name</Typography>
+                    <Typography>{moment(selected?.marriageDate).format("DD - MMMM - YYYY")}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -171,7 +172,7 @@ function Content() {
 
             <Grid2 container spacing={2}>
                 <Grid2 size='grow'>
-                    <Typography>Witness 1</Typography>
+                    <Typography>{selected?.witness1}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -183,7 +184,7 @@ function Content() {
                     <Typography>and</Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Witness 2</Typography>
+                    <Typography>{selected?.witness2}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -200,7 +201,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Certifies</Typography>
+                    <Typography>Certified</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -217,7 +218,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>2</Typography>
+                    <Typography>{moment(selected?.createdAt).format("DD - MMMM - YYYY")}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -281,6 +282,9 @@ function Content() {
 
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
                 <Stack>
+                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
+                        {selected?.priest}
+                    </Typography>
                     <Divider
                         sx={{
                             width: '20vh',

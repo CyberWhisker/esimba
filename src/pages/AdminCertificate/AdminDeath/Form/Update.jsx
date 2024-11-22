@@ -4,13 +4,12 @@ import { toast } from 'react-toastify';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { fetchUsers } from '../../../../api/userApi';
-import { updateBaptism } from '../../../../api/baptismApi';
 import moment from 'moment';
 import { updateDeath } from '../../../../api/deathApi';
 
 function Update({ onClose, handleGetData, selected }) {
+  console.log(selected)
   const [userData, setUserData] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [dataForm, setDataForm] = useState(selected);
 
   const handleChange = (e) => {
@@ -39,14 +38,12 @@ function Update({ onClose, handleGetData, selected }) {
   };
 
   const handleGetUser = async () => {
-    setLoading(true);
     const { data, error } = await fetchUsers();
     if (error) {
       toast.error(error);
     } else {
       setUserData(data);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -58,23 +55,23 @@ function Update({ onClose, handleGetData, selected }) {
       <Box sx={{ width: '60vh', p: 2 }}>
         <Stack spacing={1}>
           <Typography variant="h4" fontWeight="bold">
-            Store Certificate
+            Update Certificate
           </Typography>
+          <Divider />
+          <Typography>Owner Certificate</Typography>
+          <TextField label='Select User' name='user' onChange={handleChange} select value={dataForm.user.id}>
+            {userData.map((item, index) => (
+              <MenuItem key={index} value={item._id}>{item.firstName} {item.lastName}</MenuItem>
+            ))}
+          </TextField>
           <Divider />
           <Typography>Personal Information</Typography>
           <TextField
-            label="Select User"
-            name="user"
+            label="Name"
+            name="name"
             onChange={handleChange}
-            select
-            value={loading ? '' : dataForm.user._id}
-          >
-            {userData.map((item, index) => (
-              <MenuItem key={index} value={item._id}>
-                {item.firstName} {item.lastName}
-              </MenuItem>
-            ))}
-          </TextField>
+            value={dataForm.name}
+          />
           <DatePicker
             label="Birth Date"
             name="birthDate"

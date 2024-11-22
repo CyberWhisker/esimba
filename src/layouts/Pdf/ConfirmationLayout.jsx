@@ -1,7 +1,8 @@
 import { Box, Divider, Grid2, Stack, Typography } from '@mui/material'
+import moment from 'moment'
 import React from 'react'
 
-function ConfirmationLayout() {
+function ConfirmationLayout({ selected }) {
     return (
         <Box sx={{
             backgroundImage: 'url(/pdfImg/ConfirmationImg.png)',
@@ -12,13 +13,13 @@ function ConfirmationLayout() {
                 pt: 15,
                 px: 7
             }}>
-                <Content />
+                <Content selected={selected} />
             </Stack>
         </Box>
     )
 }
 
-function Content() {
+function Content({ selected }) {
     return (
         <Stack>
 
@@ -27,7 +28,7 @@ function Content() {
             </Typography>
             <Box sx={{ px: '20vh' }}>
                 <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
-                    Parish Name
+                    {selected?.chapel?.chapel}
                 </Typography>
                 <Divider
                     sx={{
@@ -44,7 +45,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
+                    <Typography>{selected?.name}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -61,7 +62,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>18</Typography>
+                    <Typography>{selected?.motherName}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -75,7 +76,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>18</Typography>
+                    <Typography>{selected?.fatherName}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -92,7 +93,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Married</Typography>
+                    <Typography>{moment(selected?.baptismDate).format('DD - MMMM - YYYY')}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -106,7 +107,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Married</Typography>
+                    <Typography>{selected?.chapel?.chapel}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -127,7 +128,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
+                    <Typography>{selected?.chapel?.chapel}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -141,7 +142,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
+                    <Typography>{selected?.priest}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -162,7 +163,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>2</Typography>
+                    <Typography>{moment(selected?.createdAt).format('DD - MMMM - YYYY')}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -226,6 +227,9 @@ function Content() {
 
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
                 <Stack>
+                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
+                        {selected?.priest}
+                    </Typography>
                     <Divider
                         sx={{
                             width: '20vh',

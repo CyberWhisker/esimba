@@ -10,8 +10,6 @@ import Delete from './Form/Delete'
 import MasterAdmin from '../../../layouts/MasterAdmin'
 import moment from 'moment'
 import { useReactToPrint } from 'react-to-print'
-import { fetchConfirmation } from '../../../api/confirmationApi'
-import ConfirmationLayout from '../../../layouts/Pdf/ConfirmationLayout'
 import { fetchMarriage } from '../../../api/marriageApi'
 import MarriageLayout from '../../../layouts/Pdf/MarriageLayout'
 
@@ -19,6 +17,7 @@ function AdminMarriage() {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [storeModal, setStoreModal] = useState(false);
+  const [selected, setSelected] = useState(null);
 
   const handleStoreModal = () => {
     setStoreModal(true)
@@ -47,7 +46,8 @@ function AdminMarriage() {
 
   const contentRef = useRef(null)
   const printFile = useReactToPrint({ contentRef })
-  const handlePrintFile = () => {
+  const handlePrintFile = async (params) => {
+    await setSelected(params)
     printFile()
   }
   return (
@@ -57,8 +57,8 @@ function AdminMarriage() {
           <Typography variant='h4' fontWeight={'bold'}>Marriage Certificate: </Typography>
           <Button variant='contained' endIcon={<Add />} color='warning' onClick={handleStoreModal}>Add Certificate</Button>
         </Stack>
-        <DataTable data={data} handleGetData={handleGetData} loading={loading} handlePrintFile={handlePrintFile} />
-        <Certificate contentRef={contentRef} />
+        <DataTable data={data} handleGetData={handleGetData} loading={loading} handlePrintFile={handlePrintFile} selected={selected} setSelected={setSelected}/>
+        <Certificate contentRef={contentRef} selected={selected}/>
       </Stack>
 
       <Drawer open={storeModal} anchor='right' onClose={handleCloseModal}>
@@ -68,11 +68,10 @@ function AdminMarriage() {
   )
 }
 
-function DataTable({ data, handleGetData, loading, handlePrintFile }) {
+function DataTable({ data, handleGetData, loading, handlePrintFile, selected, setSelected }) {
 
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [selected, setSelected] = useState(null);
   const [updateModal, setUpdateModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
 
@@ -138,7 +137,7 @@ function DataTable({ data, handleGetData, loading, handlePrintFile }) {
       headerClassName: 'headerStyle',
       renderCell: (params) => (
         <Box sx={{ textAlign: 'center' }}>
-          <Button variant='contained' onClick={handlePrintFile}>Certificate</Button>
+          <Button variant='contained' onClick={() => handlePrintFile(params.row)}>Certificate</Button>
         </Box>
       )
     },
@@ -216,12 +215,12 @@ function DataTable({ data, handleGetData, loading, handlePrintFile }) {
   )
 }
 
-function Certificate({ contentRef }) {
+function Certificate({ contentRef, selected }) {
   return (
     <div>
       <div style={{ display: 'none' }}>
         <div ref={contentRef} style={{ color: 'black' }}>
-          <MarriageLayout />
+          <MarriageLayout selected={selected}/>
         </div>
       </div>
     </div>

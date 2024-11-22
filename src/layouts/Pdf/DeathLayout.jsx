@@ -1,7 +1,8 @@
 import { Box, Divider, Grid2, Stack, Typography } from '@mui/material'
+import moment from 'moment'
 import React from 'react'
 
-function DeathLayout() {
+function DeathLayout({ selected }) {
     return (
         <Box sx={{
             backgroundImage: 'url(/pdfImg/DeathImg.png)',
@@ -12,14 +13,13 @@ function DeathLayout() {
                 pt: 25,
                 px: 7
             }}>
-                <HeaderStyle />
-                <Content />
+                <Content selected={selected}/>
             </Stack>
         </Box>
     )
 }
 
-function HeaderStyle() {
+function Content({selected}) {
     return (
         <Stack>
             <Typography fontWeight={'bold'} textAlign={'center'} fontStyle={'italic'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
@@ -27,7 +27,7 @@ function HeaderStyle() {
             </Typography>
             <Box sx={{ px: '20vh' }}>
                 <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
-                    Parish Name
+                    {selected?.chapel?.chapel}
                 </Typography>
                 <Divider
                     sx={{
@@ -36,21 +36,14 @@ function HeaderStyle() {
                     }}
                 />
             </Box>
-        </Stack>
-    )
-}
-
-function Content() {
-    return (
-        <Stack mt={2}>
-            <Grid2 container spacing={2}>
+            <Grid2 container spacing={2} mt={2}>
                 <Grid2>
                     <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
                         This certifies that
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
+                    <Typography>{selected?.name}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -67,7 +60,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
+                    <Typography>{selected?.birthAddress}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -84,7 +77,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
+                    <Typography>{selected?.motherName}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -98,7 +91,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
+                    <Typography>{selected?.fatherName}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -115,7 +108,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
+                    <Typography>{selected?.partnerName}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -131,7 +124,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
+                    <Typography>{selected?.birthAddress}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -145,7 +138,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
+                    <Typography>{moment(selected?.deathDate).format('DD - MMMM - YYYY')}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -163,7 +156,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
+                    <Typography>{selected?.causeOfDeath}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -179,7 +172,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
+                    <Typography>{moment(selected?.burialDate).format('DD - MMMM - YYYY')}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -202,7 +195,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
+                    <Typography>{selected?.romanCemetary}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -218,7 +211,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
+                    <Typography>{selected?.municipalCemetary}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -234,7 +227,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
+                    <Typography>{selected?.privateCemetary}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -305,23 +298,7 @@ function Content() {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>33</Typography>
-                    <Divider
-                        sx={{
-                            width: '100%',
-                            borderBottom: '3px dotted rgba(0, 0, 0, 1)',
-                        }}
-                    />
-                </Grid2>
-            </Grid2>
-            <Grid2 container spacing={2}>
-                <Grid2>
-                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
-                        Purpose:
-                    </Typography>
-                </Grid2>
-                <Grid2 size='grow'>
-                    <Typography>Full Name</Typography>
+                    <Typography>{moment(selected?.createdAt).format('DD - MMMM - YYYY')}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -332,6 +309,9 @@ function Content() {
             </Grid2>
             <Box sx={{ display: 'flex', justifyContent: 'end', mt: 4 }}>
                 <Stack>
+                    <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
+                        {selected?.priest}
+                    </Typography>
                     <Divider
                         sx={{
                             width: '20vh',

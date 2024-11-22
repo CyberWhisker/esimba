@@ -1,34 +1,33 @@
 import { Box, Divider, Grid2, Stack, Typography } from '@mui/material'
+import moment from 'moment'
 import React from 'react'
 
-function BaptismLayout() {
+function BaptismLayout({ selected }) {
   return (
     <Box sx={{
-      backgroundImage: 'url(/pdfImg/Background.png)',
+      backgroundImage: 'url(/pdfImg/BaptismImg.png)',
       backgroundSize: 'cover',
       height: '100vh'
     }}>
       <Stack sx={{
-        pt: 4,
+        pt: 37,
         px: 7
       }}>
-        <HeaderStyle />
-        <Content />
+        <Content selected={selected} />
       </Stack>
     </Box>
   )
 }
 
-function HeaderStyle() {
+function Content({ selected }) {
   return (
     <Stack>
-      <img alt='Logo' src='/pdfImg/BaptismLogo.png' />
       <Typography fontWeight={'bold'} textAlign={'center'} fontStyle={'italic'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
         PARISH OF
       </Typography>
       <Box sx={{ px: '20vh' }}>
         <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
-          Parish Name
+          {selected?.chapel?.chapel}
         </Typography>
         <Divider
           sx={{
@@ -37,21 +36,14 @@ function HeaderStyle() {
           }}
         />
       </Box>
-    </Stack>
-  )
-}
-
-function Content() {
-  return (
-    <Stack mt={2}>
-      <Grid2 container spacing={2}>
+      <Grid2 container spacing={2} mt={2}>
         <Grid2>
           <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
-            Parish Name
+            This Certifies that
           </Typography>
         </Grid2>
         <Grid2 size='grow'>
-          <Typography>Full Name</Typography>
+          <Typography>{selected?.name}</Typography>
           <Divider
             sx={{
               width: '100%',
@@ -67,7 +59,7 @@ function Content() {
           </Typography>
         </Grid2>
         <Grid2 size='grow'>
-          <Typography>Full Name</Typography>
+          <Typography>{selected?.motherName}</Typography>
           <Divider
             sx={{
               width: '100%',
@@ -83,7 +75,7 @@ function Content() {
           </Typography>
         </Grid2>
         <Grid2 size='grow'>
-          <Typography>Full Name</Typography>
+          <Typography>{selected?.fatherName}</Typography>
           <Divider
             sx={{
               width: '100%',
@@ -99,7 +91,7 @@ function Content() {
           </Typography>
         </Grid2>
         <Grid2 size='grow'>
-          <Typography>Full Name</Typography>
+          <Typography>{selected?.birthAddress}</Typography>
           <Divider
             sx={{
               width: '100%',
@@ -115,7 +107,7 @@ function Content() {
           </Typography>
         </Grid2>
         <Grid2 size='grow'>
-          <Typography>Full Name</Typography>
+          <Typography>{moment(selected?.birthDate).format('DD - MMMM - YYYY')}</Typography>
           <Divider
             sx={{
               width: '100%',
@@ -123,15 +115,13 @@ function Content() {
             }}
           />
         </Grid2>
-      </Grid2>
-      <Grid2 container spacing={2}>
         <Grid2>
           <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
             baptized on
           </Typography>
         </Grid2>
         <Grid2 size='grow'>
-          <Typography>Full Name</Typography>
+          <Typography>{moment(selected?.baptismDate).format('DD - MMMM - YYYY')}</Typography>
           <Divider
             sx={{
               width: '100%',
@@ -153,7 +143,7 @@ function Content() {
           </Typography>
         </Grid2>
         <Grid2 size='grow'>
-          <Typography>Full Name</Typography>
+          <Typography>{selected?.priest}</Typography>
           <Divider
             sx={{
               width: '100%',
@@ -170,7 +160,7 @@ function Content() {
           </Typography>
         </Grid2>
         <Grid2 size='grow'>
-          <Typography>Full Name</Typography>
+          <Typography>{selected?.sponsor1}</Typography>
           <Divider
             sx={{
               width: '100%',
@@ -186,7 +176,7 @@ function Content() {
           </Typography>
         </Grid2>
         <Grid2 size='grow'>
-          <Typography>Full Name</Typography>
+          <Typography>{selected?.sponsor2}</Typography>
           <Divider
             sx={{
               width: '100%',
@@ -256,7 +246,7 @@ function Content() {
           </Typography>
         </Grid2>
         <Grid2 size='grow'>
-          <Typography>33</Typography>
+          <Typography>{moment(selected?.createdAt).format('DD - MMMM - YYYY')}</Typography>
           <Divider
             sx={{
               width: '100%',
@@ -272,7 +262,7 @@ function Content() {
           </Typography>
         </Grid2>
         <Grid2 size='grow'>
-          <Typography>Full Name</Typography>
+          <Typography>{selected?.purpose}</Typography>
           <Divider
             sx={{
               width: '100%',
@@ -283,6 +273,9 @@ function Content() {
       </Grid2>
       <Box sx={{ display: 'flex', justifyContent: 'end', mt: 4 }}>
         <Stack>
+          <Typography textAlign={'center'} variant='h6' sx={{ fontFamily: "'Times New Roman', Times, serif" }}>
+            {selected?.priest}
+          </Typography>
           <Divider
             sx={{
               width: '20vh',

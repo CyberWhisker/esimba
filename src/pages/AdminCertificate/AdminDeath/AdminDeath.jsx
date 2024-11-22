@@ -10,7 +10,6 @@ import Delete from './Form/Delete'
 import MasterAdmin from '../../../layouts/MasterAdmin'
 import moment from 'moment'
 import { useReactToPrint } from 'react-to-print'
-import BaptismLayout from '../../../layouts/Pdf/BaptismLayout'
 import { fetchDeath } from '../../../api/deathApi'
 import DeathLayout from '../../../layouts/Pdf/DeathLayout'
 
@@ -18,6 +17,7 @@ function AdminDeath() {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [storeModal, setStoreModal] = useState(false);
+  const [selected, setSelected] = useState(null);
 
   const handleStoreModal = () => {
     setStoreModal(true)
@@ -46,7 +46,8 @@ function AdminDeath() {
 
   const contentRef = useRef(null)
   const printFile = useReactToPrint({ contentRef })
-  const handlePrintFile = () => {
+  const handlePrintFile = async (params) => {
+    await setSelected(params)
     printFile()
   }
   return (
@@ -56,8 +57,8 @@ function AdminDeath() {
           <Typography variant='h4' fontWeight={'bold'}>Death Certificate: </Typography>
           <Button variant='contained' endIcon={<Add />} color='warning' onClick={handleStoreModal}>Add Certificate</Button>
         </Stack>
-        <DataTable data={data} handleGetData={handleGetData} loading={loading} handlePrintFile={handlePrintFile} />
-        <Certificate contentRef={contentRef} />
+        <DataTable data={data} handleGetData={handleGetData} loading={loading} handlePrintFile={handlePrintFile} setSelected={setSelected} selected={selected}/>
+        <Certificate contentRef={contentRef} selected={selected}/>
       </Stack>
 
       <Drawer open={storeModal} anchor='right' onClose={handleCloseModal}>
@@ -67,11 +68,10 @@ function AdminDeath() {
   )
 }
 
-function DataTable({ data, handleGetData, loading, handlePrintFile }) {
+function DataTable({ data, handleGetData, loading, handlePrintFile, setSelected,  selected}) {
 
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [selected, setSelected] = useState(null);
   const [updateModal, setUpdateModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
 
@@ -109,8 +109,30 @@ function DataTable({ data, handleGetData, loading, handlePrintFile }) {
       headerClassName: 'headerStyle',
     },
     {
+      field: 'owner',
+      headerName: 'Owner',
+      flex: 1,
+      headerAlign: 'center',
+      headerClassName: 'headerStyle',
+    },
+    {
       field: 'name',
       headerName: 'Name',
+      flex: 1,
+      headerAlign: 'center',
+      headerClassName: 'headerStyle',
+    },
+    {
+      field: 'age',
+      headerName: 'Age',
+      flex: 1,
+      headerAlign: 'center',
+      headerClassName: 'headerStyle',
+      type: 'number'
+    },
+    {
+      field: 'birthAddress',
+      headerName: 'Birth Address',
       flex: 1,
       headerAlign: 'center',
       headerClassName: 'headerStyle',
@@ -123,13 +145,6 @@ function DataTable({ data, handleGetData, loading, handlePrintFile }) {
       headerClassName: 'headerStyle',
     },
     {
-      field: 'updatedAt',
-      headerName: 'Updated AT',
-      flex: 1,
-      headerAlign: 'center',
-      headerClassName: 'headerStyle',
-    },
-    {
       field: 'pdf',
       headerName: 'Download',
       flex: 1,
@@ -137,7 +152,7 @@ function DataTable({ data, handleGetData, loading, handlePrintFile }) {
       headerClassName: 'headerStyle',
       renderCell: (params) => (
         <Box sx={{ textAlign: 'center' }}>
-          <Button variant='contained' onClick={handlePrintFile}>Certificate</Button>
+          <Button variant='contained' onClick={() => handlePrintFile(params.row)}>Certificate</Button>
         </Box>
       )
     },
@@ -158,9 +173,9 @@ function DataTable({ data, handleGetData, loading, handlePrintFile }) {
   const rows = data.map((item) => ({
     ...item,
     id: item._id,
-    name: `${item.user.firstName} ${item.user.lastName}`,
+    owner: `${item.user.firstName} ${item.user.lastName}`,
     createdAt: moment(item.createdAt).format('MMMM DD YYYY'),
-    updatedAt: moment(item.updatedAt).format('MMMM DD YYYY')
+    // updatedAt: moment(item.updatedAt).format('MMMM DD YYYY')
   }))
 
   return (
@@ -215,12 +230,12 @@ function DataTable({ data, handleGetData, loading, handlePrintFile }) {
   )
 }
 
-function Certificate({ contentRef }) {
+function Certificate({ contentRef, selected }) {
   return (
     <div>
       <div style={{ display: 'none' }}>
         <div ref={contentRef} style={{ color: 'black' }}>
-          <DeathLayout />
+          <DeathLayout selected={selected}/>
         </div>
       </div>
     </div>

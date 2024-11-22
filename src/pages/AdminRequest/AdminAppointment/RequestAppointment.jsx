@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Button, Divider, Drawer, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
+import { Box, Button, Chip, Divider, Drawer, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
 import { Add } from '@mui/icons-material'
 import { DataGrid, GridMoreVertIcon, GridToolbar } from '@mui/x-data-grid'
 import CustomCard from '../../../components/CustomCard'
@@ -156,6 +156,16 @@ function DataTable({data, loading, handleGetData}) {
       flex: 1,
       headerAlign: 'center',
       headerClassName: 'headerStyle',
+      renderCell: (params) => (
+        <Box sx={{ textAlign: 'center' }}>
+          {params.row.status != "Pending" && (
+            <Chip label="Approve" color='success'/>
+          )}
+          {params.row.status == "Pending" && (
+            <Chip label="Pending" color='warning'/>
+          )}
+        </Box>
+      )
     },
     {
       field: 'baptismDate',

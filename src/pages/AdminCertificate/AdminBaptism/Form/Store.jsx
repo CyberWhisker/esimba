@@ -65,12 +65,14 @@ function Store({ onClose, handleGetData }) {
                 <Stack spacing={1}>
                     <Typography variant='h4' fontWeight={'bold'}>Store Certificate</Typography>
                     <Divider/>
-                    <Typography>Personal Information</Typography>
                     <TextField label='Select User' name='user' onChange={handleChange} select value={dataForm.user}>
                         {userData.map((item, index) => (
                             <MenuItem key={index} value={item._id}>{item.firstName} {item.lastName}</MenuItem>
                         ))}
                     </TextField>
+                    <Divider/>
+                    <Typography>Personal Information</Typography>
+                    <TextField label='Name' name='name' onChange={handleChange}/>
                     <DatePicker label='Birth Date' name='birthDate' onChange={value => handleChangeDate('birthDate', value)}/>
                     <TextField label='Birth Address' name='birthAddress' onChange={handleChange}/>
                     <Divider/>
@@ -86,6 +88,7 @@ function Store({ onClose, handleGetData }) {
                     <TextField label='Priest' name='priest' onChange={handleChange}/>
                     <TextField label='Sponsor Name' name='sponsor1' onChange={handleChange}/>
                     <TextField label='Sponsor Name' name='sponsor2' onChange={handleChange}/>
+                    <TextField label='Purpose' name='purpose' onChange={handleChange}/>
                     <Button variant='contained' onClick={handleSubmit}>Submit</Button>
                 </Stack>
             </Box>

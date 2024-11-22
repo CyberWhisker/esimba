@@ -57,10 +57,9 @@ function Update({ onClose, handleGetData, selected }) {
       <Box sx={{ width: '60vh', p: 2 }}>
         <Stack spacing={1}>
           <Typography variant="h4" fontWeight="bold">
-            Update Marriage Certificate
+            Update Certificate
           </Typography>
           <Divider />
-          <Typography>Personal Information</Typography>
           <TextField
             label="Select User"
             name="user"
@@ -74,6 +73,14 @@ function Update({ onClose, handleGetData, selected }) {
               </MenuItem>
             ))}
           </TextField>
+          <Divider />
+          <Typography>Personal Information</Typography>
+          <TextField
+            label="Name"
+            name="name"
+            onChange={handleChange}
+            value={dataForm.name}
+          />
           <DatePicker
             label="Birth Date"
             name="birthDate"

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Button, Divider, Drawer, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
+import { Box, Button, Chip, Divider, Drawer, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
 import { Add } from '@mui/icons-material'
 import { DataGrid, GridMoreVertIcon, GridToolbar } from '@mui/x-data-grid'
 import CustomCard from '../../../components/CustomCard'
@@ -48,16 +48,16 @@ function RequestCertificate() {
           <Button onClick={handleStoreModal} variant='contained' endIcon={<Add />} color='warning'>Add Request</Button>
         </Stack>
         <Divider />
-        <DataTable data={data} loading={loading} handleGetData={handleGetData}/>
+        <DataTable data={data} loading={loading} handleGetData={handleGetData} />
       </Stack>
       <Drawer anchor='right' open={storeModal} onClose={handleCloseModal}>
-        <Store onClose={handleCloseModal} handleGetData={handleGetData}/>
+        <Store onClose={handleCloseModal} handleGetData={handleGetData} />
       </Drawer>
     </MasterAdmin>
   )
 }
 
-function DataTable({data, loading, handleGetData}) {
+function DataTable({ data, loading, handleGetData }) {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selected, setSelected] = useState(null);
@@ -72,13 +72,13 @@ function DataTable({data, loading, handleGetData}) {
     toast.error("Request Cancel")
     const newData = {
       ...selected,
-      status: 'Cancel'
+      status: 'Pending'
     }
     const { data, error } = await updateRequest(newData)
     if (error) {
       toast.error(error)
     } else {
-      toast.success("Request Approve")
+      toast.success("Request Updated")
       handleGetData()
       handleMenuClose()
     }
@@ -139,6 +139,16 @@ function DataTable({data, loading, handleGetData}) {
       flex: 1,
       headerAlign: 'center',
       headerClassName: 'headerStyle',
+      renderCell: (params) => (
+        <Box sx={{ textAlign: 'center' }}>
+          {params.row.status != "Pending" && (
+            <Chip label="Approve" color='success' />
+          )}
+          {params.row.status == "Pending" && (
+            <Chip label="Pending" color='warning' />
+          )}
+        </Box>
+      )
     },
     {
       field: 'baptismDate',
