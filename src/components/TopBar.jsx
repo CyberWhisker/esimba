@@ -9,33 +9,38 @@ import { AuthContext } from '../context/AuthContext';
 
 
 const TopBar = () => {
-    const {auth, logout} = useContext(AuthContext)
+    const { auth, logout } = useContext(AuthContext)
     return (
-        <AppBar 
-        position='relative' 
-        sx={{
-            backgroundColor: 'rgba(128, 0, 0, 0.2)',
-            backdropFilter: 'blur(10px)'
-        }}
+        <AppBar
+            position='relative'
+            sx={{
+                backgroundColor: 'rgba(128, 0, 0, 0.2)',
+                backdropFilter: 'blur(10px)'
+            }}
         >
-            <Toolbar sx={{justifyContent: 'space-between'}}>
+            <Toolbar sx={{ justifyContent: 'space-between' }}>
                 <Box>
                     {auth?.user.role == 3 && (
-                        <img alt='Logo' src={Logo} style={{height: '8vh'}}/>
+                        <img alt='Logo' src={Logo} style={{ height: '8vh' }} />
+                    )}
+                    {auth?.user.role == 2 && (
+                        <Typography variant="h4" color="white" fontWeight={'bold'}>{auth.user.parish.chapel}</Typography>
                     )}
                 </Box>
                 {auth?.user.role == 3 && (
                     <Stack direction={'row'} spacing={2}>
-                        <UserNav/>
+                        <UserNav />
                     </Stack>
                 )}
                 {!auth && (
                     <Stack direction={'row'} spacing={2}>
-                        <LandingNav/>
+                        <LandingNav />
                     </Stack>
                 )}
                 {auth && (
-                    <IsLogged auth={auth} logout={logout}/>
+                    <>
+                        <IsLogged auth={auth} logout={logout} />
+                    </>
                 )}
                 {!auth && (
                     <NotLogged />
@@ -45,21 +50,21 @@ const TopBar = () => {
     );
 };
 
-function IsLogged ({logout, auth}) {
+function IsLogged({ logout, auth }) {
 
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const handleOpenUserMenu = (event) => {
-      setAnchorElUser(event.currentTarget);
+        setAnchorElUser(event.currentTarget);
     };
-  
+
     const handleCloseUserMenu = () => {
-      setAnchorElUser(null);
+        setAnchorElUser(null);
     };
 
     return (
         <Stack direction={'row'} spacing={2}>
             <MenuItem>
-                <AddAlertOutlined/>
+                <AddAlertOutlined />
             </MenuItem>
             <Stack direction={'row'} spacing={2}>
                 <Stack>
@@ -77,24 +82,21 @@ function IsLogged ({logout, auth}) {
                 </Tooltip>
             </Stack>
             <Menu
-            sx={{ mt: '45px' }}
-            id="menu-appbar"
-            anchorEl={anchorElUser}
-            anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            keepMounted
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            open={Boolean(anchorElUser)}
-            onClose={handleCloseUserMenu}
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
             >
-                <MenuItem onClick={handleCloseUserMenu}>
-                    <Typography sx={{ textAlign: 'center' }}>Profile</Typography>
-                </MenuItem>
                 <MenuItem onClick={handleCloseUserMenu}>
                     <Typography sx={{ textAlign: 'center' }} onClick={logout}>Logout</Typography>
                 </MenuItem>
@@ -103,7 +105,7 @@ function IsLogged ({logout, auth}) {
     )
 }
 
-function NotLogged () {
+function NotLogged() {
     return (
         <Stack direction={'row'} spacing={2}>
             <Button variant='outlined' color='warning' component={Link} to='/register'>Register</Button>

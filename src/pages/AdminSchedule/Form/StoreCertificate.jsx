@@ -1,11 +1,11 @@
 import React from 'react';
 import { Box, Typography, Button, Divider } from '@mui/material';
 import { toast } from 'react-toastify';
-import { deleteRequest, updateRequest } from '../../../../api/requestApi';
-import { storeBaptism } from '../../../../api/baptismApi';
-import { storeConfirmation } from '../../../../api/confirmationApi';
-import { storeMarriage } from '../../../../api/marriageApi';
-import { storeDeath } from '../../../../api/deathApi';
+import { storeBaptism } from '../../../api/baptismApi';
+import { storeConfirmation } from '../../../api/confirmationApi';
+import { storeMarriage } from '../../../api/marriageApi';
+import { storeDeath } from '../../../api/deathApi';
+import { updateSchedule } from '../../../api/scheduleApi';
 
 const headerStyle = {
     p: 2,
@@ -25,39 +25,39 @@ function StoreCertificate({ selected, onClose, handleGetData }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const request = selected.request
         const newData = {
-            ...selected.data,
-            chapel: selected.parish,
-            user: selected.user._id,
-            purpose: selected.purpose
+            ...request.data,
+            chapel: request.parish,
+            user: request.user._id
         }
-        if (selected.certificate == "Baptism Certificate") {
+        if (request.certificate == "Baptism Certificate") {
             await handleSubmitBaptism(newData)
         }
-        if (selected.certificate == "Death Certificate") {
+        if (request.certificate == "Death Certificate") {
             await handleSubmitDeath(newData)
         }
-        if (selected.certificate == "Marriage Certificate") {
+        if (request.certificate == "Marriage Certificate") {
             await handleSubmitMarriage(newData)
         }
-        if (selected.certificate == "Confirmation Certificate") {
+        if (request.certificate == "Confirmation Certificate") {
             await handleSubmitConfirmation(newData)
         }
-        await handleUpdateRequest(selected)
+        await handleUpdateSchedule()
         onClose()
         handleGetData()
     }
 
-    const handleUpdateRequest = async (formData) => {
+    const handleUpdateSchedule = async () => {
         const newData = {
-            ...formData,
-            status: 'Approve'
+            _id: selected._id,
+            release: true,
         }
-        const { data, error } = await updateRequest(newData)
+        const { data, error } = await updateSchedule(newData)
         if (error) {
             toast.error(error)
         } else {
-            toast.success("Request Approve and Created")
+            toast.success("Successfully Created Certificate")
         }
     }
 

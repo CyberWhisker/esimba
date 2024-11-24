@@ -57,8 +57,8 @@ function AdminDeath() {
           <Typography variant='h4' fontWeight={'bold'}>Death Certificate: </Typography>
           <Button variant='contained' endIcon={<Add />} color='warning' onClick={handleStoreModal}>Add Certificate</Button>
         </Stack>
-        <DataTable data={data} handleGetData={handleGetData} loading={loading} handlePrintFile={handlePrintFile} setSelected={setSelected} selected={selected}/>
-        <Certificate contentRef={contentRef} selected={selected}/>
+        <DataTable data={data} handleGetData={handleGetData} loading={loading} handlePrintFile={handlePrintFile} setSelected={setSelected} selected={selected} />
+        <Certificate contentRef={contentRef} selected={selected} />
       </Stack>
 
       <Drawer open={storeModal} anchor='right' onClose={handleCloseModal}>
@@ -68,7 +68,7 @@ function AdminDeath() {
   )
 }
 
-function DataTable({ data, handleGetData, loading, handlePrintFile, setSelected,  selected}) {
+function DataTable({ data, handleGetData, loading, handlePrintFile, setSelected, selected }) {
 
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -109,30 +109,15 @@ function DataTable({ data, handleGetData, loading, handlePrintFile, setSelected,
       headerClassName: 'headerStyle',
     },
     {
-      field: 'owner',
+      field: 'name',
       headerName: 'Owner',
       flex: 1,
       headerAlign: 'center',
       headerClassName: 'headerStyle',
     },
     {
-      field: 'name',
-      headerName: 'Name',
-      flex: 1,
-      headerAlign: 'center',
-      headerClassName: 'headerStyle',
-    },
-    {
-      field: 'age',
-      headerName: 'Age',
-      flex: 1,
-      headerAlign: 'center',
-      headerClassName: 'headerStyle',
-      type: 'number'
-    },
-    {
-      field: 'birthAddress',
-      headerName: 'Birth Address',
+      field: 'requester',
+      headerName: 'Requester',
       flex: 1,
       headerAlign: 'center',
       headerClassName: 'headerStyle',
@@ -140,6 +125,13 @@ function DataTable({ data, handleGetData, loading, handlePrintFile, setSelected,
     {
       field: 'createdAt',
       headerName: 'Created At',
+      flex: 1,
+      headerAlign: 'center',
+      headerClassName: 'headerStyle',
+    },
+    {
+      field: 'updatedAt',
+      headerName: 'Updated AT',
       flex: 1,
       headerAlign: 'center',
       headerClassName: 'headerStyle',
@@ -173,9 +165,9 @@ function DataTable({ data, handleGetData, loading, handlePrintFile, setSelected,
   const rows = data.map((item) => ({
     ...item,
     id: item._id,
-    owner: `${item.user.firstName} ${item.user.lastName}`,
+    requester: `${item.user.firstName} ${item.user.lastName}`,
     createdAt: moment(item.createdAt).format('MMMM DD YYYY'),
-    // updatedAt: moment(item.updatedAt).format('MMMM DD YYYY')
+    updatedAt: moment(item.updatedAt).format('MMMM DD YYYY')
   }))
 
   return (
@@ -235,7 +227,7 @@ function Certificate({ contentRef, selected }) {
     <div>
       <div style={{ display: 'none' }}>
         <div ref={contentRef} style={{ color: 'black' }}>
-          <DeathLayout selected={selected}/>
+          <DeathLayout selected={selected} />
         </div>
       </div>
     </div>

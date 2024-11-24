@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import MasterAdmin from '../../layouts/MasterAdmin'
 import { Box, Button, Drawer, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
 import { Add } from '@mui/icons-material'
 import { DataGrid, GridMoreVertIcon, GridToolbar } from '@mui/x-data-grid'
 import CustomCard from '../../components/CustomCard'
-import { fetchUsers } from '../../api/userApi'
+import { fetchUserByChapelId, fetchUsers } from '../../api/userApi'
 import { toast } from 'react-toastify'
 import Store from './Form/Store'
 import Update from './Form/Update'
 import AlertModal from '../../components/AlertModal'
 import Delete from './Form/Delete'
+import { AuthContext } from '../../context/AuthContext'
 
 function AdminUser() {
     const theme = useTheme();
+    const {auth} = useContext(AuthContext)
     const [anchorEl, setAnchorEl] = useState(null);
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(false)
@@ -54,7 +56,7 @@ function AdminUser() {
 
     const handleGetData = async () => {
         setLoading(true)
-        const {data, error} = await fetchUsers()
+        const {data, error} = await fetchUserByChapelId(auth.user.parish._id)
         if (error) {
             toast.error(error)
         } else {

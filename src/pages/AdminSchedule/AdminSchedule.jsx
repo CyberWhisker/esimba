@@ -1,182 +1,215 @@
-import React, { useEffect, useState } from 'react'
-import { Box, Button, Drawer, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
-import { Add } from '@mui/icons-material'
+import React, { useContext, useEffect, useState } from 'react'
+import { Box, Button, Chip, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
 import { DataGrid, GridMoreVertIcon, GridToolbar } from '@mui/x-data-grid'
 import CustomCard from '../../components/CustomCard'
 import AlertModal from '../../components/AlertModal'
-import Store from './Form/Store'
-import Update from './Form/Update'
 import Delete from './Form/Delete'
 import MasterAdmin from '../../layouts/MasterAdmin'
-import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
-import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
+import { fetchScheduleByParishId } from '../../api/scheduleApi'
+import { AuthContext } from '../../context/AuthContext'
+import { toast } from 'react-toastify'
+import moment from 'moment'
+import StoreCertificate from './Form/StoreCertificate'
 
 function AdminSchedule() {
-    const theme = useTheme();
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [data, setData] = useState([])
-    const [loading, setLoading] = useState(false)
-    const [selected, setSelected] = useState(null);
-
-    const [storeModal, setStoreModal] = useState(false);
-    const [updateModal, setUpdateModal] = useState(false);
-    const [deleteModal, setDeleteModal] = useState(false);
-    
-    const handleDateClick = (arg) => {
-      alert(arg.dateStr)
-    }
-
-    const handleStoreModal = () => {
-        setStoreModal(true)
-    }
-
-    const handleUpdateModal = () => {
-        handleMenuClose()
-        setUpdateModal(true)
-    }
-
-    const handleDeleteModal = () => {
-        handleMenuClose()
-        setDeleteModal(true)
-    }
-
-
-    const handleCloseModal = () => {
-        setStoreModal(false)
-        setUpdateModal(false)
-        setDeleteModal(false)
-    }
-
-    const handleMenuOpen = (event, item) => {
-        setAnchorEl(event.currentTarget)
-        setSelected(item)
-    }
-
-    const handleMenuClose = (event, item) => {
-        setAnchorEl(null)
-    }
-
-    const handleGetData = async () => {
-        setLoading(false)
-    }
-
-    useEffect(() => {
-        handleGetData()
-    },[])
-
-    const rows = data.map((item) => ({
-        ...item,
-        id: item._id,
-    }))
-
-    const columns = [
-      {
-        field: 'id',
-        headerName: 'ID',
-        flex: 1,
-        headerAlign: 'center',
-        headerClassName: 'headerStyle',
-      },
-      {
-        field: 'firstName',
-        headerName: 'First Name',
-        flex: 1,
-        headerAlign: 'center',
-        headerClassName: 'headerStyle',
-      },
-      {
-        field: 'lastName',
-        headerName: 'Last Name',
-        flex: 1,
-        headerAlign: 'center',
-        headerClassName: 'headerStyle',
-      },
-      {
-        field: 'middleName',
-        headerName: 'Middle Name',
-        flex: 1,
-        headerAlign: 'center',
-        headerClassName: 'headerStyle',
-      },
-      {
-        field: 'type',
-        headerName: 'Type',
-        flex: 1,
-        headerAlign: 'center',
-        headerClassName: 'headerStyle',
-      },
-      {
-        field: 'status',
-        headerName: 'Status',
-        flex: 1,
-        headerAlign: 'center',
-        headerClassName: 'headerStyle',
-      },
-      {
-        field: 'date',
-        headerName: 'Date',
-        flex: 1,
-        headerAlign: 'center',
-        headerClassName: 'headerStyle',
-      },
-      {
-        field: 'setting',
-        headerName: 'Setting',
-        flex: 1,
-        headerAlign: 'center',
-        headerClassName: 'headerStyle',
-        renderCell: (params) => (
-          <Box sx={{textAlign: 'center'}}>
-            <GridMoreVertIcon onClick={(e) => handleMenuOpen(e, params.row)} sx={{cursor: 'pointer'}}/>
-          </Box>
-        )
-      }
-  ]
-
-  const events = [
-    { title: 'Meeting', start: new Date() }
-  ]
   return (
     <MasterAdmin>
       <Stack spacing={2}>
-          <Stack direction={'row'} spacing={2}>
-            <Typography variant='h4' fontWeight={'bold'}>Schedule </Typography>
-          </Stack>
-        <CustomCard>
-          <Box sx={{p:2}}>
-            <FullCalendar
-              plugins={[ dayGridPlugin, interactionPlugin  ]}
-              events={events}
-              dateClick={handleDateClick}
-              height={'70vh'}
-            />
-          </Box>
-        </CustomCard>
+        <Stack direction={'row'} spacing={2}>
+          <Typography variant='h4' fontWeight={'bold'}>Schedule List: </Typography>
+        </Stack>
+        <DataTable />
+      </Stack>
+    </MasterAdmin>
+  )
+}
+
+function DataTable() {
+  const theme = useTheme();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [selected, setSelected] = useState(null);
+  const { auth } = useContext(AuthContext)
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [certificateModal, setCertificateModal] = useState(false);
+
+
+  const handleDeleteModal = () => {
+    setDeleteModal(true)
+  }
+
+
+  const handleCloseModal = () => {
+    setDeleteModal(false)
+    setCertificateModal(false)
+  }
+
+  const handleMenuOpen = (event, item) => {
+    setAnchorEl(event.currentTarget)
+    setSelected(item)
+  }
+
+  const handleMenuClose = (event, item) => {
+    setAnchorEl(null)
+  }
+
+  const handleGetData = async () => {
+    setLoading(true)
+    const { data, error } = await fetchScheduleByParishId(auth.user.parish._id)
+    if (error) {
+      toast.error("Server Error")
+    } else {
+      setData(data)
+    }
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    handleGetData()
+  }, [])
+
+  const columns = [
+    {
+      field: 'id',
+      headerName: 'ID',
+      flex: 1,
+      headerAlign: 'center',
+      headerClassName: 'headerStyle',
+    },
+    {
+      field: 'name',
+      headerName: 'Name',
+      flex: 1,
+      headerAlign: 'center',
+      headerClassName: 'headerStyle',
+    },
+    {
+      field: 'event',
+      headerName: 'Event',
+      flex: 1,
+      headerAlign: 'center',
+      headerClassName: 'headerStyle',
+    },
+    {
+      field: 'status',
+      headerName: 'Status',
+      flex: 1,
+      headerAlign: 'center',
+      headerClassName: 'headerStyle',
+      renderCell: (params) => (
+        <Box sx={{ textAlign: 'center' }}>
+          {params.row.status}
+        </Box>
+      )
+    },
+    {
+      field: 'date',
+      headerName: 'Date',
+      flex: 1,
+      headerAlign: 'center',
+      headerClassName: 'headerStyle',
+    },
+    {
+      field: 'release',
+      headerName: 'Release',
+      flex: 1,
+      headerAlign: 'center',
+      headerClassName: 'headerStyle',
+      renderCell: (params) => (
+        <Box sx={{ textAlign: 'center' }}>
+          <ReleaseCertificateButton params={params.row} setSelected={setSelected} setCertificateModal={setCertificateModal}/>
+        </Box>
+      )
+    },
+    {
+      field: 'setting',
+      headerName: 'Setting',
+      flex: 1,
+      headerAlign: 'center',
+      headerClassName: 'headerStyle',
+      renderCell: (params) => (
+        <Box sx={{ textAlign: 'center' }}>
+          <GridMoreVertIcon onClick={(e) => handleMenuOpen(e, params.row)} sx={{ cursor: 'pointer' }} />
+        </Box>
+      )
+    }
+  ]
+
+  const rows = data.map((item) => ({
+    ...item,
+    id: item._id,
+    name: `${item?.request?.user?.lastName}, ${item?.request?.user?.firstName} ${item?.request?.user?.middleName[0]}.`,
+    event: item?.request?.certificate,
+    date: moment(item?.request?.schedule).format("DD - MMMM - YYYY"),
+    status:
+      moment(item?.request?.schedule).isSame(moment(), 'day') && <Chip label="Active" color="success" /> ||
+      moment(item?.request?.schedule).isAfter(moment(), 'day') && <Chip label="Pending" color="warning" /> ||
+      moment(item?.request?.schedule).isBefore(moment(), 'day') && <Chip label="Expired" color="error" />
+  }))
+  return (
+    <>
+      <CustomCard>
+        <Box
+          sx={{
+            '& .headerStyle': {
+              backgroundColor: theme.palette.warning.main,
+            },
+            height: '70vh',
+          }}
+        >
+          <DataGrid
+            columns={columns}
+            rows={rows}
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+              loadingOverlay: {
+                variant: 'linear-progress',
+                noRowsVariant: 'linear-progress',
+              },
+            }}
+            loading={loading}
+          />
+        </Box>
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={handleMenuClose}
         >
-          <MenuItem onClick={handleUpdateModal}>
-            <Typography color="warning.main">Edit</Typography>
-          </MenuItem>
           <MenuItem onClick={handleDeleteModal}>
-            <Typography color="error.main">Delete</Typography>
+            <Typography color="error.main">Remove</Typography>
           </MenuItem>
         </Menu>
-      </Stack>
-
-      <Drawer open={storeModal} anchor='right' onClose={handleCloseModal}>
-        <Store onClose={handleCloseModal} handleGetData={handleGetData}/>
-      </Drawer>
-      <Drawer open={updateModal} anchor='right' onClose={handleCloseModal}>
-        <Update selected={selected} onClose={handleCloseModal} handleGetData={handleGetData}/>
-      </Drawer>
+      </CustomCard>
       <AlertModal open={deleteModal} onClose={handleCloseModal}>
-        <Delete onClose={handleCloseModal} selected={selected} handleGetData={handleGetData}/>
+        <Delete onClose={handleCloseModal} selected={selected} handleGetData={handleGetData} />
       </AlertModal>
-    </MasterAdmin>
+      <AlertModal open={certificateModal} onClose={handleCloseModal}>
+        <StoreCertificate onClose={handleCloseModal} selected={selected} handleGetData={handleGetData} />
+      </AlertModal>
+    </>
+  )
+}
+
+function ReleaseCertificateButton({ params, setSelected, setCertificateModal }) {
+
+  const handleSubmit = async () => {
+    setSelected(params)
+    setCertificateModal(true)
+  }
+  console.log(params)
+  return (
+    <>
+      {params.release && (
+        <Button variant='contained' color='success'>Released</Button>
+      )}
+      {!params.release && (
+        <Button variant='contained' color='warning' onClick={() => handleSubmit()}>Release</Button>
+      )}
+    </>
   )
 }
 

@@ -1,15 +1,17 @@
 import { Box, Button, Divider, MenuItem, Stack, TextField, Typography } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
-import { LocalizationProvider } from '@mui/x-date-pickers'
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 import { fetchUsers } from '../../../../api/userApi'
 import { toast } from 'react-toastify'
-import StoreBaptism from './StoreCertificate/StoreBaptism'
+import StoreBaptism from './FormCertificate/StoreBaptism'
 import { AuthContext } from '../../../../context/AuthContext'
-import StoreDeath from './StoreCertificate/StoreDeath'
-import StoreMarriage from './StoreCertificate/StoreMarriage'
-import StoreConfirmation from './StoreCertificate/StoreConfirmation'
+import StoreDeath from './FormCertificate/StoreDeath'
+import StoreMarriage from './FormCertificate/StoreMarriage'
+import StoreConfirmation from './FormCertificate/StoreConfirmation'
 import { storeRequest } from '../../../../api/requestApi'
+import moment from 'moment'
+import { fetchScheduleByParishId } from '../../../../api/scheduleApi'
 
 function Store({ onClose, handleGetData }) {
     const { auth } = useContext(AuthContext)
@@ -38,9 +40,16 @@ function Store({ onClose, handleGetData }) {
         })
     }
 
+    const handleDate = (name, value) => {
+        setFormData({
+            ...formData,
+            [name]: value
+        })
+    }
+
     const handleCombinedChange = (event) => {
         handleClearData(event);
-      };
+    };
 
     const handleChangeData = (e) => {
         setFormData({
@@ -73,7 +82,7 @@ function Store({ onClose, handleGetData }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        const {data, error} = await storeRequest(formData)
+        const { data, error } = await storeRequest(formData)
         if (error) {
             toast.error(error)
         } else {
@@ -101,15 +110,19 @@ function Store({ onClose, handleGetData }) {
                             ))}
                         </TextField>
                         <Divider />
+                        <Typography>Appointment Information</Typography>
+                        {/* <DatePicker minDate={moment()} label='Select Date' name='schedule' onChange={value => handleDate('schedule', value)} /> */}
+                        <DateSchedulePicker handleDate={handleDate} />
+                        <Divider />
                         <Typography>Certificate Type</Typography>
                         <TextField label="Select Certificate" name='certificate' value={formData.certificate} onChange={handleCombinedChange} select >
-                            <MenuItem value="Birth Certificate">Birth Certificate</MenuItem>
+                            <MenuItem value="Baptism Certificate">Baptism Certificate</MenuItem>
                             <MenuItem value="Death Certificate">Death Certificate</MenuItem>
                             <MenuItem value="Marriage Certificate">Marriage Certificate</MenuItem>
                             <MenuItem value="Confirmation Certificate">Confirmation Certificate</MenuItem>
                         </TextField>
                         <Divider />
-                        {formData.certificate == "Birth Certificate" && (
+                        {formData.certificate == "Baptism Certificate" && (
                             <StoreBaptism handleChangeData={handleChangeData} handleChangeDate={handleChangeDate} formData={formData} handleChange={handleChange} />
                         )}
                         {formData.certificate == "Death Certificate" && (
@@ -127,6 +140,39 @@ function Store({ onClose, handleGetData }) {
             </Box>
         </LocalizationProvider>
     )
+}
+
+function DateSchedulePicker({ handleDate }) {
+    const { auth } = useContext(AuthContext);
+    const [disabledDatesData, setDisabledDatesData] = useState([]);
+
+    // Function to disable specific dates
+    const shouldDisableDate = (date) => {
+        const formattedDate = moment(date).format('YYYY-MM-DD');
+        return disabledDatesData.includes(formattedDate);
+    };
+
+    const handleGetSchedule = async () => {
+        const { data, error } = await fetchScheduleByParishId(auth.user.parish._id);
+        if (!error) {
+            const dates = data.map((item) => moment(item.request.schedule).format('YYYY-MM-DD'));
+            setDisabledDatesData(dates);
+        }
+    };
+
+    useEffect(() => {
+        handleGetSchedule();
+    }, []); // Empty dependency array ensures it runs once on mount
+
+    return (
+        <DatePicker
+            minDate={moment()} // Disable past dates
+            label="Select Date"
+            name="schedule"
+            shouldDisableDate={shouldDisableDate} // Disable specific dates
+            onChange={(value) => handleDate('schedule', value)}
+        />
+    );
 }
 
 export default Store

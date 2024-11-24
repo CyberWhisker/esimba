@@ -110,7 +110,14 @@ function DataTable({ data, handleGetData, loading, handlePrintFile, selected, se
     },
     {
       field: 'name',
-      headerName: 'Name',
+      headerName: 'Owner',
+      flex: 1,
+      headerAlign: 'center',
+      headerClassName: 'headerStyle',
+    },
+    {
+      field: 'requester',
+      headerName: 'Requester',
       flex: 1,
       headerAlign: 'center',
       headerClassName: 'headerStyle',
@@ -158,7 +165,7 @@ function DataTable({ data, handleGetData, loading, handlePrintFile, selected, se
   const rows = data.map((item) => ({
     ...item,
     id: item._id,
-    name: `${item.user.firstName} ${item.user.lastName}`,
+    requester: `${item.user.firstName} ${item.user.lastName}`,
     createdAt: moment(item.createdAt).format('MMMM DD YYYY'),
     updatedAt: moment(item.updatedAt).format('MMMM DD YYYY')
   }))

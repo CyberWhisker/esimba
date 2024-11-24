@@ -10,6 +10,7 @@ import MasterAdmin from '../../../layouts/MasterAdmin'
 import { fetchRequestAppointment, updateRequest } from '../../../api/requestApi'
 import { toast } from 'react-toastify'
 import moment from 'moment'
+import StoreSchedule from './Form/StoreSchedule'
 
 function RequestAppointment() {
   const [data, setData] = useState([])
@@ -60,41 +61,23 @@ function DataTable({data, loading, handleGetData}) {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selected, setSelected] = useState(null);
-
-  const [storeModal, setStoreModal] = useState(false);
-  const [updateModal, setUpdateModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
-
-  const handleStoreModal = () => {
-    setStoreModal(true)
-  }
+  const [scheduleModal, setScheduleModal] = useState(false);
 
   const handleApprove = async () => {
-    const newData = {
-      ...selected,
-      status: 'Approve'
-    }
-    const { data, error } = await updateRequest(newData)
-    if (error) {
-      toast.error(error)
-    } else {
-      toast.success("Request Approve")
-      handleGetData()
-      handleMenuClose()
-    }
+    setScheduleModal(true)
   }
 
   const handleCancel = async () => {
-    toast.error("Request Cancel")
     const newData = {
       ...selected,
-      status: 'Cancel'
+      status: 'Pending'
     }
     const { data, error } = await updateRequest(newData)
     if (error) {
       toast.error(error)
     } else {
-      toast.success("Request Approve")
+      toast.error("Request Cancel")
       handleGetData()
       handleMenuClose()
     }
@@ -107,9 +90,8 @@ function DataTable({data, loading, handleGetData}) {
 
 
   const handleCloseModal = () => {
-    setStoreModal(false)
-    setUpdateModal(false)
     setDeleteModal(false)
+    setScheduleModal(false)
   }
 
   const handleMenuOpen = (event, item) => {
@@ -233,6 +215,10 @@ function DataTable({data, loading, handleGetData}) {
 
       <AlertModal open={deleteModal} onClose={handleCloseModal}>
         <Delete onClose={handleCloseModal} selected={selected} handleGetData={handleGetData} />
+      </AlertModal>
+      
+      <AlertModal open={scheduleModal} onClose={handleCloseModal}>
+        <StoreSchedule onClose={handleCloseModal} selected={selected} handleGetData={handleGetData} />
       </AlertModal>
     </>
   )

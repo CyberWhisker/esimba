@@ -8,12 +8,12 @@ export const fetchTransactions = async () => {
         })
         const data = await response.json()
         if (!response.ok) {
-            return {data: [], error: data.error}
+            return { data: [], error: data.error }
         } else {
-            return {data: data, error: null}
+            return { data: data, error: null }
         }
     } catch (error) {
-        return {data: [], error: error}
+        return { data: [], error: error }
     }
 }
 
@@ -31,11 +31,11 @@ export const storeTransaction = async (formData) => {
         })
         const data = await response.json()
         if (!response.ok) {
-            return {data: [], error: data.error}
+            return { data: [], error: data.error }
         } else {
-            return {data: data, error: null}
+            return { data: data, error: null }
         }
     } catch (error) {
-        return {data: [], error: error}
+        return { data: [], error: error }
     }
 }

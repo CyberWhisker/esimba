@@ -6,6 +6,7 @@ import { storeBaptism } from '../../../../api/baptismApi';
 import { storeConfirmation } from '../../../../api/confirmationApi';
 import { storeMarriage } from '../../../../api/marriageApi';
 import { storeDeath } from '../../../../api/deathApi';
+import { storeSchedule } from '../../../../api/scheduleApi';
 
 const headerStyle = {
     p: 2,
@@ -21,28 +22,16 @@ const footerStyle = {
     p: 2
 };
 
-function StoreCertificate({ selected, onClose, handleGetData }) {
+function StoreSchedule({ selected, onClose, handleGetData }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const newData = {
-            ...selected.data,
-            chapel: selected.parish,
             user: selected.user._id,
-            purpose: selected.purpose
+            parish: selected.parish,
+            request: selected._id
         }
-        if (selected.certificate == "Baptism Certificate") {
-            await handleSubmitBaptism(newData)
-        }
-        if (selected.certificate == "Death Certificate") {
-            await handleSubmitDeath(newData)
-        }
-        if (selected.certificate == "Marriage Certificate") {
-            await handleSubmitMarriage(newData)
-        }
-        if (selected.certificate == "Confirmation Certificate") {
-            await handleSubmitConfirmation(newData)
-        }
+        await handleSubmitSchedule(newData)
         await handleUpdateRequest(selected)
         onClose()
         handleGetData()
@@ -61,29 +50,8 @@ function StoreCertificate({ selected, onClose, handleGetData }) {
         }
     }
 
-    const handleSubmitBaptism = async (formData) => {
-        const { data, error } = await storeBaptism(formData)
-        if (error) {
-            toast.error(error)
-        }
-    }
-
-    const handleSubmitDeath = async (formData) => {
-        const { data, error } = await storeDeath(formData)
-        if (error) {
-            toast.error(error)
-        }
-    }
-
-    const handleSubmitMarriage = async (formData) => {
-        const { data, error } = await storeMarriage(formData)
-        if (error) {
-            toast.error(error)
-        }
-    }
-
-    const handleSubmitConfirmation = async (formData) => {
-        const { data, error } = await storeConfirmation(formData)
+    const handleSubmitSchedule = async (formData) => {
+        const { data, error } = await storeSchedule(formData)
         if (error) {
             toast.error(error)
         }
@@ -97,7 +65,7 @@ function StoreCertificate({ selected, onClose, handleGetData }) {
                 </Typography>
             </Box>
             <Typography id="delete-modal-description" sx={{ p: 2 }}>
-                This will create a certificate for this user
+                This will create a schedule for this user
             </Typography>
             <Divider />
             <form onSubmit={handleSubmit}>
@@ -114,4 +82,4 @@ function StoreCertificate({ selected, onClose, handleGetData }) {
     )
 }
 
-export default StoreCertificate
+export default StoreSchedule

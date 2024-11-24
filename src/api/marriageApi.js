@@ -17,6 +17,25 @@ export const fetchMarriage = async () => {
     }
 }
 
+export const fetchMarriageByUserId = async (id) => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/api/marriage/getDataByUserId/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        const data = await response.json()
+        if (!response.ok) {
+            return {data: [], error: data.error}
+        } else {
+            return {data: data, error: null}
+        }
+    } catch (error) {
+        return {data: [], error: error}
+    }
+}
+
 export const storeMarriage = async (dataForm) => {
     try {
         const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/api/marriage`, {

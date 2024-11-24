@@ -3,6 +3,7 @@ export { default as Membership } from './Membership/Membership'
 //Auth
 export { default as SignInPage } from './Auth/SignIn/SignIn'
 export { default as SignUpPage } from './Auth/SignUp/SignUp'
+
 //User
 export { default as UserDashboard } from './UserDashboard/UserDashboard'
 //Certificate
@@ -17,6 +18,10 @@ export { default as ScheduleBaptismForm } from './UserSchedule/Form/BaptismForm'
 export { default as ScheduleDeathForm } from './UserSchedule/Form/DeathForm'
 export { default as ScheduleMarriageForm } from './UserSchedule/Form/MarriageForm'
 export { default as ScheduleConfirmationForm } from './UserSchedule/Form/ConfirmationForm'
+//View Certificate
+export { default as UserViewCertificate } from './UserViewCertificate/UserViewCertificate'
+//View Schedule
+export { default as UserViewSchedule } from './UserViewSchedule/UserViewSchedule'
 
 // Admin
 export { default as AdminDashboard } from './AdminDashboard/AdminDashboard'

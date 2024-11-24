@@ -57,8 +57,8 @@ function AdminMarriage() {
           <Typography variant='h4' fontWeight={'bold'}>Marriage Certificate: </Typography>
           <Button variant='contained' endIcon={<Add />} color='warning' onClick={handleStoreModal}>Add Certificate</Button>
         </Stack>
-        <DataTable data={data} handleGetData={handleGetData} loading={loading} handlePrintFile={handlePrintFile} selected={selected} setSelected={setSelected}/>
-        <Certificate contentRef={contentRef} selected={selected}/>
+        <DataTable data={data} handleGetData={handleGetData} loading={loading} handlePrintFile={handlePrintFile} selected={selected} setSelected={setSelected} />
+        <Certificate contentRef={contentRef} selected={selected} />
       </Stack>
 
       <Drawer open={storeModal} anchor='right' onClose={handleCloseModal}>
@@ -110,7 +110,14 @@ function DataTable({ data, handleGetData, loading, handlePrintFile, selected, se
     },
     {
       field: 'name',
-      headerName: 'Name',
+      headerName: 'Owner',
+      flex: 1,
+      headerAlign: 'center',
+      headerClassName: 'headerStyle',
+    },
+    {
+      field: 'requester',
+      headerName: 'Requester',
       flex: 1,
       headerAlign: 'center',
       headerClassName: 'headerStyle',
@@ -158,7 +165,7 @@ function DataTable({ data, handleGetData, loading, handlePrintFile, selected, se
   const rows = data.map((item) => ({
     ...item,
     id: item._id,
-    name: `${item.user.firstName} ${item.user.lastName}`,
+    requester: `${item.user.firstName} ${item.user.lastName}`,
     createdAt: moment(item.createdAt).format('MMMM DD YYYY'),
     updatedAt: moment(item.updatedAt).format('MMMM DD YYYY')
   }))
@@ -220,7 +227,7 @@ function Certificate({ contentRef, selected }) {
     <div>
       <div style={{ display: 'none' }}>
         <div ref={contentRef} style={{ color: 'black' }}>
-          <MarriageLayout selected={selected}/>
+          <MarriageLayout selected={selected} />
         </div>
       </div>
     </div>
