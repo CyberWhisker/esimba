@@ -11,6 +11,8 @@ import { fetchRequestAppointment, updateRequest } from '../../../api/requestApi'
 import { toast } from 'react-toastify'
 import moment from 'moment'
 import StoreSchedule from './Form/StoreSchedule'
+import { fetchTransactionByRequestId } from '../../../api/transactionApi'
+import View from './Form/View'
 
 function RequestAppointment() {
   const [data, setData] = useState([])
@@ -150,11 +152,23 @@ function DataTable({data, loading, handleGetData}) {
       )
     },
     {
-      field: 'baptismDate',
+      field: 'createdAt',
       headerName: 'Date',
       flex: 1,
       headerAlign: 'center',
       headerClassName: 'headerStyle',
+    },
+    {
+      field: 'view',
+      headerName: 'View',
+      flex: 1,
+      headerAlign: 'center',
+      headerClassName: 'headerStyle',
+      renderCell: (params) => (
+        <Box sx={{ textAlign: 'center' }}>
+          <ViewButton params={params.row} handleGetData={handleGetData}/>
+        </Box>
+      )
     },
     {
       field: 'setting',
@@ -220,6 +234,34 @@ function DataTable({data, loading, handleGetData}) {
       <AlertModal open={scheduleModal} onClose={handleCloseModal}>
         <StoreSchedule onClose={handleCloseModal} selected={selected} handleGetData={handleGetData} />
       </AlertModal>
+    </>
+  )
+}
+
+function ViewButton({ params, handleGetData }) {
+  const [transactionData, setTransactionData] = useState([])
+  const [viewModal, setViewModal] = useState(false)
+
+  const handleGetTransaction = async () => {
+    const { data, error } = await fetchTransactionByRequestId(params._id)
+    if (!error) {
+      setTransactionData({
+        ...params,
+        transaction: data[0]
+      })
+    }
+  }
+
+  useEffect(() => {
+    handleGetTransaction()
+  }, [])
+
+  return (
+    <>
+      <Button variant='contained' onClick={() => setViewModal(true)}>Transaction</Button>
+      <Drawer open={viewModal} anchor='right' onClose={() => setViewModal(false)}>
+        <View selected={transactionData} onClose={() => setViewModal(false)} handleGetData={handleGetData}/>
+      </Drawer>
     </>
   )
 }

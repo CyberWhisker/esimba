@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import MasterAdmin from '../../layouts/MasterAdmin'
-import { Box, Divider, Grid2, MenuItem, Stack, Typography } from '@mui/material'
+import { Box, colors, Divider, Grid2, MenuItem, Stack, Typography } from '@mui/material'
 import CustomCard from '../../components/CustomCard'
 import { ChevronRight } from '@mui/icons-material'
 import { DateCalendar, LocalizationProvider } from '@mui/x-date-pickers'
@@ -12,6 +12,8 @@ import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
 import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
 import { AuthContext } from '../../context/AuthContext'
 import { fetchScheduleByParishId } from '../../api/scheduleApi'
+import { fetchRequestAppointment, fetchRequestCertificate } from '../../api/requestApi'
+import { fetchTransactionByChapelId } from '../../api/transactionApi'
 
 function AdminDashboard() {
   const handleAuthAlert = async () => {
@@ -61,8 +63,18 @@ function AdminDashboard() {
 }
 
 function AppointmentList() {
+  const [data, setData] = useState([])
+  const handleGetData = async () => {
+    const { data, error } = await fetchRequestAppointment()
+    if (!error) {
+      setData(data.filter((item) => item.status == "Pending"))
+    }
+  }
+  useEffect(() => {
+    handleGetData()
+  }, [])
   return (
-    <Stack spacing={2}>
+    <Stack spacing={1}>
       <Box sx={{
         display: 'flex',
         justifyContent: 'space-between',
@@ -72,41 +84,65 @@ function AppointmentList() {
         <ChevronRight />
       </Box>
       <Divider />
-      <MenuItem>Marriage</MenuItem>
+      <Typography color='primary' variant='h4' textAlign={'center'} fontWeight={'bold'}>{data.length}</Typography>
     </Stack>
   )
 }
 
 function CertificateList() {
+  const [data, setData] = useState([])
+  const handleGetData = async () => {
+    const { data, error } = await fetchRequestCertificate()
+    if (!error) {
+      setData(data.filter((item) => item.status == "Pending"))
+    }
+  }
+  useEffect(() => {
+    handleGetData()
+  }, [])
   return (
-    <Stack spacing={2}>
+    <Stack spacing={1}>
       <Box sx={{
         display: 'flex',
         justifyContent: 'space-between',
         p: 1
       }}>
-        <Typography>Certifcate Request</Typography>
+        <Typography>Pending Certificates</Typography>
         <ChevronRight />
       </Box>
       <Divider />
-      <MenuItem>Marriage</MenuItem>
+      <Typography color='warning' variant='h4' textAlign={'center'} fontWeight={'bold'}>{data.length}</Typography>
     </Stack>
   )
 }
 
 function RecordList() {
+  const { auth } = useContext(AuthContext)
+  const [data, setData] = useState([])
+  const handleGetData = async () => {
+    const { data, error } = await fetchTransactionByChapelId(auth.user.parish._id)
+    if (!error) {
+      const filteredData = data
+        .filter((item) => item.request?.status === "Approve")
+        .reduce((sum, item) => sum + (item.amount || 0), 0);
+      setData(filteredData)
+    }
+  }
+  useEffect(() => {
+    handleGetData()
+  }, [])
   return (
-    <Stack spacing={2}>
+    <Stack spacing={1}>
       <Box sx={{
         display: 'flex',
         justifyContent: 'space-between',
         p: 1
       }}>
-        <Typography>Records</Typography>
+        <Typography>Funds</Typography>
         <ChevronRight />
       </Box>
       <Divider />
-      <MenuItem>Marriage</MenuItem>
+      <Typography color='success' variant='h4' textAlign={'center'} fontWeight={'bold'}>₱ {data}</Typography>
     </Stack>
   )
 }
@@ -114,6 +150,7 @@ function RecordList() {
 function ScheduleList() {
   const { auth } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
+
 
   const handleDateClick = (arg) => {
     const clickedDate = moment(arg.date).startOf('day').toISOString();
@@ -136,9 +173,9 @@ function ScheduleList() {
           item.request.certificate == "Baptism Certificate" && "Baptism Appointment" ||
           item.request.certificate == "Death Certificate" && "Death Appointment" ||
           item.request.certificate == "Marriage Certificate" && "Marriage Appointment" ||
-          item.request.certificate == "Confirmation Certificate" && "Confirmation Appointment"
-        , // Event title
-        start: moment(item.request.schedule).toISOString(), // Ensure proper date format for FullCalendar
+          item.request.certificate == "Confirmation Certificate" && "Confirmation Appointment",
+        date: moment(item.createdAt).format("YYYY-MM-DD"),
+        color: 'danger'
       }));
       setEvents(mappedEvents);
     }
@@ -146,7 +183,7 @@ function ScheduleList() {
 
   useEffect(() => {
     handleGetSchedule();
-  }, []); // Empty dependency array ensures it runs only once on mount
+  }, []);
 
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -168,11 +205,11 @@ function ScheduleList() {
           }}
         >
           <FullCalendar
-            plugins={[dayGridPlugin, interactionPlugin]}
+            plugins={[dayGridPlugin]}
+            initialView="dayGridMonth"
+            weekends={false}
             events={events}
-            dateClick={handleDateClick}
             height={'80vh'}
-            displayEventTime={false} // Removes time from the event display
           />
         </Box>
       </Stack>

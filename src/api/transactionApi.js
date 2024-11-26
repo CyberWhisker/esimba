@@ -17,6 +17,44 @@ export const fetchTransactions = async () => {
     }
 }
 
+export const fetchTransactionByRequestId = async (id) => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/api/transaction/getDataByRequestId/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        const data = await response.json()
+        if (!response.ok) {
+            return { data: [], error: data.error }
+        } else {
+            return { data: data, error: null }
+        }
+    } catch (error) {
+        return { data: [], error: error }
+    }
+}
+
+export const fetchTransactionByChapelId = async (id) => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/api/transaction/getDataByChapelId/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        const data = await response.json()
+        if (!response.ok) {
+            return { data: [], error: data.error }
+        } else {
+            return { data: data, error: null }
+        }
+    } catch (error) {
+        return { data: [], error: error }
+    }
+}
+
 export const storeTransaction = async (formData) => {
     const formDataObject = new FormData();
     for (const key in formData) {

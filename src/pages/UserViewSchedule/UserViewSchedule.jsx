@@ -20,7 +20,7 @@ function UserViewSchedule() {
       </Box>
       <Box sx={{ pb: 2 }}>
         <CustomCard>
-          <ScheduleList/>
+          <ScheduleList />
         </CustomCard>
       </Box>
     </Master>
@@ -29,7 +29,7 @@ function UserViewSchedule() {
 
 function ScheduleList() {
   const [events, setEvents] = useState([]);
-  const {auth} = useContext(AuthContext)
+  const { auth } = useContext(AuthContext)
 
   const handleDateClick = (arg) => {
     const clickedDate = moment(arg.date).startOf('day').toISOString();
@@ -53,10 +53,7 @@ function ScheduleList() {
           item.request.certificate == "Death Certificate" && "Death Appointment" ||
           item.request.certificate == "Marriage Certificate" && "Marriage Appointment" ||
           item.request.certificate == "Confirmation Certificate" && "Confirmation Appointment",
-        start: moment(item.request.schedule).toISOString(),
-        extendedProps: {
-          type: 'success', // Add a custom prop to determine the color
-        },
+        date: moment(item.createdAt).format("YYYY-MM-DD")
       }));
       setEvents(mappedEvents);
     }
