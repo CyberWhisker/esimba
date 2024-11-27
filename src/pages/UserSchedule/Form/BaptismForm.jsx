@@ -59,6 +59,13 @@ function FormSection() {
     })
   }
 
+  const handleRequestDateChange = (name, value) => {
+    setFormData({
+      ...formData,
+      [name]: value
+    })
+  }
+
   const handleDataChange = (e) => {
     setFormData({
       ...formData,
@@ -84,7 +91,6 @@ function FormSection() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log(formData)
     const { data, error } = await storeRequest(formData)
     if (error) {
       toast.error(error)
@@ -112,7 +118,7 @@ function FormSection() {
       <form style={{ width: '100%' }} onSubmit={handleSubmit}>
         <Stack direction={'column'} spacing={1}>
           <Typography variant='h4' fontWeight={'bold'}>Requester Information</Typography>
-          <RequesterForm handleRequestChange={handleRequestChange} formData={formData} />
+          <RequesterForm handleRequestChange={handleRequestChange} formData={formData} handleRequestDateChange={handleRequestDateChange}/>
           <Divider />
           <Typography variant='h4' fontWeight={'bold'}>Personal Information</Typography>
           <Stack direction={'row'} spacing={2}>
@@ -152,7 +158,7 @@ function FormSection() {
   )
 }
 
-function RequesterForm({ handleRequestChange, formData }) {
+function RequesterForm({ handleRequestChange, formData, handleRequestDateChange }) {
   const [chapelData, setChapelData] = useState([])
 
   const handleGetChapel = async () => {
@@ -174,7 +180,7 @@ function RequesterForm({ handleRequestChange, formData }) {
           ))}
         </TextField>
         {formData.parish ? 
-        <DateSchedulePicker handleRequestChange={handleRequestChange} formData={formData} /> :
+        <DateSchedulePicker handleRequestDateChange={handleRequestDateChange} formData={formData} /> :
         <TextField sx={{ width: "100%"}} disabled label="Select Date Appointment" value="Please Select Chapel"/>
       }
         <TextField label='Role or Connection' sx={{ width: '100%' }} defaultValue={''} name='person' onChange={handleRequestChange} select required>
@@ -187,7 +193,7 @@ function RequesterForm({ handleRequestChange, formData }) {
   )
 }
 
-function DateSchedulePicker({ handleRequestChange, formData }) {
+function DateSchedulePicker({ handleRequestDateChange, formData }) {
   const [disabledDatesData, setDisabledDatesData] = useState([]);
 
   // Function to disable specific dates
@@ -215,7 +221,7 @@ function DateSchedulePicker({ handleRequestChange, formData }) {
       label="Select Date Appointment"
       name="schedule"
       shouldDisableDate={shouldDisableDate} // Disable specific dates
-      onChange={(value) => handleRequestChange('schedule', value)}
+      onChange={(value) => handleRequestDateChange('schedule', value)}
     />
   );
 }

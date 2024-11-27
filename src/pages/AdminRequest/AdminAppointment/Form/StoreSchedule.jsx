@@ -29,7 +29,8 @@ function StoreSchedule({ selected, onClose, handleGetData }) {
         const newData = {
             user: selected.user._id,
             parish: selected.parish,
-            request: selected._id
+            request: selected._id,
+            date: selected.schedule
         }
         await handleSubmitSchedule(newData)
         await handleUpdateRequest(selected)

@@ -4,7 +4,7 @@ import { Box, Button, Drawer, Menu, MenuItem, Stack, Typography, useTheme } from
 import { Add } from '@mui/icons-material'
 import { DataGrid, GridMoreVertIcon, GridToolbar } from '@mui/x-data-grid'
 import CustomCard from '../../components/CustomCard'
-import { fetchUserByChapelId, fetchUsers } from '../../api/userApi'
+import { fetchUserByChapelId } from '../../api/userApi'
 import { toast } from 'react-toastify'
 import Store from './Form/Store'
 import Update from './Form/Update'
@@ -100,6 +100,13 @@ function AdminUser() {
         {
             field: 'middleName',
             headerName: 'Middle Name',
+            flex: 1,
+            headerAlign: 'center',
+            headerClassName: 'headerStyle',
+        },
+        {
+            field: 'email',
+            headerName: 'Email',
             flex: 1,
             headerAlign: 'center',
             headerClassName: 'headerStyle',

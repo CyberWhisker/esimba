@@ -40,7 +40,7 @@ function App() {
 
         {/* Admin Routes */}
         <Route path='/admin/dashboard' element={auth ? <AdminDashboard/> : <SignInPage/>} />
-        <Route path='/user' element={<AdminUser />}/>
+        <Route path='/user' element={auth ? <AdminUser /> : <SignInPage/>}/>
         <Route path='/request/appointment' element={auth ? <AdminRequestAppointment /> : <SignInPage/>}/>
         <Route path='/request/certificate' element={auth ? <AdminRequestCertificate />  : <SignInPage/>}/>
         <Route path='/certificate/baptism' element={auth ? <AdminBaptism /> : <SignInPage/>}/>

@@ -53,7 +53,7 @@ function ScheduleList() {
           item.request.certificate == "Death Certificate" && "Death Appointment" ||
           item.request.certificate == "Marriage Certificate" && "Marriage Appointment" ||
           item.request.certificate == "Confirmation Certificate" && "Confirmation Appointment",
-        date: moment(item.createdAt).format("YYYY-MM-DD")
+        date: moment(item.date).format("YYYY-MM-DD")
       }));
       setEvents(mappedEvents);
     }

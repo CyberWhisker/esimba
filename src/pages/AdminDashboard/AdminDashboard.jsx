@@ -174,9 +174,9 @@ function ScheduleList() {
           item.request.certificate == "Death Certificate" && "Death Appointment" ||
           item.request.certificate == "Marriage Certificate" && "Marriage Appointment" ||
           item.request.certificate == "Confirmation Certificate" && "Confirmation Appointment",
-        date: moment(item.createdAt).format("YYYY-MM-DD"),
-        color: 'danger'
+        date: moment(item.date).format("YYYY-MM-DD"),
       }));
+      console.log(mappedEvents)
       setEvents(mappedEvents);
     }
   };
@@ -207,7 +207,6 @@ function ScheduleList() {
           <FullCalendar
             plugins={[dayGridPlugin]}
             initialView="dayGridMonth"
-            weekends={false}
             events={events}
             height={'80vh'}
           />
