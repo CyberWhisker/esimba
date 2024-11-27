@@ -20,11 +20,14 @@ export { default as ScheduleMarriageForm } from './UserSchedule/Form/MarriageFor
 export { default as ScheduleConfirmationForm } from './UserSchedule/Form/ConfirmationForm'
 //View Certificate
 export { default as UserViewCertificate } from './UserViewCertificate/UserViewCertificate'
-//View Schedule
+//View Donation
 export { default as UserViewSchedule } from './UserViewSchedule/UserViewSchedule'
+//View Schedule
+export { default as UserDonation } from './UserDonation/UserDonation'
 
 // Admin
 export { default as AdminDashboard } from './AdminDashboard/AdminDashboard'
 export { default as AdminUser } from './AdminUser/AdminUser'
 export { default as AdminSchedule } from './AdminSchedule/AdminSchedule'
 export { default as AdminTransaction } from './AdminTransaction/AdminTransaction'
+export { default as AdminDonation } from './AdminDonation/AdminDonation'

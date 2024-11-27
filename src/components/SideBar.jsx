@@ -2,7 +2,7 @@ import { Box, Divider, Stack, useTheme } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Menu, MenuItem, Sidebar, SubMenu } from 'react-pro-sidebar';
 import Logo from '/appImg/Logo.png';
-import { CalendarMonth, ChevronLeft, CreditCard, Dashboard, Note, Pending, Person, PinDrop } from '@mui/icons-material';
+import { CalendarMonth, ChevronLeft, CreditCard, Dashboard, Handshake, Note, Pending, Person, PinDrop } from '@mui/icons-material';
 import { Link, useLocation } from 'react-router-dom';
 
 function SideBar() {
@@ -127,6 +127,10 @@ function AdminNavList() {
 
       <MenuItem icon={<CreditCard />} component={<Link to='/transaction' />} active={location.pathname == '/transaction'}>
         Transcation
+      </MenuItem>
+
+      <MenuItem icon={<Handshake />} component={<Link to='/donation' />} active={location.pathname == '/donation'}>
+        Donation
       </MenuItem>
     </>
   );

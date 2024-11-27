@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { RequestBaptismForm, RequestConfirmationForm, RequestDeathForm, UserDashboard, RequestMarriageForm, SignInPage, SignUpPage, UserCertificate, ScheduleBaptismForm, ScheduleDeathForm, ScheduleMarriageForm, ScheduleConfirmationForm, UserSchedule, AdminDashboard, AdminUser, Landing, Membership, AdminSchedule, UserViewCertificate, UserViewSchedule, AdminTransaction } from './pages'
+import { RequestBaptismForm, RequestConfirmationForm, RequestDeathForm, UserDashboard, RequestMarriageForm, SignInPage, SignUpPage, UserCertificate, ScheduleBaptismForm, ScheduleDeathForm, ScheduleMarriageForm, ScheduleConfirmationForm, UserSchedule, AdminDashboard, AdminUser, Landing, Membership, AdminSchedule, UserViewCertificate, UserViewSchedule, AdminTransaction, AdminDonation, UserDonation } from './pages'
 import { AuthContext } from './context/AuthContext';
 import SignUpAdmin from './pages/Auth/SIngUpAdmin/SignUpAdmin';
 import { AdminBaptism, AdminConfirmation, AdminDeath, AdminMarriage } from './pages/AdminCertificate';
@@ -21,6 +21,7 @@ function App() {
 
         {/* User Routes */}
         <Route path='/user/dashboard' element={auth ? <UserDashboard/> : <SignInPage/>} />
+        <Route path='/user/donation' element={auth ? <UserDonation/> : <SignInPage/>} />
         {/* Schedule */}
         <Route path='/user/schedule' element={auth ? <UserSchedule /> : <SignInPage/>}/>
         <Route path='/user/schedule/baptism' element={auth ? <ScheduleBaptismForm /> : <SignInPage/>}/>
@@ -49,6 +50,7 @@ function App() {
         <Route path='/certificate/confirmation' element={auth ? <AdminConfirmation /> : <SignInPage/>}/>
         <Route path='/schedule' element={auth ? <AdminSchedule /> : <SignInPage/>}/>
         <Route path='/transaction' element={auth ? <AdminTransaction /> : <SignInPage/>}/>
+        <Route path='/donation' element={auth ? <AdminDonation /> : <SignInPage/>}/>
       </Routes>
     </BrowserRouter>
   )
