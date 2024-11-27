@@ -2,7 +2,7 @@ import { Box, Divider, Stack, useTheme } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Menu, MenuItem, Sidebar, SubMenu } from 'react-pro-sidebar';
 import Logo from '/appImg/Logo.png';
-import { CalendarMonth, ChevronLeft, Dashboard, Note, Pending, Person, PinDrop } from '@mui/icons-material';
+import { CalendarMonth, ChevronLeft, CreditCard, Dashboard, Note, Pending, Person, PinDrop } from '@mui/icons-material';
 import { Link, useLocation } from 'react-router-dom';
 
 function SideBar() {
@@ -108,21 +108,25 @@ function AdminNavList() {
 
       <SubMenu label='Certificate' icon={<Pending />} open={openCertificate} onClick={handleOpenCertificate}>
         <MenuItem icon={<Note />} component={<Link to='/certificate/baptism' />} active={location.pathname == '/certificate/baptism'}>
-          Baptism 
+          Baptism
         </MenuItem>
         <MenuItem icon={<Note />} component={<Link to='/certificate/death' />} active={location.pathname == '/certificate/death'}>
-          Death 
+          Death
         </MenuItem>
         <MenuItem icon={<Note />} component={<Link to='/certificate/marriage' />} active={location.pathname == '/certificate/marriage'}>
-          Marriage 
+          Marriage
         </MenuItem>
         <MenuItem icon={<Note />} component={<Link to='/certificate/confirmation' />} active={location.pathname == '/certificate/confirmation'}>
-          Confirmation 
+          Confirmation
         </MenuItem>
       </SubMenu>
 
       <MenuItem icon={<CalendarMonth />} component={<Link to='/schedule' />} active={location.pathname == '/schedule'}>
         Schedules
+      </MenuItem>
+
+      <MenuItem icon={<CreditCard />} component={<Link to='/transaction' />} active={location.pathname == '/transaction'}>
+        Transcation
       </MenuItem>
     </>
   );

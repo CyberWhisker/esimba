@@ -27,3 +27,4 @@ export { default as UserViewSchedule } from './UserViewSchedule/UserViewSchedule
 export { default as AdminDashboard } from './AdminDashboard/AdminDashboard'
 export { default as AdminUser } from './AdminUser/AdminUser'
 export { default as AdminSchedule } from './AdminSchedule/AdminSchedule'
+export { default as AdminTransaction } from './AdminTransaction/AdminTransaction'

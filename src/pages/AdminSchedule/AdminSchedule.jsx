@@ -200,7 +200,6 @@ function ReleaseCertificateButton({ params, setSelected, setCertificateModal }) 
     setSelected(params)
     setCertificateModal(true)
   }
-  console.log(params)
   return (
     <>
       {params.release && (

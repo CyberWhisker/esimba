@@ -50,13 +50,8 @@ function Store({ onClose, handleGetData }) {
                 <TextField label='Email' name='email' onChange={handleChange}/>
                 <TextField label='Password' name='password' onChange={handleChange}/>
                 <TextField label='Role' select value={dataForm.role} name='role' onChange={handleChange}>
-                    <MenuItem value={1}>Super Admin</MenuItem>
                     <MenuItem value={2}>Admin</MenuItem>
                     <MenuItem value={3}>User</MenuItem>
-                </TextField>
-                <TextField label='Subscription' select value={dataForm.subscription} name='subscription' onChange={handleChange}>
-                    <MenuItem value={1}>Premium</MenuItem>
-                    <MenuItem value={2}>Trial</MenuItem>
                 </TextField>
                 <Button variant='contained' onClick={handleSubmit}>Submit</Button>
             </Stack>

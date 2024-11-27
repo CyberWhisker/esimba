@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { RequestBaptismForm, RequestConfirmationForm, RequestDeathForm, UserDashboard, RequestMarriageForm, SignInPage, SignUpPage, UserCertificate, ScheduleBaptismForm, ScheduleDeathForm, ScheduleMarriageForm, ScheduleConfirmationForm, UserSchedule, AdminDashboard, AdminUser, Landing, Membership, AdminSchedule, UserViewCertificate, UserViewSchedule } from './pages'
+import { RequestBaptismForm, RequestConfirmationForm, RequestDeathForm, UserDashboard, RequestMarriageForm, SignInPage, SignUpPage, UserCertificate, ScheduleBaptismForm, ScheduleDeathForm, ScheduleMarriageForm, ScheduleConfirmationForm, UserSchedule, AdminDashboard, AdminUser, Landing, Membership, AdminSchedule, UserViewCertificate, UserViewSchedule, AdminTransaction } from './pages'
 import { AuthContext } from './context/AuthContext';
 import SignUpAdmin from './pages/Auth/SIngUpAdmin/SignUpAdmin';
 import { AdminBaptism, AdminConfirmation, AdminDeath, AdminMarriage } from './pages/AdminCertificate';
@@ -48,6 +48,7 @@ function App() {
         <Route path='/certificate/death' element={auth ? <AdminDeath /> : <SignInPage/>}/>
         <Route path='/certificate/confirmation' element={auth ? <AdminConfirmation /> : <SignInPage/>}/>
         <Route path='/schedule' element={auth ? <AdminSchedule /> : <SignInPage/>}/>
+        <Route path='/transaction' element={auth ? <AdminTransaction /> : <SignInPage/>}/>
       </Routes>
     </BrowserRouter>
   )

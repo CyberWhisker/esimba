@@ -39,7 +39,6 @@ function Update({selected, handleGetData, onClose}) {
                 <TextField label='Email' name='email' onChange={handleChange} value={formData.email}/>
                 <TextField label='Reset Password' name='resetPassword' onChange={handleChange}/>
                 <TextField label='Role' select value={formData.role} name='role' onChange={handleChange}>
-                    <MenuItem value={1}>Super Admin</MenuItem>
                     <MenuItem value={2}>Admin</MenuItem>
                     <MenuItem value={3}>User</MenuItem>
                 </TextField>

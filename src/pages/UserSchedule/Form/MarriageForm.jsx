@@ -85,19 +85,19 @@ function FormSection() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     console.log(formData)
-    const { data, error } = await storeRequest(formData)
-    if (error) {
-      toast.error(error)
-    } else {
-      const transactionData = {
-        user: auth.user._id,
-        request: data._id,
-        chapel: data.parish,
-        file: formData.file,
-        amount: formData.amount,
-      }
-      await handleSubmitTransaction(transactionData)
-    }
+    // const { data, error } = await storeRequest(formData)
+    // if (error) {
+    //   toast.error(error)
+    // } else {
+    //   const transactionData = {
+    //     user: auth.user._id,
+    //     request: data._id,
+    //     chapel: data.parish,
+    //     file: formData.file,
+    //     amount: formData.amount,
+    //   }
+    //   await handleSubmitTransaction(transactionData)
+    // }
   }
 
   const handleSubmitTransaction = async (transactionData) => {
@@ -137,6 +137,8 @@ function FormSection() {
             <TextField label='Sponsor Name' sx={{ width: '100%' }} name='witness2' onChange={handleDataChange} />
           </Stack>
           <TextField label='Priest' name='priest' onChange={handleDataChange} />
+
+          {/* <Requirements formData={formData} setFormData={setFormData}/> */}
 
           <Divider />
           <Typography variant='h4' fontWeight={'bold'}>Payment</Typography>
@@ -221,6 +223,64 @@ function DateSchedulePicker({ handleRequestChange, formData }) {
       onChange={(value) => handleRequestChange('schedule', value)}
     />
   );
+}
+
+function Requirements({setFormData, formData}) {
+  return (
+    <Box>
+      <Divider />
+      <Stack spacing={1}>
+        <Typography variant='h4' fontWeight={'bold'} pt={1}>Requirement</Typography>
+        <NewMarriage setFormData={setFormData}/>
+      </Stack>
+    </Box>
+  )
+}
+
+function NewMarriage({setFormData}) {
+
+  const handleFileChange = () => {
+    setFormData({
+
+    })
+  }
+
+  return (
+    <>
+      <Typography>CENOMAR (Certificate of No Marriage)</Typography>
+      <TextField type='file' sx={{ width: '100%' }} />
+      <Grid2 container spacing={2}>
+        <Grid2 size="grow">
+          <Typography>Marriage License</Typography>
+          <TextField type='file' sx={{ width: '100%' }} />
+        </Grid2>
+        <Grid2 size="grow">
+          <Typography>ID Picture</Typography>
+          <TextField type='file' sx={{ width: '100%' }} />
+        </Grid2>
+      </Grid2>
+      <Grid2 container spacing={2}>
+        <Grid2 size="grow">
+          <Typography>Baptismal Certificate w/ annotation of "for marriage purposes"</Typography>
+          <TextField type='file' sx={{ width: '100%' }} />
+        </Grid2>
+        <Grid2 size="grow">
+          <Typography>Confirmation Certificate w/ annotation of "for marriage purposes"</Typography>
+          <TextField type='file' sx={{ width: '100%' }} />
+        </Grid2>
+      </Grid2>
+      <Grid2 container spacing={2}>
+        <Grid2 size="grow">
+          <Typography>3 Banns Publications </Typography>
+          <TextField type='file' sx={{ width: '100%' }} />
+        </Grid2>
+        <Grid2 size="grow">
+          <Typography>Parents Permission (18-24 years old)</Typography>
+          <TextField type='file' sx={{ width: '100%' }} />
+        </Grid2>
+      </Grid2>
+    </>
+  )
 }
 
 export default MarriageForm
