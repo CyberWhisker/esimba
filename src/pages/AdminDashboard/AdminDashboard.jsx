@@ -14,6 +14,7 @@ import { AuthContext } from '../../context/AuthContext'
 import { fetchScheduleByParishId } from '../../api/scheduleApi'
 import { fetchRequestAppointment, fetchRequestCertificate } from '../../api/requestApi'
 import { fetchTransactionByChapelId } from '../../api/transactionApi'
+import { Link } from 'react-router-dom'
 
 function AdminDashboard() {
   const handleAuthAlert = async () => {
@@ -34,17 +35,44 @@ function AdminDashboard() {
         <Grid2 container spacing={2}>
           <Grid2 size='grow'>
             <CustomCard>
-              <AppointmentList />
+              <Box component={Link} to={'/request/appointment'}
+                sx={{
+                  textDecoration: 'none',
+                  color: 'inherit', // Inherit the text color from the parent
+                  '&:hover': {
+                    textDecoration: 'none', // Prevent underline on hover
+                  },
+                }}>
+                <AppointmentList />
+              </Box>
             </CustomCard>
           </Grid2>
           <Grid2 size='grow'>
             <CustomCard>
-              <CertificateList />
+              <Box component={Link} to={'/request/certificate'}
+                sx={{
+                  textDecoration: 'none',
+                  color: 'inherit', // Inherit the text color from the parent
+                  '&:hover': {
+                    textDecoration: 'none', // Prevent underline on hover
+                  },
+                }}>
+                <CertificateList />
+              </Box>
             </CustomCard>
           </Grid2>
           <Grid2 size='grow'>
             <CustomCard>
-              <RecordList />
+              <Box component={Link} to={'/transaction'}
+                sx={{
+                  textDecoration: 'none',
+                  color: 'inherit', // Inherit the text color from the parent
+                  '&:hover': {
+                    textDecoration: 'none', // Prevent underline on hover
+                  },
+                }}>
+                <RecordList />
+              </Box>
             </CustomCard>
           </Grid2>
         </Grid2>
@@ -176,7 +204,6 @@ function ScheduleList() {
           item.request.certificate == "Confirmation Certificate" && "Confirmation Appointment",
         date: moment(item.date).format("YYYY-MM-DD"),
       }));
-      console.log(mappedEvents)
       setEvents(mappedEvents);
     }
   };
