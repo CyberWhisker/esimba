@@ -36,6 +36,25 @@ export const fetchScheduleByUserId = async (id) => {
     }
 }
 
+export const fetchScheduleByDate = async (id) => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/api/schedule/getDataByDate/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        const data = await response.json()
+        if (!response.ok) {
+            return {data: [], error: data.error}
+        } else {
+            return {data: data, error: null}
+        }
+    } catch (error) {
+        return {data: [], error: error}
+    }
+}
+
 export const fetchScheduleByParishId = async (id) => {
     try {
         const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/api/schedule/getDataByParishId/${id}`, {

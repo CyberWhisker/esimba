@@ -1,6 +1,7 @@
 export { default as Landing } from './Landing/Landing'
 export { default as Membership } from './Membership/Membership'
 //Auth
+export { default as SelectRegistration } from './SelectRegistration/SelectRegistration'
 export { default as SignInPage } from './Auth/SignIn/SignIn'
 export { default as SignUpPage } from './Auth/SignUp/SignUp'
 

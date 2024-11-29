@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Button, Chip, Divider, Drawer, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
-import { Add } from '@mui/icons-material'
-import { DataGrid, GridMoreVertIcon, GridToolbar } from '@mui/x-data-grid'
+import { Add, ApprovalRounded, Cancel, DeleteOutline } from '@mui/icons-material'
+import { DataGrid, GridActionsCellItem, GridMoreVertIcon, GridToolbar } from '@mui/x-data-grid'
 import CustomCard from '../../../components/CustomCard'
 import AlertModal from '../../../components/AlertModal'
 import Store from './Form/Store'
@@ -13,6 +13,7 @@ import moment from 'moment'
 import StoreSchedule from './Form/StoreSchedule'
 import { fetchTransactionByRequestId } from '../../../api/transactionApi'
 import View from './Form/View'
+import AlertModalLarge from '../../../components/AlertModalLarge'
 
 function RequestAppointment() {
   const [data, setData] = useState([])
@@ -50,29 +51,29 @@ function RequestAppointment() {
           <Button onClick={handleStoreModal} variant='contained' endIcon={<Add />} color='warning'>Add Request</Button>
         </Stack>
         <Divider />
-        <DataTable data={data} loading={loading} handleGetData={handleGetData}/>
+        <DataTable data={data} loading={loading} handleGetData={handleGetData} />
       </Stack>
       <Drawer anchor='right' open={storeModal} onClose={handleCloseModal}>
-        <Store onClose={handleCloseModal} handleGetData={handleGetData}/>
+        <Store onClose={handleCloseModal} handleGetData={handleGetData} />
       </Drawer>
     </MasterAdmin>
   )
 }
 
-function DataTable({data, loading, handleGetData}) {
+function DataTable({ data, loading, handleGetData }) {
   const theme = useTheme();
-  const [anchorEl, setAnchorEl] = useState(null);
   const [selected, setSelected] = useState(null);
   const [deleteModal, setDeleteModal] = useState(false);
   const [scheduleModal, setScheduleModal] = useState(false);
 
-  const handleApprove = async () => {
+  const handleApprove = async (params) => {
+    setSelected(params)
     setScheduleModal(true)
   }
 
-  const handleCancel = async () => {
+  const handleCancel = async (params) => {
     const newData = {
-      ...selected,
+      ...params,
       status: 'Pending'
     }
     const { data, error } = await updateRequest(newData)
@@ -94,15 +95,6 @@ function DataTable({data, loading, handleGetData}) {
   const handleCloseModal = () => {
     setDeleteModal(false)
     setScheduleModal(false)
-  }
-
-  const handleMenuOpen = (event, item) => {
-    setAnchorEl(event.currentTarget)
-    setSelected(item)
-  }
-
-  const handleMenuClose = (event, item) => {
-    setAnchorEl(null)
   }
 
   const rows = data.map((item) => ({
@@ -143,10 +135,10 @@ function DataTable({data, loading, handleGetData}) {
       renderCell: (params) => (
         <Box sx={{ textAlign: 'center' }}>
           {params.row.status != "Pending" && (
-            <Chip label="Approve" color='success'/>
+            <Chip label="Approve" color='success' />
           )}
           {params.row.status == "Pending" && (
-            <Chip label="Pending" color='warning'/>
+            <Chip label="Pending" color='warning' />
           )}
         </Box>
       )
@@ -166,21 +158,40 @@ function DataTable({data, loading, handleGetData}) {
       headerClassName: 'headerStyle',
       renderCell: (params) => (
         <Box sx={{ textAlign: 'center' }}>
-          <ViewButton params={params.row} handleGetData={handleGetData}/>
+          <ViewButton params={params.row} handleGetData={handleGetData} />
         </Box>
       )
     },
     {
-      field: 'setting',
-      headerName: 'Setting',
-      flex: 1,
+      field: 'actions',
+      headerName: 'Actions',
+      type: 'actions',
+      cellClassName: 'actions',
       headerAlign: 'center',
+      flex: 1,
       headerClassName: 'headerStyle',
-      renderCell: (params) => (
-        <Box sx={{ textAlign: 'center' }}>
-          <GridMoreVertIcon onClick={(e) => handleMenuOpen(e, params.row)} sx={{ cursor: 'pointer' }} />
-        </Box>
-      )
+      getActions: (params) => {
+        return [
+          <GridActionsCellItem
+            icon={<ApprovalRounded />}
+            label="Approve"
+            onClick={() => handleApprove(params.row)}
+            color="success"
+          />,
+          <GridActionsCellItem
+            icon={<Cancel />}
+            label="Approve"
+            onClick={() => handleCancel(params.row)}
+            color="warning"
+          />,
+          <GridActionsCellItem
+            icon={<DeleteOutline />}
+            label="Delete"
+            onClick={() => handleDeleteModal(params.row)}
+            color="error"
+          />,
+        ];
+      },
     }
   ]
   return (
@@ -211,29 +222,14 @@ function DataTable({data, loading, handleGetData}) {
           />
         </Box>
       </CustomCard>
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-      >
-        <MenuItem onClick={handleApprove}>
-          <Typography color="success.main">Approve</Typography>
-        </MenuItem>
-        <MenuItem onClick={handleCancel}>
-          <Typography color="warning.main">Cancel</Typography>
-        </MenuItem>
-        <MenuItem onClick={handleDeleteModal}>
-          <Typography color="error.main">Remove</Typography>
-        </MenuItem>
-      </Menu>
 
       <AlertModal open={deleteModal} onClose={handleCloseModal}>
         <Delete onClose={handleCloseModal} selected={selected} handleGetData={handleGetData} />
       </AlertModal>
-      
-      <AlertModal open={scheduleModal} onClose={handleCloseModal}>
+
+      <AlertModalLarge open={scheduleModal} onClose={handleCloseModal}>
         <StoreSchedule onClose={handleCloseModal} selected={selected} handleGetData={handleGetData} />
-      </AlertModal>
+      </AlertModalLarge>
     </>
   )
 }
@@ -258,9 +254,13 @@ function ViewButton({ params, handleGetData }) {
 
   return (
     <>
-      <Button variant='contained' onClick={() => setViewModal(true)}>Transaction</Button>
+      {transactionData.transaction ?
+        <Button variant='contained' onClick={() => setViewModal(true)}>Transaction</Button> :
+        <Button variant='contained' disabled color='error'>Unavilable</Button>
+      }
+
       <Drawer open={viewModal} anchor='right' onClose={() => setViewModal(false)}>
-        <View selected={transactionData} onClose={() => setViewModal(false)} handleGetData={handleGetData}/>
+        <View selected={transactionData} onClose={() => setViewModal(false)} handleGetData={handleGetData} />
       </Drawer>
     </>
   )

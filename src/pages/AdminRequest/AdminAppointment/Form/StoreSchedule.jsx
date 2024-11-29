@@ -1,12 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography, Button, Divider } from '@mui/material';
 import { toast } from 'react-toastify';
-import { deleteRequest, updateRequest } from '../../../../api/requestApi';
-import { storeBaptism } from '../../../../api/baptismApi';
-import { storeConfirmation } from '../../../../api/confirmationApi';
-import { storeMarriage } from '../../../../api/marriageApi';
-import { storeDeath } from '../../../../api/deathApi';
-import { storeSchedule } from '../../../../api/scheduleApi';
+import { fetchScheduleByDate, storeSchedule } from '../../../../api/scheduleApi';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 
 const headerStyle = {
     p: 2,
@@ -23,6 +19,84 @@ const footerStyle = {
 };
 
 function StoreSchedule({ selected, onClose, handleGetData }) {
+
+    return (
+        <>
+            <Box sx={headerStyle}>
+                <Typography id="delete-modal-title" variant="h6" component="h2">
+                    Create Schedule Time
+                </Typography>
+            </Box>
+            <Box id="delete-modal-description">
+                <Typography sx={{ p: 2 }}>Schedule List:</Typography>
+                <Box sx={{ p: 2 }}>
+                    <DataTable selected={selected}/>
+                </Box>
+            </Box>
+            <Divider />
+            <SubmitData handleGetData={handleGetData} onClose={onClose} selected={selected}/>
+        </>
+    )
+}
+
+function DataTable({selected}) {
+    const [data, setData] = useState([])
+
+    const handleGetScheduleByDate = async () => {
+        const { data, error } = await fetchScheduleByDate(selected.schedule)
+        console.log(data)
+    }
+
+    useEffect(() => {
+        handleGetScheduleByDate()
+    }, [])
+
+    const columns = [
+        {
+            field: 'name',
+            headerName: 'Name',
+            flex: 1,
+            headerAlign: 'center',
+            headerClassName: 'headerStyle',
+        },
+        {
+            field: 'certificate',
+            headerName: 'Event',
+            flex: 1,
+            headerAlign: 'center',
+            headerClassName: 'headerStyle',
+        },
+        {
+            field: 'startTime',
+            headerName: 'Start Time',
+            flex: 1,
+            headerAlign: 'center',
+            headerClassName: 'headerStyle',
+        },
+        {
+            field: 'endTime',
+            headerName: 'End Time',
+            flex: 1,
+            headerAlign: 'center',
+            headerClassName: 'headerStyle',
+        },
+    ]
+
+    const rows = data.map((item) => ({
+        ...item,
+        id: item._id,
+        name: `${item.user.firstName} ${item.user.lastName}`,
+    }))
+
+    return (
+        <DataGrid
+            columns={columns}
+            rows={rows}
+        />
+    )
+}
+
+function SubmitData({ selected, onClose, handleGetData }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -59,27 +133,16 @@ function StoreSchedule({ selected, onClose, handleGetData }) {
     }
 
     return (
-        <>
-            <Box sx={headerStyle}>
-                <Typography id="delete-modal-title" variant="h6" component="h2">
-                    Create Confirmation
-                </Typography>
+        <form onSubmit={handleSubmit}>
+            <Box sx={footerStyle}>
+                <Button variant="outlined" onClick={onClose}>
+                    Cancel
+                </Button>
+                <Button variant="contained" color="success" type='submit'>
+                    Proceed
+                </Button>
             </Box>
-            <Typography id="delete-modal-description" sx={{ p: 2 }}>
-                This will create a schedule for this user
-            </Typography>
-            <Divider />
-            <form onSubmit={handleSubmit}>
-                <Box sx={footerStyle}>
-                    <Button variant="outlined" onClick={onClose}>
-                        Cancel
-                    </Button>
-                    <Button variant="contained" color="success" type='submit'>
-                        Proceed
-                    </Button>
-                </Box>
-            </form>
-        </>
+        </form>
     )
 }
 
