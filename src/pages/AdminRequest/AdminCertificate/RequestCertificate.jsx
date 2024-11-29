@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Box, Button, Chip, Divider, Drawer, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
 import { Add } from '@mui/icons-material'
 import { DataGrid, GridMoreVertIcon, GridToolbar } from '@mui/x-data-grid'
@@ -7,14 +7,16 @@ import AlertModal from '../../../components/AlertModal'
 import Store from './Form/Store'
 import Delete from './Form/Delete'
 import MasterAdmin from '../../../layouts/MasterAdmin'
-import { fetchRequestCertificate, updateRequest } from '../../../api/requestApi'
+import { fetchRequestCertificate, fetchRequestCertificateByParishId, updateRequest } from '../../../api/requestApi'
 import { toast } from 'react-toastify'
 import moment from 'moment'
 import StoreCertificate from './Form/StoreCertificate'
 import View from './Form/View'
 import { fetchTransactionByRequestId } from '../../../api/transactionApi'
+import { AuthContext } from '../../../context/AuthContext'
 
 function RequestCertificate() {
+  const {auth} = useContext(AuthContext)
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [storeModal, setStoreModal] = useState(false);
@@ -29,7 +31,7 @@ function RequestCertificate() {
 
   const handleGetData = async () => {
     setLoading(true)
-    const { data, error } = await fetchRequestCertificate()
+    const { data, error } = await fetchRequestCertificateByParishId(auth.user.parish._id)
     if (error) {
       toast.error(error)
     } else {

@@ -8,7 +8,7 @@ function SignUp() {
   return (
     <MasterAuth>
       <Grid2 container sx={{ flex: 1, minHeight: '100vh' }}>
-        <Grid2 size={'grow'}>
+        <Grid2 size={5}>
           <Card elevation={5} sx={{
             borderRadius: 0,
             backgroundColor: 'rgba(128, 0, 0, 0.5)',
@@ -26,9 +26,6 @@ function SignUp() {
         <Grid2 size={'grow'} >
           <Container sx={{
             justifyContent: 'center',
-            display: 'flex',
-            alignItems: 'center',
-            flexDirection: 'column',
             height: '100%',
             py: 2
           }}>
@@ -38,7 +35,6 @@ function SignUp() {
               backdropFilter: 'blur(10px)',
               boxShadow: 'none',
               transition: 'background-color 0.3s ease',
-              width: '60vh',
             }}>
               <RegisterForm />
             </Card>

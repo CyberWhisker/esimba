@@ -96,7 +96,7 @@ function LoginForm() {
                     error={!!errors.password}
                 />
                 <Button variant='contained' color='warning' type='submit'>LogIn</Button>
-                <Button variant='outlined' component={Link} to='/register' color='warning'>Register</Button>
+                <Button variant='outlined' component={Link} to='/selectRegistration' color='warning'>Register</Button>
                 <Divider />
                 <Stack direction={'row'} justifyContent={'end'}>
                     <Typography>Need Help?</Typography>

@@ -18,7 +18,7 @@ function SelectRegistration() {
                     </Box>
                 </Grid2>
                 <Grid2 size="grow">
-                    <Box sx={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: .8, bgcolor: 'darkred'}} >
+                    <Box sx={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: .8, bgcolor: 'rgba(128, 0, 0, 0.5)'}} >
                         <Stack alignItems={'center'} >
                             <House style={{ fontSize: '300px' }} />
                             <Typography fontWeight={'bold'} variant='h3'>Parish</Typography>

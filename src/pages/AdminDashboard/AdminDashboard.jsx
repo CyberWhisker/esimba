@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react'
 import MasterAdmin from '../../layouts/MasterAdmin'
-import { Box, colors, Divider, Grid2, MenuItem, Stack, Typography } from '@mui/material'
+import { Box, Divider, Grid2, Stack, Typography, useTheme } from '@mui/material'
 import CustomCard from '../../components/CustomCard'
 import { ChevronRight } from '@mui/icons-material'
-import { DateCalendar, LocalizationProvider } from '@mui/x-date-pickers'
+import { LocalizationProvider } from '@mui/x-date-pickers'
 import moment from 'moment'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 import { toast } from 'react-toastify'
@@ -15,6 +15,8 @@ import { fetchScheduleByParishId } from '../../api/scheduleApi'
 import { fetchRequestAppointment, fetchRequestCertificate } from '../../api/requestApi'
 import { fetchTransactionByChapelId } from '../../api/transactionApi'
 import { Link } from 'react-router-dom'
+import AlertModalLarge from '../../components/AlertModalLarge'
+import Update from './Form/Update'
 
 function AdminDashboard() {
   const handleAuthAlert = async () => {
@@ -176,33 +178,50 @@ function RecordList() {
 }
 
 function ScheduleList() {
+  const theme = useTheme();
   const { auth } = useContext(AuthContext);
+  const [updateModal, setUpdateModal] = useState(false);
+  const [selected, setSelected] = useState([])
   const [events, setEvents] = useState([]);
-
-
   const handleDateClick = (arg) => {
     const clickedDate = moment(arg.date).startOf('day').toISOString();
-    const filteredEvents = events.filter((event) =>
-      moment(event.start).startOf('day').toISOString() === clickedDate
-    );
-
-    if (filteredEvents.length > 0) {
-      alert(`Events on ${arg.dateStr}: \n${filteredEvents.map((event) => event.title).join('\n')}`);
-    } else {
-      alert(`No events on ${arg.dateStr}`);
+    const filteredEventsData = events
+      .filter((event) => moment(event.date).startOf('day').toISOString() === clickedDate)
+      .map((event) => event.data);
+    if (filteredEventsData.length > 0) {
+      setSelected(filteredEventsData)
+      setUpdateModal(true)
     }
   };
+
+  const currentDay = moment().format('YYYY-MM-DD');
 
   const handleGetSchedule = async () => {
     const { data, error } = await fetchScheduleByParishId(auth.user.parish._id);
     if (!error) {
       const mappedEvents = data.map((item) => ({
+        data: {
+          ...item
+        },
         title:
           item.request.certificate == "Baptism Certificate" && "Baptism Appointment" ||
           item.request.certificate == "Death Certificate" && "Death Appointment" ||
           item.request.certificate == "Marriage Certificate" && "Marriage Appointment" ||
           item.request.certificate == "Confirmation Certificate" && "Confirmation Appointment",
-        date: moment(item.date).format("YYYY-MM-DD"),
+        date: moment(item.date).format('YYYY-MM-DD'),
+        start:
+          moment(item.startTime).format('YYYY-MM-DD') == moment(item.endTime).format('YYYY-MM-DD') ?
+            moment(item.startTime).format('YYYY-MM-DD') :
+            moment(item.startTime).toISOString(),
+        end:
+          moment(item.startTime).format('YYYY-MM-DD') == moment(item.endTime).format('YYYY-MM-DD') ?
+            moment(item.endTime).format('YYYY-MM-DD') :
+            moment(item.endTime).toISOString(),
+        color:
+          moment(item.date).format('YYYY-MM-DD') === currentDay && theme.palette.success.main ||
+          moment(item.date).format('YYYY-MM-DD') > currentDay && theme.palette.warning.main ||
+          moment(item.date).format('YYYY-MM-DD') < currentDay && theme.palette.error.main
+        ,
       }));
       setEvents(mappedEvents);
     }
@@ -232,13 +251,17 @@ function ScheduleList() {
           }}
         >
           <FullCalendar
-            plugins={[dayGridPlugin]}
+            plugins={[dayGridPlugin, interactionPlugin]}
+            timeZone='UTC'
             initialView="dayGridMonth"
             events={events}
-            height={'80vh'}
+            dateClick={handleDateClick}
           />
         </Box>
       </Stack>
+      <AlertModalLarge open={updateModal} onClose={() => setUpdateModal(false)}>
+        <Update selected={selected} onClose={() => setUpdateModal(false)} handleGetData={handleGetSchedule} />
+      </AlertModalLarge>
     </LocalizationProvider>
   );
 }

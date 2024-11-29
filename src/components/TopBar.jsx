@@ -108,7 +108,7 @@ function IsLogged({ logout, auth }) {
 function NotLogged() {
     return (
         <Stack direction={'row'} spacing={2}>
-            <Button variant='outlined' color='warning' component={Link} to='/register'>Register</Button>
+            <Button variant='outlined' color='warning' component={Link} to='/selectRegistration'>Register</Button>
             <Button variant='contained' color='warning' component={Link} to='/login'>Log In</Button>
         </Stack>
     )

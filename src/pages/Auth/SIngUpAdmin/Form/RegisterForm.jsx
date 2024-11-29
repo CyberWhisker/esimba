@@ -1,9 +1,10 @@
 import React, { useContext, useState } from 'react';
-import { Button, Divider, Stack, TextField, Typography } from '@mui/material';
+import { Button, Divider, IconButton, InputAdornment, Stack, TextField, Typography } from '@mui/material';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AuthContext } from '../../../../context/AuthContext';
 import { registerUser } from '../../../../api/userApi';
 import { toast } from 'react-toastify';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 function RegisterForm() {
     const { id } = useParams();
@@ -60,11 +61,16 @@ function RegisterForm() {
             } else {
                 toast.success("Successfully registered")
                 localStorage.setItem('auth', JSON.stringify(data))
-                localStorage.setItem('authAlert', JSON.stringify({alert: 0, message: 'Successfully Registered'}))
+                localStorage.setItem('authAlert', JSON.stringify({ alert: 0, message: 'Successfully Registered' }))
                 setAuth(data)
                 navigate('/admin/dashboard')
             }
         }
+    };
+
+    const [showPassword, setShowPassword] = useState(false);
+    const togglePasswordVisibility = () => {
+        setShowPassword((prevState) => !prevState);
     };
 
     return (
@@ -73,30 +79,32 @@ function RegisterForm() {
                 <Typography variant='h5' fontWeight={'bold'}>Register</Typography>
                 <Divider />
                 <Typography>Personal Information</Typography>
-                <TextField
-                    label="First Name"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    error={Boolean(errors.firstName)}
-                    helperText={errors.firstName}
-                />
-                <TextField
-                    label="Last Name"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    error={Boolean(errors.lastName)}
-                    helperText={errors.lastName}
-                />
-                <TextField
-                    label="Middle Name"
-                    name="middleName"
-                    value={formData.middleName}
-                    onChange={handleChange}
-                    error={Boolean(errors.middleName)}
-                    helperText={errors.middleName}
-                />
+                <Stack direction={'row'} spacing={1}>
+                    <TextField
+                        label="First Name"
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                        error={Boolean(errors.firstName)}
+                        helperText={errors.firstName}
+                    />
+                    <TextField
+                        label="Last Name"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                        error={Boolean(errors.lastName)}
+                        helperText={errors.lastName}
+                    />
+                    <TextField
+                        label="Middle Name"
+                        name="middleName"
+                        value={formData.middleName}
+                        onChange={handleChange}
+                        error={Boolean(errors.middleName)}
+                        helperText={errors.middleName}
+                    />
+                </Stack>
                 <TextField
                     label="Address"
                     name="address"
@@ -115,30 +123,32 @@ function RegisterForm() {
                 />
                 <Divider />
                 <Typography>Chapel Information</Typography>
-                <TextField
-                    label="Chapel Name"
-                    name="chapelName"
-                    value={formData.chapelName}
-                    onChange={handleChange}
-                    error={Boolean(errors.chapelName)}
-                    helperText={errors.chapelName}
-                />
-                <TextField
-                    label="Chapel Address"
-                    name="chapelAddress"
-                    value={formData.chapelAddress}
-                    onChange={handleChange}
-                    error={Boolean(errors.chapelAddress)}
-                    helperText={errors.chapelAddress}
-                />
-                <TextField
-                    label="Zip Code"
-                    name="code"
-                    value={formData.code}
-                    onChange={handleChange}
-                    error={Boolean(errors.code)}
-                    helperText={errors.code}
-                />
+                <Stack direction={'row'} spacing={1}>
+                    <TextField
+                        label="Chapel Name"
+                        name="chapelName"
+                        value={formData.chapelName}
+                        onChange={handleChange}
+                        error={Boolean(errors.chapelName)}
+                        helperText={errors.chapelName}
+                    />
+                    <TextField
+                        label="Chapel Address"
+                        name="chapelAddress"
+                        value={formData.chapelAddress}
+                        onChange={handleChange}
+                        error={Boolean(errors.chapelAddress)}
+                        helperText={errors.chapelAddress}
+                    />
+                    <TextField
+                        label="Zip Code"
+                        name="code"
+                        value={formData.code}
+                        onChange={handleChange}
+                        error={Boolean(errors.code)}
+                        helperText={errors.code}
+                    />
+                </Stack>
                 <Divider />
                 <Typography>Account Information</Typography>
                 <TextField
@@ -149,24 +159,54 @@ function RegisterForm() {
                     error={Boolean(errors.email)}
                     helperText={errors.email}
                 />
-                <TextField
-                    label="Enter Password"
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    error={Boolean(errors.password)}
-                    helperText={errors.password}
-                />
-                <TextField
-                    label="Confirm Password"
-                    type="password"
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    error={Boolean(errors.confirmPassword)}
-                    helperText={errors.confirmPassword}
-                />
+                <Stack direction={'row'} spacing={1}>
+                    <TextField
+                        fullWidth
+                        label="Enter Password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        error={Boolean(errors.password)}
+                        helperText={errors.password}
+                        type={showPassword ? "text" : "password"}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        onClick={togglePasswordVisibility}
+                                        edge="end"
+                                        aria-label="toggle password visibility"
+                                    >
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+                    <TextField
+                        fullWidth
+                        label="Confirm Password"
+                        name="confirmPassword"
+                        type={showPassword ? "text" : "password"}
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        error={Boolean(errors.confirmPassword)}
+                        helperText={errors.confirmPassword}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        onClick={togglePasswordVisibility}
+                                        edge="end"
+                                        aria-label="toggle password visibility"
+                                    >
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+                </Stack>
                 <Button type="submit" variant="contained" color='warning'>Submit</Button>
                 <Typography
                     variant="body2"

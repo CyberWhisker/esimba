@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Box, Button, Chip, Divider, Drawer, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
 import { Add, ApprovalRounded, Cancel, DeleteOutline } from '@mui/icons-material'
 import { DataGrid, GridActionsCellItem, GridMoreVertIcon, GridToolbar } from '@mui/x-data-grid'
@@ -7,15 +7,17 @@ import AlertModal from '../../../components/AlertModal'
 import Store from './Form/Store'
 import Delete from './Form/Delete'
 import MasterAdmin from '../../../layouts/MasterAdmin'
-import { fetchRequestAppointment, updateRequest } from '../../../api/requestApi'
+import { fetchRequestAppointmentByParishId, updateRequest } from '../../../api/requestApi'
 import { toast } from 'react-toastify'
 import moment from 'moment'
 import StoreSchedule from './Form/StoreSchedule'
 import { fetchTransactionByRequestId } from '../../../api/transactionApi'
 import View from './Form/View'
 import AlertModalLarge from '../../../components/AlertModalLarge'
+import { AuthContext } from '../../../context/AuthContext'
 
 function RequestAppointment() {
+  const {auth} = useContext(AuthContext)
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [storeModal, setStoreModal] = useState(false);
@@ -30,7 +32,7 @@ function RequestAppointment() {
 
   const handleGetData = async () => {
     setLoading(true)
-    const { data, error } = await fetchRequestAppointment()
+    const { data, error } = await fetchRequestAppointmentByParishId(auth.user.parish._id)
     if (error) {
       toast.error(error)
     } else {
@@ -82,12 +84,11 @@ function DataTable({ data, loading, handleGetData }) {
     } else {
       toast.error("Request Cancel")
       handleGetData()
-      handleMenuClose()
     }
   }
 
-  const handleDeleteModal = () => {
-    handleMenuClose()
+  const handleDeleteModal = (params) => {
+    setSelected(params)
     setDeleteModal(true)
   }
 
@@ -101,7 +102,7 @@ function DataTable({ data, loading, handleGetData }) {
     ...item,
     id: item._id,
     name: `${item.user.firstName} ${item.user.lastName}`,
-    baptismDate: moment(item.data.baptismDate).format('MMMM DD YYYY')
+    scheduleView: moment(item.schedule).format('MMMM DD YYYY')
   }))
 
   const columns = [
@@ -120,11 +121,19 @@ function DataTable({ data, loading, handleGetData }) {
       headerClassName: 'headerStyle',
     },
     {
-      field: 'certificate',
-      headerName: 'Certificate',
+      field: 'certificateView',
+      headerName: 'Event',
       flex: 1,
       headerAlign: 'center',
       headerClassName: 'headerStyle',
+      renderCell: ({ row }) => (
+        <>
+          {row.certificate == "Baptism Certificate" && "Baptism"}
+          {row.certificate == "Death Certificate" && "Burial"}
+          {row.certificate == "Marriage Certificate" && "Marriage"}
+          {row.certificate == "Confirmation Certificate" && "Confirmation"}
+        </>
+      )
     },
     {
       field: 'status',
@@ -144,7 +153,7 @@ function DataTable({ data, loading, handleGetData }) {
       )
     },
     {
-      field: 'createdAt',
+      field: 'scheduleView',
       headerName: 'Date',
       flex: 1,
       headerAlign: 'center',
