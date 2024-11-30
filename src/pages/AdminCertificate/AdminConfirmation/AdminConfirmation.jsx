@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Box, Button, Drawer, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
 import { Add } from '@mui/icons-material'
 import { DataGrid, GridMoreVertIcon, GridToolbar } from '@mui/x-data-grid'
@@ -10,10 +10,13 @@ import Delete from './Form/Delete'
 import MasterAdmin from '../../../layouts/MasterAdmin'
 import moment from 'moment'
 import { useReactToPrint } from 'react-to-print'
-import { fetchConfirmation } from '../../../api/confirmationApi'
+import { fetchConfirmation, fetchConfirmationByChapelId } from '../../../api/confirmationApi'
 import ConfirmationLayout from '../../../layouts/Pdf/ConfirmationLayout'
+import { AuthContext } from '../../../context/AuthContext'
+import { toast } from 'react-toastify'
 
 function AdminConfirmation() {
+  const {auth} = useContext(AuthContext)
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [storeModal, setStoreModal] = useState(false);
@@ -30,9 +33,9 @@ function AdminConfirmation() {
 
   const handleGetData = async () => {
     setLoading(true)
-    const { data, error } = await fetchConfirmation()
+    const { data, error } = await fetchConfirmationByChapelId(auth.user.parish._id)
     if (error) {
-      toast.error(error)
+      toast.error("Server Error")
     } else {
       setData(data)
     }

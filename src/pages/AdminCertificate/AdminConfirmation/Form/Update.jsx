@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
-import { fetchUsers } from '../../../../api/userApi'
+import { fetchUserByChapelId, fetchUsers } from '../../../../api/userApi'
 import { updateBaptism } from '../../../../api/baptismApi'
 import moment from 'moment'
 import { updateConfirmation } from '../../../../api/confirmationApi'
@@ -40,7 +40,7 @@ function Update({ onClose, handleGetData, selected }) {
 
     const handleGetUser = async () => {
         setLoading(true)
-        const { data, error } = await fetchUsers();
+        const { data, error } = await fetchUserByChapelId(auth.user.parish._id);
         if (error) {
             toast.error(error);
         } else {

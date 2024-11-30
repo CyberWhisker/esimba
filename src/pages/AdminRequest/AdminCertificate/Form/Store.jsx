@@ -2,7 +2,7 @@ import { Box, Button, Divider, MenuItem, Stack, TextField, Typography } from '@m
 import React, { useContext, useEffect, useState } from 'react'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
-import { fetchUsers } from '../../../../api/userApi'
+import { fetchUserByChapelId, fetchUsers } from '../../../../api/userApi'
 import { toast } from 'react-toastify'
 import StoreBaptism from './FormCertificate/StoreBaptism'
 import { AuthContext } from '../../../../context/AuthContext'
@@ -63,7 +63,7 @@ function Store({ onClose, handleGetData }) {
     }
 
     const handleGetUser = async () => {
-        const { data, error } = await fetchUsers()
+        const { data, error } = await fetchUserByChapelId(auth.user.parish._id)
         if (error) {
             toast.error("Server Error")
         } else {

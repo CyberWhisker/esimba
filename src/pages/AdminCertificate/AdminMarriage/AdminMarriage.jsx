@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Box, Button, Drawer, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
 import { Add } from '@mui/icons-material'
 import { DataGrid, GridMoreVertIcon, GridToolbar } from '@mui/x-data-grid'
@@ -10,10 +10,13 @@ import Delete from './Form/Delete'
 import MasterAdmin from '../../../layouts/MasterAdmin'
 import moment from 'moment'
 import { useReactToPrint } from 'react-to-print'
-import { fetchMarriage } from '../../../api/marriageApi'
+import { fecthMarriageByChapelId, fetchMarriage } from '../../../api/marriageApi'
 import MarriageLayout from '../../../layouts/Pdf/MarriageLayout'
+import { AuthContext } from '../../../context/AuthContext'
+import { toast } from 'react-toastify'
 
 function AdminMarriage() {
+  const { auth } = useContext(AuthContext)
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [storeModal, setStoreModal] = useState(false);
@@ -30,9 +33,9 @@ function AdminMarriage() {
 
   const handleGetData = async () => {
     setLoading(true)
-    const { data, error } = await fetchMarriage()
+    const { data, error } = await fecthMarriageByChapelId(auth.user.parish._id)
     if (error) {
-      toast.error(error)
+      toast.error("Server Error")
     } else {
       setData(data)
     }

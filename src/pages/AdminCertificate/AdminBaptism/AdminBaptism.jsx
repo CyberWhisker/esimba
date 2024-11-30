@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Box, Button, Drawer, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
 import { Add } from '@mui/icons-material'
 import { DataGrid, GridMoreVertIcon, GridToolbar } from '@mui/x-data-grid'
@@ -8,12 +8,15 @@ import Store from './Form/Store'
 import Update from './Form/Update'
 import Delete from './Form/Delete'
 import MasterAdmin from '../../../layouts/MasterAdmin'
-import { fetchBaptism } from '../../../api/baptismApi'
+import { fetchBaptism, fetchBaptismByChapelId } from '../../../api/baptismApi'
 import moment from 'moment'
 import { useReactToPrint } from 'react-to-print'
 import BaptismLayout from '../../../layouts/Pdf/BaptismLayout'
+import { AuthContext } from '../../../context/AuthContext'
+import { toast } from 'react-toastify'
 
 function AdminBaptism() {
+  const {auth} = useContext(AuthContext)
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [storeModal, setStoreModal] = useState(false);
@@ -30,9 +33,9 @@ function AdminBaptism() {
 
   const handleGetData = async () => {
     setLoading(true)
-    const { data, error } = await fetchBaptism()
+    const { data, error } = await fetchBaptismByChapelId(auth.user.parish._id)
     if (error) {
-      toast.error(error)
+      toast.error("Server Error")
     } else {
       setData(data)
     }

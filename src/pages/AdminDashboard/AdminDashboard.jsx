@@ -12,7 +12,7 @@ import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
 import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
 import { AuthContext } from '../../context/AuthContext'
 import { fetchScheduleByParishId } from '../../api/scheduleApi'
-import { fetchRequestAppointment, fetchRequestCertificate } from '../../api/requestApi'
+import { fetchRequestAppointment, fetchRequestAppointmentByParishId, fetchRequestCertificate, fetchRequestCertificateByParishId } from '../../api/requestApi'
 import { fetchTransactionByChapelId } from '../../api/transactionApi'
 import { Link } from 'react-router-dom'
 import AlertModalLarge from '../../components/AlertModalLarge'
@@ -93,9 +93,10 @@ function AdminDashboard() {
 }
 
 function AppointmentList() {
+  const { auth } = useContext(AuthContext)
   const [data, setData] = useState([])
   const handleGetData = async () => {
-    const { data, error } = await fetchRequestAppointment()
+    const { data, error } = await fetchRequestAppointmentByParishId(auth.user.parish._id)
     if (!error) {
       setData(data.filter((item) => item.status == "Pending"))
     }
@@ -120,9 +121,10 @@ function AppointmentList() {
 }
 
 function CertificateList() {
+  const { auth } = useContext(AuthContext)
   const [data, setData] = useState([])
   const handleGetData = async () => {
-    const { data, error } = await fetchRequestCertificate()
+    const { data, error } = await fetchRequestCertificateByParishId(auth.user.parish._id)
     if (!error) {
       setData(data.filter((item) => item.status == "Pending"))
     }
