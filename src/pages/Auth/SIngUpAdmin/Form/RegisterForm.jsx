@@ -66,6 +66,8 @@ function RegisterForm() {
                 setAuth(data)
                 if (id == 1) {
                     handleGetSubscription(data.user.parish._id)
+                } else {
+                    navigate('/admin/dashboard');
                 }
             }
         }
@@ -243,7 +245,7 @@ function RegisterForm() {
                         <Typography variant="body1" textAlign={'center'}>
                             Please make the payment to the following GCash number:
                         </Typography>
-                        <Typography variant="h6" sx={{textAlign:'center', fontWeight: 'bold', color: 'secondary.main'}}>
+                        <Typography variant="h6" sx={{ textAlign: 'center', fontWeight: 'bold', color: 'secondary.main' }}>
                             {gcashNumber}
                         </Typography>
                         <Typography textAlign={'center'}>Kindly provide a screenshot of the transaction as proof of payment for verification purposes. Thank you.</Typography>
