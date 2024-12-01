@@ -36,7 +36,8 @@ function Store({ onClose, handleGetData }) {
         })
     }
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault()
         const { data, error } = await storeConfirmation(dataForm)
         if (error) {
             toast.error(error)
@@ -62,34 +63,36 @@ function Store({ onClose, handleGetData }) {
     return (
         <LocalizationProvider dateAdapter={AdapterMoment}>
             <Box sx={{ width: '60vh', p: 2 }}>
-                <Stack spacing={1}>
-                    <Typography variant='h4' fontWeight={'bold'}>Store Certificate</Typography>
-                    <Divider />
-                    <TextField label='Select User' name='user' onChange={handleChange} select value={dataForm.user}>
-                        {userData.map((item, index) => (
-                            <MenuItem key={index} value={item._id}>{item.firstName} {item.lastName}</MenuItem>
-                        ))}
-                    </TextField>
-                    <Divider />
-                    <Typography>Personal Information</Typography>
-                    <TextField label='Name' name='name' onChange={handleChange} />
-                    <DatePicker label='Birth Date' name='birthDate' onChange={value => handleChangeDate('birthDate', value)} />
-                    <TextField label='Birth Address' name='birthAddress' onChange={handleChange} />
-                    <Divider />
-                    <Typography>Mother's Information</Typography>
-                    <TextField label='Full Name' name='motherName' onChange={handleChange} />
-                    <Divider />
-                    <Typography>Father's Information</Typography>
-                    <TextField label='Full Name' name='fatherName' onChange={handleChange} />
-                    <Divider />
-                    <Typography>Confirmation Information</Typography>
-                    <DatePicker label='Baptized Date' name='baptizeDate' onChange={value => handleChangeDate('baptismDate', value)} />
-                    <TextField label='Baptized Address' name='baptizeAddress' onChange={handleChange} />
-                    <TextField label='Priest' name='priest' onChange={handleChange} />
-                    <TextField label='Sponsor Name' name='sponsor1' onChange={handleChange} />
-                    <TextField label='Sponsor Name' name='sponsor2' onChange={handleChange} />
-                    <Button variant='contained' onClick={handleSubmit}>Submit</Button>
-                </Stack>
+                <form onSubmit={ handleSubmit }>
+                    <Stack spacing={1}>
+                        <Typography variant='h4' fontWeight={'bold'}>Store Certificate</Typography>
+                        <Divider />
+                        <TextField label='Select User' name='user' onChange={handleChange} select value={dataForm.user} required>
+                            {userData.map((item, index) => (
+                                <MenuItem key={index} value={item._id}>{item.firstName} {item.lastName}</MenuItem>
+                            ))}
+                        </TextField>
+                        <Divider />
+                        <Typography>Personal Information</Typography>
+                        <TextField label='Name' name='name' onChange={handleChange} required />
+                        <DatePicker label='Birth Date' name='birthDate' onChange={value => handleChangeDate('birthDate', value)} />
+                        <TextField label='Birth Address' name='birthAddress' onChange={handleChange} required />
+                        <Divider />
+                        <Typography>Mother's Information</Typography>
+                        <TextField label='Full Name' name='motherName' onChange={handleChange} required />
+                        <Divider />
+                        <Typography>Father's Information</Typography>
+                        <TextField label='Full Name' name='fatherName' onChange={handleChange} required />
+                        <Divider />
+                        <Typography>Confirmation Information</Typography>
+                        <DatePicker label='Baptized Date' name='baptizeDate' onChange={value => handleChangeDate('baptismDate', value)} />
+                        <TextField label='Baptized Address' name='baptizeAddress' onChange={handleChange} required />
+                        <TextField label='Priest' name='priest' onChange={handleChange} required />
+                        <TextField label='Sponsor Name' name='sponsor1' onChange={handleChange} required />
+                        <TextField label='Sponsor Name' name='sponsor2' onChange={handleChange} required />
+                        <Button variant='contained' type='submit'>Submit</Button>
+                    </Stack>
+                </form>
             </Box>
         </LocalizationProvider>
     )

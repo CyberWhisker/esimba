@@ -13,6 +13,8 @@ const style = {
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
+  maxHeight: '90vh',
+  overflow: 'auto',
 };
 
 export default function AlertModalLarge({children, open, onClose}) {

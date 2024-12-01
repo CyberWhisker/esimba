@@ -10,6 +10,7 @@ import { AuthContext } from '../context/AuthContext';
 
 const TopBar = () => {
     const { auth, logout } = useContext(AuthContext)
+    console.log(auth)
     return (
         <AppBar
             position='relative'
@@ -97,6 +98,9 @@ function IsLogged({ logout, auth }) {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
             >
+                <MenuItem component={Link} to={'/user/profile'}>
+                    <Typography sx={{ textAlign: 'center' }}>Profile</Typography>
+                </MenuItem>
                 <MenuItem onClick={handleCloseUserMenu}>
                     <Typography sx={{ textAlign: 'center' }} onClick={logout}>Logout</Typography>
                 </MenuItem>

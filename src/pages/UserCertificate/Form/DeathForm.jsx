@@ -1,5 +1,5 @@
 import { Box, Button, Card, Divider, Grid2, MenuItem, Stack, TextField, Typography } from '@mui/material'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Master from '../../../layouts/Master'
 import { ArrowBackRounded } from '@mui/icons-material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
@@ -8,10 +8,12 @@ import { useNavigate } from 'react-router-dom'
 import { PDFViewer } from '@react-pdf/renderer'
 import { AuthContext } from '../../../context/AuthContext'
 import { toast } from 'react-toastify'
-import { fetchChapelData } from '../../../api/chapelApi'
+import { fetchChapelById, fetchChapelData } from '../../../api/chapelApi'
 import { storeRequest } from '../../../api/requestApi'
 import { storeTransaction } from '../../../api/transactionApi'
 import Death from '../../../layouts/Pdf/Death'
+import AlertModalLarge from '../../../components/AlertModalLarge'
+import ViewDeath from './Form/ViewDeath'
 
 function DeathForm() {
   const navigate = useNavigate();
@@ -50,6 +52,7 @@ function DeathForm() {
 
 function FormSection() {
   const { auth } = useContext(AuthContext)
+  const [viewModal, setViewModal] = useState(false)
   const [formData, setFormData] = useState({
     user: auth.user._id,
     request: 'Certificate',
@@ -87,9 +90,7 @@ function FormSection() {
   const handleFileChange = (event) =>
     setFormData({ ...formData, file: event.target.files[0] });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    console.log(formData)
+  const handleSubmit = async () => {
     const { data, error } = await storeRequest(formData)
     if (error) {
       toast.error(error)
@@ -111,53 +112,51 @@ function FormSection() {
       toast.success("Successfully Submitted")
     }
   }
-
+  const handleViewModal = (e) => {
+    e.preventDefault()
+    setViewModal(true)
+  }
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
-      <form style={{ width: '100%' }} onSubmit={handleSubmit}>
+      <form style={{ width: '100%' }} onSubmit={handleViewModal}>
         <Stack direction={'column'} spacing={1}>
           <Typography variant='h4' fontWeight={'bold'}>Requester Information</Typography>
           <RequesterForm handleRequestChange={handleRequestChange} />
           <Divider />
           <Typography variant='h4' fontWeight={'bold'}>Personal Information</Typography>
           <Stack direction={'row'} spacing={2}>
-            <TextField label='Full Name' sx={{ width: '100%' }} name='name' onChange={handleDataChange} />
+            <TextField label='Full Name' sx={{ width: '100%' }} name='name' onChange={handleDataChange} required/>
           </Stack>
           <Stack direction={'row'} spacing={2}>
-            <DatePicker label='Date of Birth' sx={{ width: '100%' }} name='birthDate' onChange={value => handleDataDateChange('birthDate', value)} />
-            <TextField label='Age' sx={{ width: '100%' }} name='age' onChange={handleDataChange} />
-            <DatePicker label='Date of Death' sx={{ width: '100%' }} name='deathDate' onChange={value => handleDataDateChange('baptismDate', value)} />
+            <DatePicker label='Date of Birth' sx={{ width: '100%' }} name='birthDate' onChange={value => handleDataDateChange('birthDate', value)} required/>
+            <TextField label='Age' sx={{ width: '100%' }} name='age' onChange={handleDataChange} required/>
+            <DatePicker label='Date of Death' sx={{ width: '100%' }} name='deathDate' onChange={value => handleDataDateChange('deathDate', value)} required/>
           </Stack>
           <Stack direction={'row'} spacing={2}>
-            <TextField label='Place of Birth' sx={{ width: '100%' }} name='birthAddress' onChange={handleDataChange} />
+            <TextField label='Place of Birth' sx={{ width: '100%' }} name='birthAddress' onChange={handleDataChange} required/>
           </Stack>
           <Stack direction={'row'} spacing={2}>
-            <TextField label="Mother's Name" sx={{ width: '100%' }} name='motherName' onChange={handleDataChange} />
-            <TextField label="Father's Name" sx={{ width: '100%' }} name='fatherName' onChange={handleDataChange} />
+            <TextField label="Mother's Name" sx={{ width: '100%' }} name='motherName' onChange={handleDataChange} required/>
+            <TextField label="Father's Name" sx={{ width: '100%' }} name='fatherName' onChange={handleDataChange} required/>
           </Stack>
-          <TextField label="Spouse's Name" sx={{ width: '100%' }} name='partnerName' onChange={handleDataChange} />
+          <TextField label="Spouse's Name" sx={{ width: '100%' }} name='partnerName' onChange={handleDataChange} required/>
           <Stack spacing={2} direction={'row'}>
-            <TextField label='Sponsor Name' sx={{ width: '100%' }} name='sponsor1' onChange={handleDataChange} />
-            <TextField label='Sponsor Name' sx={{ width: '100%' }} name='sponsor2' onChange={handleDataChange} />
+            <TextField label='Sponsor Name' sx={{ width: '100%' }} name='sponsor1' onChange={handleDataChange} required/>
+            <TextField label='Sponsor Name' sx={{ width: '100%' }} name='sponsor2' onChange={handleDataChange} required/>
           </Stack>
-          <TextField label='Cause of Death' sx={{ width: '100%' }} name='causeOfDeath' onChange={handleDataChange} />
-          <TextField label='Roman Cemetary' sx={{ width: '100%' }} name='romanCemetary' onChange={handleDataChange} />
-          <TextField label='Municipal Cemetary' sx={{ width: '100%' }} name='municipalCemetary' onChange={handleDataChange} />
-          <TextField label='Private Cemetary' sx={{ width: '100%' }} name='privateCemetary' onChange={handleDataChange} />
-          <TextField label='Priest' name='priest' onChange={handleDataChange} />
+          <TextField label='Cause of Death' sx={{ width: '100%' }} name='causeOfDeath' onChange={handleDataChange} required/>
+
+          <CemetarySelect handleDataChange={handleDataChange} />
+
+          <TextField label='Priest' name='priest' onChange={handleDataChange} required/>
           <Divider />
-          <Typography variant='h4' fontWeight={'bold'}>Payment</Typography>
-          <Typography>Account Information</Typography>
-          <Stack direction={'row'} spacing={2}>
-            <TextField label='Gcash Number' value='09123456789' sx={{ width: '100%' }} disabled />
-            <TextField label='Amount' value='200' sx={{ width: '100%' }} disabled />
-          </Stack>
-          <Divider />
-          <Typography>Upload GCash Reciept</Typography>
-          <TextField type='file' name='file' onChange={handleFileChange} required/>
+          <PaymentForm handleFileChange={handleFileChange} formData={formData} />
           <Button type='submit' variant='contained' color='warning'>Proceed</Button>
         </Stack>
       </form>
+      <AlertModalLarge open={viewModal} onClose={() => setViewModal(false)}>
+        <ViewDeath formData={formData} handleSubmit={handleSubmit} />
+      </AlertModalLarge>
     </LocalizationProvider>
   )
 }
@@ -193,14 +192,64 @@ function RequesterForm({ handleRequestChange }) {
   )
 }
 
-function Document () {
+function PaymentForm({ handleFileChange, formData }) {
+  const [gcash, setGcash] = useState({})
+
+  const handleGetdata = async () => {
+    if (formData.parish) {
+      const { data, error } = await fetchChapelById(formData.parish)
+      if (!error) {
+        setGcash(data)
+      }
+    }
+  }
+
+  useEffect(() => {
+    handleGetdata()
+  }, [formData.parish])
+
+  return (
+    <>
+      <Typography variant='h4' fontWeight={'bold'}>Payment</Typography>
+      <Typography>Account Information</Typography>
+      <Stack direction={'row'} spacing={2}>
+        <TextField label='Gcash Number' value={gcash.gcash || ""} sx={{ width: '100%' }} disabled />
+        <TextField label='Amount' value='200' sx={{ width: '100%' }} disabled />
+      </Stack>
+      <Divider />
+      <Typography>Upload GCash Reciept</Typography>
+      <TextField type='file' name='file' onChange={handleFileChange} required />
+    </>
+  )
+}
+
+function Document() {
   return (
     <Stack spacing={2}>
       <PDFViewer height={400}>
-        <Death selected={[]}/>
+        <Death selected={[]} />
       </PDFViewer>
       <Button variant='contained' color='error' disabled>Death Sample</Button>
     </Stack>
+  )
+}
+
+function CemetarySelect({ handleDataChange }) {
+  const [selected, setSelected] = useState("")
+
+  return (
+    <>
+      <TextField label="Select Cemetary" value={selected} onChange={(e) => setSelected(e.target.value)} select required>
+        <MenuItem value="Roman">Roman Cemetary</MenuItem>
+        <MenuItem value="Private">Private Cemetary</MenuItem>
+        <MenuItem value="Municipal">Municipal Cemetary</MenuItem>
+      </TextField>
+      {selected == "Roman" && <TextField label='Roman Cemetary Name' sx={{ width: '100%' }} name='romanCemetary' onChange={handleDataChange} />}
+      {selected == "Municipal" && <TextField label='Municipal Cemetary Name' sx={{ width: '100%' }} name='municipalCemetary' onChange={handleDataChange} />}
+      {selected == "Private" && <TextField label='Private Cemetary Name' sx={{ width: '100%' }} name='privateCemetary' onChange={handleDataChange} />}
+
+
+    </>
   )
 }
 

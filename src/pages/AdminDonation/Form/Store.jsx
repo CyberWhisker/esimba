@@ -43,7 +43,7 @@ function Store({onClose, handleGetData}) {
                     <Divider />
                     <Typography>Donation Information</Typography>
                     <SelectUsers handleChange={handleChange}/>
-                    <TextField label="Amount" name='amount' onChange={handleChange}/>
+                    <TextField label="Amount" name='amount' onChange={handleChange} required/>
                     <Divider/>
                     <Typography>GCash Reciept</Typography>
                     <TextField type='file' name='file' onChange={handleFileChange} required/>

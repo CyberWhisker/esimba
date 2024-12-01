@@ -43,7 +43,7 @@ function Update({onClose, handleGetData, selected}) {
                     <Divider />
                     <Typography>Donation Information</Typography>
                     <SelectUsers handleChange={handleChange} formData={formData}/>
-                    <TextField label="Amount" name='amount' onChange={handleChange} value={formData.amount}/>
+                    <TextField label="Amount" name='amount' onChange={handleChange} value={formData.amount} required/>
                     <TextField select label="Status" name='status' onChange={handleChange} value={formData.status}>
                         <MenuItem value="Pending">Pending</MenuItem>
                         <MenuItem value="Approve">Approve</MenuItem>

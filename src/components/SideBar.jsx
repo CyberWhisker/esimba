@@ -2,7 +2,7 @@ import { Box, Divider, Stack, useTheme } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Menu, MenuItem, Sidebar, SubMenu } from 'react-pro-sidebar';
 import Logo from '/appImg/Logo.png';
-import { CalendarMonth, ChevronLeft, CreditCard, Dashboard, Handshake, Note, Pending, Person, PinDrop } from '@mui/icons-material';
+import { CalendarMonth, ChevronLeft, CreditCard, Dashboard, Handshake, Note, Pending, Person, PinDrop, Settings } from '@mui/icons-material';
 import { Link, useLocation } from 'react-router-dom';
 
 function SideBar() {
@@ -97,6 +97,7 @@ function AdminNavList() {
         User
       </MenuItem>
 
+      <Divider />
       <SubMenu label='Request' icon={<Pending />} open={openRequest} onClick={handleOpenRequest}>
         <MenuItem icon={<PinDrop />} component={<Link to='/request/appointment' />} active={location.pathname == '/request/appointment'}>
           Appointment
@@ -105,7 +106,6 @@ function AdminNavList() {
           Certificate
         </MenuItem>
       </SubMenu>
-
       <SubMenu label='Certificate' icon={<Pending />} open={openCertificate} onClick={handleOpenCertificate}>
         <MenuItem icon={<Note />} component={<Link to='/certificate/baptism' />} active={location.pathname == '/certificate/baptism'}>
           Baptism
@@ -120,6 +120,7 @@ function AdminNavList() {
           Confirmation
         </MenuItem>
       </SubMenu>
+      <Divider />
 
       <MenuItem icon={<CalendarMonth />} component={<Link to='/schedule' />} active={location.pathname == '/schedule'}>
         Schedules
@@ -129,9 +130,18 @@ function AdminNavList() {
         Transcation
       </MenuItem>
 
-      <MenuItem icon={<Handshake />} component={<Link to='/donation' />} active={location.pathname == '/donation'}>
+      {/* <MenuItem icon={<Handshake />} component={<Link to='/donation' />} active={location.pathname == '/donation'}>
         Donation
+      </MenuItem> */}
+
+      <Divider />
+      <MenuItem icon={<Settings />} component={<Link to='/maintenance' />} active={location.pathname == '/maintenance'}>
+        Maintenance
       </MenuItem>
+      <MenuItem icon={<Settings />} component={<Link to='/subscription' />} active={location.pathname == '/subscription'}>
+        Subscription
+      </MenuItem>
+      <Divider />
     </>
   );
 }

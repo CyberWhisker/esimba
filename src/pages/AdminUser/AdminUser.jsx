@@ -150,7 +150,7 @@ function AdminUser() {
             <Stack spacing={2}>
                 <Stack direction={'row'} spacing={2}>
                     <Typography variant='h4' fontWeight={'bold'}>User List: </Typography>
-                    <Button variant='contained' endIcon={<Add/>} onClick={handleStoreModal} color='warning'>Add User</Button>
+                    <Button variant='contained' endIcon={<Add/>} onClick={handleStoreModal} color='warning'>Add Admin</Button>
                 </Stack>
                 <CustomCard>
                     <Box

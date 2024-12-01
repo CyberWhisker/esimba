@@ -10,21 +10,25 @@ function StoreMarriage({ handleChangeData, handleChangeDate, handleChange }) {
                 label="Name"
                 name="name"
                 onChange={handleChangeData}
+                required
             />
             <DatePicker
                 label="Birth Date"
                 name="birthDate"
                 onChange={(value) => handleChangeDate('birthDate', value)}
+                required
             />
             <TextField
                 label="Age"
                 name="age"
                 onChange={handleChangeData}
+                required
             />
             <TextField
                 label="Birth Address"
                 name="birthAddress"
                 onChange={handleChangeData}
+                required
             />
             <Divider />
             <Typography>Partner's Information</Typography>
@@ -32,6 +36,7 @@ function StoreMarriage({ handleChangeData, handleChangeDate, handleChange }) {
                 label="Partner's Full Name"
                 name="partnerName"
                 onChange={handleChangeData}
+                required
             />
             <Divider />
             <Typography>Mother's Information</Typography>
@@ -39,6 +44,7 @@ function StoreMarriage({ handleChangeData, handleChangeDate, handleChange }) {
                 label="Mother's Full Name"
                 name="motherName"
                 onChange={handleChangeData}
+                required
             />
             <Divider />
             <Typography>Father's Information</Typography>
@@ -46,6 +52,7 @@ function StoreMarriage({ handleChangeData, handleChangeDate, handleChange }) {
                 label="Father's Full Name"
                 name="fatherName"
                 onChange={handleChangeData}
+                required
             />
             <Divider />
             <Typography>Marriage Information</Typography>
@@ -58,18 +65,21 @@ function StoreMarriage({ handleChangeData, handleChangeDate, handleChange }) {
                 label="Priest"
                 name="priest"
                 onChange={handleChangeData}
+                required
             />
             <TextField
                 label="Witness 1"
                 name="witness1"
                 onChange={handleChangeData}
+                required
             />
             <TextField
                 label="Witness 2"
                 name="witness2"
                 onChange={handleChangeData}
+                required
             />
-            <TextField label='Purpose' name='purpose' onChange={handleChange} />
+            <TextField label='Purpose' name='purpose' onChange={handleChange} required/>
         </Stack>
     )
 }

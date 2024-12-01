@@ -195,7 +195,7 @@ function Content({selected}) {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>{selected?.romanCemetary}</Typography>
+                    <Typography>{selected?.romanCemetary || "N/A"}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -211,7 +211,7 @@ function Content({selected}) {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>{selected?.municipalCemetary}</Typography>
+                    <Typography>{selected?.municipalCemetary || "N/A"}</Typography>
                     <Divider
                         sx={{
                             width: '100%',
@@ -227,7 +227,7 @@ function Content({selected}) {
                     </Typography>
                 </Grid2>
                 <Grid2 size='grow'>
-                    <Typography>{selected?.privateCemetary}</Typography>
+                    <Typography>{selected?.privateCemetary || "N/A"}</Typography>
                     <Divider
                         sx={{
                             width: '100%',

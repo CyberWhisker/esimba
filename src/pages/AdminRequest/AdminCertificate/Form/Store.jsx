@@ -95,14 +95,14 @@ function Store({ onClose, handleGetData }) {
                         <Typography variant='h5' fontWeight={'bold'}>Store Request Certificate</Typography>
                         <Divider />
                         <Typography>Requester Information</Typography>
-                        <TextField name='user' label="Select User" value={formData.user} select onChange={handleChange}>
+                        <TextField name='user' label="Select User" value={formData.user} select onChange={handleChange} required>
                             {userData.map((item, index) => (
                                 <MenuItem value={item._id} key={index}>{item.firstName} {item.middleName}. {item.lastName}</MenuItem>
                             ))}
                         </TextField>
                         <Divider />
                         <Typography>Certificate Type</Typography>
-                        <TextField label="Select Certificate" name='certificate' value={formData.certificate} onChange={handleCombinedChange} select >
+                        <TextField label="Select Certificate" name='certificate' value={formData.certificate} onChange={handleCombinedChange} select required>
                             <MenuItem value="Baptism Certificate">Baptism Certificate</MenuItem>
                             <MenuItem value="Death Certificate">Death Certificate</MenuItem>
                             <MenuItem value="Marriage Certificate">Marriage Certificate</MenuItem>

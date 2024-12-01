@@ -4,9 +4,11 @@ export { default as Membership } from './Membership/Membership'
 export { default as SelectRegistration } from './SelectRegistration/SelectRegistration'
 export { default as SignInPage } from './Auth/SignIn/SignIn'
 export { default as SignUpPage } from './Auth/SignUp/SignUp'
+export { default as ExpiredPage } from './Expired/Expired'
 
 //User
 export { default as UserDashboard } from './UserDashboard/UserDashboard'
+export { default as UserProfile } from './UserProfile/UserProfile'
 //Certificate
 export { default as UserCertificate } from './UserCertificate/UserCertificate'
 export { default as RequestBaptismForm } from './UserCertificate/Form/BaptismForm'
@@ -32,3 +34,5 @@ export { default as AdminUser } from './AdminUser/AdminUser'
 export { default as AdminSchedule } from './AdminSchedule/AdminSchedule'
 export { default as AdminTransaction } from './AdminTransaction/AdminTransaction'
 export { default as AdminDonation } from './AdminDonation/AdminDonation'
+export { default as AdminMaintenance } from './AdminMaintenance/AdminMaintenance'
+export { default as AdminSubscription } from './AdminSubscription/AdminSubscription'

@@ -57,7 +57,7 @@ function AdminConfirmation() {
     <MasterAdmin>
       <Stack spacing={2}>
         <Stack direction={'row'} spacing={2}>
-          <Typography variant='h4' fontWeight={'bold'}>Death Certificate: </Typography>
+          <Typography variant='h4' fontWeight={'bold'}>Confirmation Certificate: </Typography>
           <Button variant='contained' endIcon={<Add />} color='warning' onClick={handleStoreModal}>Add Certificate</Button>
         </Stack>
         <DataTable data={data} handleGetData={handleGetData} loading={loading} handlePrintFile={handlePrintFile} selected={selected} setSelected={setSelected} />

@@ -26,7 +26,7 @@ function UserDashboard() {
                         <Button variant='contained' color='warning' size='large' sx={{ minWidth: '30vh' }} component={Link} to='/user/request'>Request Certificate</Button>
                         <Button variant='contained' size='large' sx={{ minWidth: '30vh' }} component={Link} to='/user/schedule'>Schedule Event</Button>
                     </Stack>
-                    <Button variant='contained' color='success' sx={{ minWidth: '65vh' }} component={Link} to='/user/donation'>Donate Now</Button>
+                    {/* <Button variant='contained' color='success' sx={{ minWidth: '65vh' }} component={Link} to='/user/donation'>Donate Now</Button> */}
                 </Stack>
             </Box>
         </Master>

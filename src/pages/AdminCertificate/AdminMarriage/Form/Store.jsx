@@ -39,7 +39,8 @@ function Store({ onClose, handleGetData }) {
     });
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault()
     const { data, error } = await storeMarriage(dataForm);
     if (error) {
       toast.error(error);
@@ -66,104 +67,116 @@ function Store({ onClose, handleGetData }) {
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
       <Box sx={{ width: '60vh', p: 2 }}>
-        <Stack spacing={1}>
-          <Typography variant="h4" fontWeight="bold">
-            Store Certificate
-          </Typography>
-          <Divider />
-          <TextField
-            label="Select User"
-            name="user"
-            onChange={handleChange}
-            select
-            value={dataForm.user}
-          >
-            {userData.map((item, index) => (
-              <MenuItem key={index} value={item._id}>
-                {item.firstName} {item.lastName}
-              </MenuItem>
-            ))}
-          </TextField>
-          <Divider />
-          <Typography>Personal Information</Typography>
-          <TextField
-            label="Name"
-            name="name"
-            onChange={handleChange}
-            value={dataForm.name}
-          />
-          <DatePicker
-            label="Birth Date"
-            name="birthDate"
-            value={dataForm.birthDate}
-            onChange={(value) => handleChangeDate('birthDate', value)}
-          />
-          <TextField
-            label="Age"
-            name="age"
-            onChange={handleChange}
-            value={dataForm.age}
-          />
-          <TextField
-            label="Birth Address"
-            name="birthAddress"
-            onChange={handleChange}
-            value={dataForm.birthAddress}
-          />
-          <Divider />
-          <Typography>Partner's Information</Typography>
-          <TextField
-            label="Partner's Full Name"
-            name="partnerName"
-            onChange={handleChange}
-            value={dataForm.partnerName}
-          />
-          <Divider />
-          <Typography>Mother's Information</Typography>
-          <TextField
-            label="Mother's Full Name"
-            name="motherName"
-            onChange={handleChange}
-            value={dataForm.motherName}
-          />
-          <Divider />
-          <Typography>Father's Information</Typography>
-          <TextField
-            label="Father's Full Name"
-            name="fatherName"
-            onChange={handleChange}
-            value={dataForm.fatherName}
-          />
-          <Divider />
-          <Typography>Marriage Information</Typography>
-          <DatePicker
-            label="Marriage Date"
-            name="marriageDate"
-            value={dataForm.deathDate}
-            onChange={(value) => handleChangeDate('marriageDate', value)}
-          />
-          <TextField
-            label="Priest"
-            name="priest"
-            onChange={handleChange}
-            value={dataForm.priest}
-          />
-          <TextField
-            label="Witness 1"
-            name="witness1"
-            onChange={handleChange}
-            value={dataForm.witness1}
-          />
-          <TextField
-            label="Witness 2"
-            name="witness2"
-            onChange={handleChange}
-            value={dataForm.witness2}
-          />
-          <Button variant="contained" onClick={handleSubmit}>
-            Submit
-          </Button>
-        </Stack>
+        <form onSubmit={handleSubmit}>
+          <Stack spacing={1}>
+            <Typography variant="h4" fontWeight="bold">
+              Store Certificate
+            </Typography>
+            <Divider />
+            <TextField
+              label="Select User"
+              name="user"
+              onChange={handleChange}
+              select
+              value={dataForm.user}
+              required
+            >
+              {userData.map((item, index) => (
+                <MenuItem key={index} value={item._id}>
+                  {item.firstName} {item.lastName}
+                </MenuItem>
+              ))}
+            </TextField>
+            <Divider />
+            <Typography>Personal Information</Typography>
+            <TextField
+              label="Name"
+              name="name"
+              onChange={handleChange}
+              value={dataForm.name}
+              required
+            />
+            <DatePicker
+              label="Birth Date"
+              name="birthDate"
+              value={dataForm.birthDate}
+              onChange={(value) => handleChangeDate('birthDate', value)}
+            />
+            <TextField
+              label="Age"
+              name="age"
+              onChange={handleChange}
+              value={dataForm.age}
+              required
+            />
+            <TextField
+              label="Birth Address"
+              name="birthAddress"
+              onChange={handleChange}
+              value={dataForm.birthAddress}
+              required
+            />
+            <Divider />
+            <Typography>Partner's Information</Typography>
+            <TextField
+              label="Partner's Full Name"
+              name="partnerName"
+              onChange={handleChange}
+              value={dataForm.partnerName}
+              required
+            />
+            <Divider />
+            <Typography>Mother's Information</Typography>
+            <TextField
+              label="Mother's Full Name"
+              name="motherName"
+              onChange={handleChange}
+              value={dataForm.motherName}
+              required
+            />
+            <Divider />
+            <Typography>Father's Information</Typography>
+            <TextField
+              label="Father's Full Name"
+              name="fatherName"
+              onChange={handleChange}
+              value={dataForm.fatherName}
+              required
+            />
+            <Divider />
+            <Typography>Marriage Information</Typography>
+            <DatePicker
+              label="Marriage Date"
+              name="marriageDate"
+              value={dataForm.deathDate}
+              onChange={(value) => handleChangeDate('marriageDate', value)}
+            />
+            <TextField
+              label="Priest"
+              name="priest"
+              onChange={handleChange}
+              value={dataForm.priest}
+              required
+            />
+            <TextField
+              label="Witness 1"
+              name="witness1"
+              onChange={handleChange}
+              value={dataForm.witness1}
+              required
+            />
+            <TextField
+              label="Witness 2"
+              name="witness2"
+              onChange={handleChange}
+              value={dataForm.witness2}
+              required
+            />
+            <Button variant="contained" type='submit'>
+              Submit
+            </Button>
+          </Stack>
+        </form>
       </Box>
     </LocalizationProvider>
   );

@@ -7,11 +7,13 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../../context/AuthContext'
 import { toast } from 'react-toastify'
-import { fetchChapelData } from '../../../api/chapelApi'
+import { fetchChapelById, fetchChapelData } from '../../../api/chapelApi'
 import { storeRequest } from '../../../api/requestApi'
 import { storeTransaction } from '../../../api/transactionApi'
 import { fetchScheduleByParishId } from '../../../api/scheduleApi'
 import moment from 'moment'
+import AlertModalLarge from '../../../components/AlertModalLarge'
+import ViewConfirmation from './View/ViewConfirmation'
 
 function ConfirmationForm() {
   const navigate = useNavigate();
@@ -45,6 +47,7 @@ function ConfirmationForm() {
 
 function FormSection() {
   const { auth } = useContext(AuthContext)
+  const [viewModal, setViewModal] = useState(false)
   const [formData, setFormData] = useState({
     user: auth.user._id,
     request: 'Appointment',
@@ -82,9 +85,7 @@ function FormSection() {
   const handleFileChange = (event) =>
     setFormData({ ...formData, file: event.target.files[0] });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    console.log(formData)
+  const handleSubmit = async () => {
     const { data, error } = await storeRequest(formData)
     if (error) {
       toast.error(error)
@@ -107,12 +108,17 @@ function FormSection() {
     }
   }
 
+  const handleViewModal = (e) => {
+    e.preventDefault()
+    setViewModal(true)
+  }
+
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
-      <form style={{ width: '100%' }} onSubmit={handleSubmit}>
+      <form style={{ width: '100%' }} onSubmit={handleViewModal}>
         <Stack direction={'column'} spacing={1}>
           <Typography variant='h4' fontWeight={'bold'}>Requester Information</Typography>
-          <RequesterForm handleRequestChange={handleRequestChange} formData={formData} />
+          <RequesterForm handleRequestChange={handleRequestChange} setFormData={setFormData} formData={formData} />
           <Divider />
           <Typography variant='h4' fontWeight={'bold'}>Personal Information</Typography>
           <Stack direction={'row'} spacing={2}>
@@ -136,23 +142,49 @@ function FormSection() {
           <TextField label='Priest' name='priest' onChange={handleDataChange} />
 
           <Divider />
-          <Typography variant='h4' fontWeight={'bold'}>Payment</Typography>
-          <Typography>Account Information</Typography>
-          <Stack direction={'row'} spacing={2}>
-            <TextField label='Gcash Number' value='09123456789' sx={{ width: '100%' }} disabled />
-            <TextField label='Amount' value='200' sx={{ width: '100%' }} disabled />
-          </Stack>
-          <Divider />
-          <Typography>Upload GCash Reciept</Typography>
-          <TextField type='file' name='file' onChange={handleFileChange} required />
+          <PaymentForm handleFileChange={handleFileChange} formData={formData} />
           <Button type='submit' variant='contained' color='warning'>Proceed</Button>
         </Stack>
       </form>
+      <AlertModalLarge open={viewModal} onClose={() => setViewModal(false)}>
+        <ViewConfirmation formData={formData} handleSubmit={handleSubmit} />
+      </AlertModalLarge>
     </LocalizationProvider>
   )
 }
 
-function RequesterForm({ handleRequestChange, formData }) {
+function PaymentForm({ handleFileChange, formData }) {
+  const [gcash, setGcash] = useState({})
+
+  const handleGetdata = async () => {
+    if (formData.parish) {
+      const { data, error } = await fetchChapelById(formData.parish)
+      if (!error) {
+        setGcash(data)
+      }
+    }
+  }
+
+  useEffect(() => {
+    handleGetdata()
+  }, [formData.parish])
+
+  return (
+    <>
+      <Typography variant='h4' fontWeight={'bold'}>Payment</Typography>
+      <Typography>Account Information</Typography>
+      <Stack direction={'row'} spacing={2}>
+        <TextField label='Gcash Number' value={gcash.gcash || ""} sx={{ width: '100%' }} disabled />
+        <TextField label='Amount' value='200' sx={{ width: '100%' }} disabled />
+      </Stack>
+      <Divider />
+      <Typography>Upload GCash Reciept</Typography>
+      <TextField type='file' name='file' onChange={handleFileChange} required />
+    </>
+  )
+}
+
+function RequesterForm({ handleRequestChange, formData, setFormData }) {
   const [chapelData, setChapelData] = useState([])
 
   const handleGetChapel = async () => {
@@ -173,10 +205,10 @@ function RequesterForm({ handleRequestChange, formData }) {
             <MenuItem key={index} value={item._id}>{item.chapel}</MenuItem>
           ))}
         </TextField>
-        {formData.parish ? 
-        <DateSchedulePicker handleRequestChange={handleRequestChange} formData={formData} /> :
-        <TextField sx={{ width: "100%"}} disabled label="Select Date Appointment" value="Please Select Chapel"/>
-      }
+        {formData.parish ?
+          <DateSchedulePicker setFormData={setFormData} formData={formData} /> :
+          <TextField sx={{ width: "100%" }} disabled label="Select Date Appointment" value="Please Select Chapel" />
+        }
         <TextField label='Role or Connection' sx={{ width: '100%' }} defaultValue={''} name='person' onChange={handleRequestChange} select required>
           <MenuItem value="Myself">Myself</MenuItem>
           <MenuItem value="Relative">Relative</MenuItem>
@@ -187,7 +219,7 @@ function RequesterForm({ handleRequestChange, formData }) {
   )
 }
 
-function DateSchedulePicker({ handleRequestChange, formData }) {
+function DateSchedulePicker({ setFormData, formData }) {
   const [disabledDatesData, setDisabledDatesData] = useState([]);
 
   // Function to disable specific dates
@@ -196,11 +228,20 @@ function DateSchedulePicker({ handleRequestChange, formData }) {
     return disabledDatesData.includes(formattedDate);
   };
 
+  const handleDateChange = (name, value) => {
+    setFormData({
+      ...formData,
+      [name]: value
+    })
+  }
+
   const handleGetSchedule = async () => {
     const { data, error } = await fetchScheduleByParishId(formData.parish);
     if (!error) {
       const dates = data.map((item) => moment(item.request.schedule).format('YYYY-MM-DD'));
-      setDisabledDatesData(dates);
+      if (dates.length >= 2) {
+        setDisabledDatesData(dates);
+      }
     }
   };
 
@@ -215,7 +256,7 @@ function DateSchedulePicker({ handleRequestChange, formData }) {
       label="Select Date Appointment"
       name="schedule"
       shouldDisableDate={shouldDisableDate} // Disable specific dates
-      onChange={(value) => handleRequestChange('schedule', value)}
+      onChange={(value) => handleDateChange('schedule', value)}
     />
   );
 }

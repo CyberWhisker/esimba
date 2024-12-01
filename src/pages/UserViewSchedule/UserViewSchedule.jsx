@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Box, Divider, Stack, TextField, Typography } from '@mui/material'
+import { Box, Divider, MenuItem, Select, Stack, TextField, Typography } from '@mui/material'
 import CustomCard from '../../components/CustomCard'
 import { ChevronRight } from '@mui/icons-material'
 import { LocalizationProvider } from '@mui/x-date-pickers'
@@ -11,6 +11,7 @@ import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
 import { AuthContext } from '../../context/AuthContext'
 import { fetchScheduleByParishId, fetchScheduleByUserId } from '../../api/scheduleApi'
 import Master from '../../layouts/Master'
+import { fetchChapelData } from '../../api/chapelApi'
 
 function UserViewSchedule() {
   return (
@@ -29,6 +30,7 @@ function UserViewSchedule() {
 
 function ScheduleList() {
   const [events, setEvents] = useState([]);
+  const [parish, setParish] = useState('')
   const { auth } = useContext(AuthContext)
 
   const handleDateClick = (arg) => {
@@ -45,44 +47,63 @@ function ScheduleList() {
   };
 
   const handleGetSchedule = async () => {
-    const { data, error } = await fetchScheduleByUserId(auth.user._id);
-    if (!error) {
-      const mappedEvents = data.map((item) => ({
-        title:
-          item.request.certificate == "Baptism Certificate" && "Baptism Appointment" ||
-          item.request.certificate == "Death Certificate" && "Death Appointment" ||
-          item.request.certificate == "Marriage Certificate" && "Marriage Appointment" ||
-          item.request.certificate == "Confirmation Certificate" && "Confirmation Appointment",
-        date: moment(item.date).format("YYYY-MM-DD")
-      }));
-      setEvents(mappedEvents);
+    if (parish) {
+      const { data, error } = await fetchScheduleByParishId(parish);
+      if (!error) {
+        const mappedEvents = data.map((item) => ({
+          title:
+            item.request.certificate == "Baptism Certificate" && "Baptism Appointment" ||
+            item.request.certificate == "Death Certificate" && "Death Appointment" ||
+            item.request.certificate == "Marriage Certificate" && "Marriage Appointment" ||
+            item.request.certificate == "Confirmation Certificate" && "Confirmation Appointment",
+          date: moment(item.date).format("YYYY-MM-DD")
+        }));
+        setEvents(mappedEvents);
+      }
     }
   };
 
   useEffect(() => {
     handleGetSchedule();
-  }, []); // Empty dependency array ensures it runs only once on mount
+  }, [parish]); // Empty dependency array ensures it runs only once on mount
 
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
-      <Stack>
+      <Stack p={2} spacing={1}>
+        <SelectChurch setParish={setParish} parish={parish} />
         <Divider />
-        <Box
-          sx={{
-            p: 2,
-          }}
-        >
-          <FullCalendar
-            plugins={[dayGridPlugin, interactionPlugin]}
-            events={events}
-            dateClick={handleDateClick}
-            height={'80vh'}
-            displayEventTime={false} // Removes time from the event display
-          />
-        </Box>
+        <FullCalendar
+          plugins={[dayGridPlugin, interactionPlugin]}
+          events={events}
+          dateClick={handleDateClick}
+          height={'80vh'}
+          displayEventTime={false} // Removes time from the event display
+        />
       </Stack>
     </LocalizationProvider>
   );
+}
+
+function SelectChurch({ setParish, parish }) {
+  const [chapelData, setChapelData] = useState([])
+
+  const handleGetChapel = async () => {
+    const { data, error } = await fetchChapelData()
+    if (!error) {
+      setChapelData(data)
+    }
+  }
+
+  useEffect(() => {
+    handleGetChapel()
+  }, [])
+  return (
+    <TextField select label="Select Church" fullWidth onChange={(e) => setParish(e.target.value)} value={parish}>
+      {chapelData.map((item, index) => (
+        <MenuItem key={index} value={item._id}>{item.chapel}</MenuItem>
+      ))}
+    </TextField>
+  )
 }
 
 export default UserViewSchedule

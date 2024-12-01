@@ -104,7 +104,7 @@ function Store({ onClose, handleGetData }) {
                         <Typography variant='h5' fontWeight={'bold'}>Store Request Appointment</Typography>
                         <Divider />
                         <Typography>Requester Information</Typography>
-                        <TextField name='user' label="Select User" value={formData.user} select onChange={handleChange}>
+                        <TextField name='user' label="Select User" value={formData.user} select onChange={handleChange} required>
                             {userData.map((item, index) => (
                                 <MenuItem value={item._id} key={index}>{item.firstName} {item.middleName}. {item.lastName}</MenuItem>
                             ))}
@@ -156,7 +156,9 @@ function DateSchedulePicker({ handleDate }) {
         const { data, error } = await fetchScheduleByParishId(auth.user.parish._id);
         if (!error) {
             const dates = data.map((item) => moment(item.request.schedule).format('YYYY-MM-DD'));
-            setDisabledDatesData(dates);
+            if (dates.length >= 2) {
+                setDisabledDatesData(dates);
+            }
         }
     };
 
@@ -171,6 +173,7 @@ function DateSchedulePicker({ handleDate }) {
             name="schedule"
             shouldDisableDate={shouldDisableDate} // Disable specific dates
             onChange={(value) => handleDate('schedule', value)}
+            required
         />
     );
 }

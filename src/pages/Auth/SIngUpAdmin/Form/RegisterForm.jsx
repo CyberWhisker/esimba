@@ -5,6 +5,7 @@ import { AuthContext } from '../../../../context/AuthContext';
 import { registerUser } from '../../../../api/userApi';
 import { toast } from 'react-toastify';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { fetchSubscriptionByChapelId, updateSubscriptionWithImage } from '../../../../api/subscription';
 
 function RegisterForm() {
     const { id } = useParams();
@@ -59,11 +60,36 @@ function RegisterForm() {
             if (error) {
                 toast.error(error)
             } else {
-                toast.success("Successfully registered")
-                localStorage.setItem('auth', JSON.stringify(data))
-                localStorage.setItem('authAlert', JSON.stringify({ alert: 0, message: 'Successfully Registered' }))
+                localStorage.setItem('auth', JSON.stringify(data));
+                localStorage.setItem('authAlert', JSON.stringify({ alert: 0, message: 'Successfully Registered' }));
                 setAuth(data)
-                navigate('/admin/dashboard')
+                if (id == 1) {
+                    handleGetSubscription(data.user.parish._id)
+                }
+            }
+        }
+    };
+
+    const handleGetSubscription = async (id) => {
+        const { data, error } = await fetchSubscriptionByChapelId(id);
+
+        if (error) {
+            toast.error("Server Error");
+        } else {
+            const newFormData = {
+                ...data,
+                status: false,
+                request: "Pending",
+                file: formData.file,
+            };
+
+            // Avoid overwriting data variable
+            const { data: updatedData, error: updateError } = await updateSubscriptionWithImage(newFormData);
+
+            if (!updateError) {
+                navigate('/admin/dashboard');
+            } else {
+                toast.error("Error updating subscription");
             }
         }
     };
@@ -72,6 +98,9 @@ function RegisterForm() {
     const togglePasswordVisibility = () => {
         setShowPassword((prevState) => !prevState);
     };
+
+    const handleFileChange = (event) =>
+        setFormData({ ...formData, file: event.target.files[0] });
 
     return (
         <form onSubmit={handleSubmit}>
@@ -207,6 +236,11 @@ function RegisterForm() {
                         }}
                     />
                 </Stack>
+                <Divider />
+                {id == 1 &&
+                    <TextField type='file' name='file' onChange={handleFileChange} required />
+                }
+
                 <Button type="submit" variant="contained" color='warning'>Submit</Button>
                 <Typography
                     variant="body2"

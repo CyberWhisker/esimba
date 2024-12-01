@@ -12,8 +12,8 @@ export const UserNav = () => {
     return (
         <>
             <MenuItem component={Link} to='/user/dashboard'>Home</MenuItem>
-            <MenuItem component={Link} to='/user/certificate'>Certificates</MenuItem>
-            <MenuItem component={Link} to='/user/viewSchedule'>Schedule</MenuItem>
+            {/* <MenuItem component={Link} to='/user/certificate'>Certificates</MenuItem> */}
+            <MenuItem component={Link} to='/user/viewSchedule'>Church Calendar</MenuItem>
         </>
     )
 }

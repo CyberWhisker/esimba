@@ -1,5 +1,5 @@
 import { Box, Button, Card, Divider, Grid2, MenuItem, Stack, TextField, Typography } from '@mui/material'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Master from '../../../layouts/Master'
 import { ArrowBackRounded } from '@mui/icons-material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
@@ -8,10 +8,12 @@ import { useNavigate } from 'react-router-dom'
 import { PDFViewer } from '@react-pdf/renderer'
 import { AuthContext } from '../../../context/AuthContext'
 import { toast } from 'react-toastify'
-import { fetchChapelData } from '../../../api/chapelApi'
+import { fetchChapelById, fetchChapelData } from '../../../api/chapelApi'
 import { storeRequest } from '../../../api/requestApi'
 import { storeTransaction } from '../../../api/transactionApi'
 import Baptism from '../../../layouts/Pdf/Baptism'
+import AlertModalLarge from '../../../components/AlertModalLarge'
+import ViewBaptism from './Form/ViewBaptism'
 
 function BaptismForm() {
   const navigate = useNavigate();
@@ -50,6 +52,7 @@ function BaptismForm() {
 
 function FormSection() {
   const { auth } = useContext(AuthContext)
+  const [viewModal, setViewModal] = useState(false)
   const [formData, setFormData] = useState({
     user: auth.user._id,
     request: 'Certificate',
@@ -87,9 +90,7 @@ function FormSection() {
   const handleFileChange = (event) =>
     setFormData({ ...formData, file: event.target.files[0] });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    console.log(formData)
+  const handleSubmit = async () => {
     const { data, error } = await storeRequest(formData)
     if (error) {
       toast.error(error)
@@ -105,6 +106,11 @@ function FormSection() {
     }
   }
 
+  const handleViewModal = (e) => {
+    e.preventDefault()
+    setViewModal(true)
+  }
+
   const handleSubmitTransaction = async (transactionData) => {
     const { data, error } = await storeTransaction(transactionData)
     if (!error) {
@@ -114,46 +120,72 @@ function FormSection() {
 
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
-      <form style={{ width: '100%' }} onSubmit={handleSubmit}>
+      <form style={{ width: '100%' }} onSubmit={handleViewModal}>
         <Stack direction={'column'} spacing={1}>
           <Typography variant='h4' fontWeight={'bold'}>Requester Information</Typography>
           <RequesterForm handleRequestChange={handleRequestChange} />
           <Divider />
           <Typography variant='h4' fontWeight={'bold'}>Personal Information</Typography>
           <Stack direction={'row'} spacing={2}>
-            <TextField label='Full Name' sx={{ width: '100%' }} name='name' onChange={handleDataChange} />
+            <TextField label='Full Name' sx={{ width: '100%' }} name='name' onChange={handleDataChange} required/>
           </Stack>
           <Stack direction={'row'} spacing={2}>
-            <DatePicker label='Date of Birth' sx={{ width: '100%' }} name='birthDate' onChange={value => handleDataDateChange('birthDate', value)} />
-            <DatePicker label='Date of Baptism' sx={{ width: '100%' }} name='baptismDate' onChange={value => handleDataDateChange('baptismDate', value)} />
+            <DatePicker label='Date of Birth' sx={{ width: '100%' }} name='birthDate' onChange={value => handleDataDateChange('birthDate', value)} required/>
+            <DatePicker label='Date of Baptism' sx={{ width: '100%' }} name='baptismDate' onChange={value => handleDataDateChange('baptismDate', value)} required/>
           </Stack>
           <Stack direction={'row'} spacing={2}>
-            <TextField label='Place of Birth' sx={{ width: '100%' }} name='birthAddress' onChange={handleDataChange} />
+            <TextField label='Place of Birth' sx={{ width: '100%' }} name='birthAddress' onChange={handleDataChange} required/>
           </Stack>
           <Stack direction={'row'} spacing={2}>
-            <TextField label="Mother's Name" sx={{ width: '100%' }} name='motherName' onChange={handleDataChange} />
-            <TextField label="Father's Name" sx={{ width: '100%' }} name='fatherName' onChange={handleDataChange} />
+            <TextField label="Mother's Name" sx={{ width: '100%' }} name='motherName' onChange={handleDataChange} required/>
+            <TextField label="Father's Name" sx={{ width: '100%' }} name='fatherName' onChange={handleDataChange} required/>
           </Stack>
           <Stack spacing={2} direction={'row'}>
-            <TextField label='Sponsor Name' sx={{ width: '100%' }} name='sponsor1' onChange={handleDataChange} />
-            <TextField label='Sponsor Name' sx={{ width: '100%' }} name='sponsor2' onChange={handleDataChange} />
+            <TextField label='Sponsor Name' sx={{ width: '100%' }} name='sponsor1' onChange={handleDataChange} required/>
+            <TextField label='Sponsor Name' sx={{ width: '100%' }} name='sponsor2' onChange={handleDataChange} required/>
           </Stack>
-          <TextField label='Priest' name='priest' onChange={handleDataChange} />
+          <TextField label='Priest' name='priest' onChange={handleDataChange} required/>
 
           <Divider />
-          <Typography variant='h4' fontWeight={'bold'}>Payment</Typography>
-          <Typography>Account Information</Typography>
-          <Stack direction={'row'} spacing={2}>
-            <TextField label='Gcash Number' value='09123456789' sx={{ width: '100%' }} disabled />
-            <TextField label='Amount' value='200' sx={{ width: '100%' }} disabled />
-          </Stack>
-          <Divider />
-          <Typography>Upload GCash Reciept</Typography>
-          <TextField type='file' name='file' onChange={handleFileChange} required/>
+          <PaymentForm handleFileChange={handleFileChange} formData={formData} />
           <Button type='submit' variant='contained' color='warning'>Proceed</Button>
         </Stack>
       </form>
+      <AlertModalLarge open={viewModal} onClose={() => setViewModal(false)}>
+        <ViewBaptism formData={formData} handleSubmit={handleSubmit} />
+      </AlertModalLarge>
     </LocalizationProvider>
+  )
+}
+
+function PaymentForm({ handleFileChange, formData }) {
+  const [gcash, setGcash] = useState({})
+
+  const handleGetdata = async () => {
+    if (formData.parish) {
+      const { data, error } = await fetchChapelById(formData.parish)
+      if (!error) {
+        setGcash(data)
+      }
+    }
+  }
+
+  useEffect(() => {
+    handleGetdata()
+  }, [formData.parish])
+
+  return (
+    <>
+      <Typography variant='h4' fontWeight={'bold'}>Payment</Typography>
+      <Typography>Account Information</Typography>
+      <Stack direction={'row'} spacing={2}>
+        <TextField label='Gcash Number' value={gcash.gcash || ""} sx={{ width: '100%' }} disabled />
+        <TextField label='Amount' value='200' sx={{ width: '100%' }} disabled />
+      </Stack>
+      <Divider />
+      <Typography>Upload GCash Reciept</Typography>
+      <TextField type='file' name='file' onChange={handleFileChange} required />
+    </>
   )
 }
 

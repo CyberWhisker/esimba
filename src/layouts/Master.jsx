@@ -51,7 +51,7 @@ function Master({ children }) {
                 {/* Content Layer */}
                 <Box sx={{ zIndex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh', }}>
                     <TopBar />
-                    <Container sx={{ mt: 8, flex: 1 }}>
+                    <Container sx={{ flex: 1 }}>
                         {children}
                     </Container>
                     <Footer />
