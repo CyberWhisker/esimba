@@ -10,7 +10,6 @@ import { AuthContext } from '../context/AuthContext';
 
 const TopBar = () => {
     const { auth, logout } = useContext(AuthContext)
-    console.log(auth)
     return (
         <AppBar
             position='relative'

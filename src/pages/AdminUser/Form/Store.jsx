@@ -54,6 +54,7 @@ function Store({ onClose, handleGetData }) {
                     <TextField label='Email' name='email' onChange={handleChange} required />
                     <TextField label='Password' name='password' onChange={handleChange} required />
                     <TextField label='Role' select value={dataForm.role} name='role' onChange={handleChange} required>
+                        {auth.user.role == 1 && <MenuItem value={1}>Super Admin</MenuItem>}
                         <MenuItem value={2}>Admin</MenuItem>
                         <MenuItem value={3}>User</MenuItem>
                     </TextField>

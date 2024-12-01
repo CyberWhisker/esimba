@@ -1,9 +1,10 @@
 import { Box, Divider, Stack, useTheme } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Menu, MenuItem, Sidebar, SubMenu } from 'react-pro-sidebar';
 import Logo from '/appImg/Logo.png';
 import { CalendarMonth, ChevronLeft, CreditCard, Dashboard, Handshake, Note, Pending, Person, PinDrop, Settings } from '@mui/icons-material';
 import { Link, useLocation } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 function SideBar() {
   const theme = useTheme();
@@ -66,6 +67,7 @@ function SideBar() {
 }
 
 function AdminNavList() {
+  const { auth } = useContext(AuthContext)
   const location = useLocation();
   const [openCertificate, setOpenCertificate] = useState(location.pathname.startsWith('/certificate'))
   const [openRequest, setOpenRequest] = useState(location.pathname.startsWith('/request'))
@@ -138,9 +140,12 @@ function AdminNavList() {
       <MenuItem icon={<Settings />} component={<Link to='/maintenance' />} active={location.pathname == '/maintenance'}>
         Maintenance
       </MenuItem>
-      <MenuItem icon={<Settings />} component={<Link to='/subscription' />} active={location.pathname == '/subscription'}>
-        Subscription
-      </MenuItem>
+
+      {auth.user.role == 1 && (
+        <MenuItem icon={<Settings />} component={<Link to='/subscription' />} active={location.pathname == '/subscription'}>
+          Subscription
+        </MenuItem>
+      )}
       <Divider />
     </>
   );

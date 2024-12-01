@@ -12,11 +12,12 @@ import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
 import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
 import { AuthContext } from '../../context/AuthContext'
 import { fetchScheduleByParishId } from '../../api/scheduleApi'
-import { fetchRequestAppointment, fetchRequestAppointmentByParishId, fetchRequestCertificate, fetchRequestCertificateByParishId } from '../../api/requestApi'
+import { fetchRequestAppointmentByParishId, fetchRequestCertificateByParishId } from '../../api/requestApi'
 import { fetchTransactionByChapelId } from '../../api/transactionApi'
 import { Link } from 'react-router-dom'
 import AlertModalLarge from '../../components/AlertModalLarge'
 import Update from './Form/Update'
+import { fetchEventsByParishId } from '../../api/eventApi'
 
 function AdminDashboard() {
   const handleAuthAlert = async () => {
@@ -184,53 +185,93 @@ function ScheduleList() {
   const { auth } = useContext(AuthContext);
   const [updateModal, setUpdateModal] = useState(false);
   const [selected, setSelected] = useState([])
+  const [selectedEvent, setSelectedEvent] = useState([])
   const [events, setEvents] = useState([]);
+
   const handleDateClick = (arg) => {
     const clickedDate = moment(arg.date).startOf('day').toISOString();
     const filteredEventsData = events
-      .filter((event) => moment(event.date).startOf('day').toISOString() === clickedDate)
-      .map((event) => event.data);
-    if (filteredEventsData.length > 0) {
-      setSelected(filteredEventsData)
-      setUpdateModal(true)
-    }
+      .filter((event) => {
+        const startDate = moment(event.start).startOf('day');
+        const endDate = moment(event.end);
+
+        const clickedMoment = moment(clickedDate).startOf('day');
+
+        return clickedMoment.isBetween(startDate, endDate, null, '[]');
+      });
+    setSelected(filteredEventsData.filter((item) => item.type == "appointment").map((item) => item.data))
+    setSelectedEvent(filteredEventsData.filter((item) => item.type == "event").map((item) => item.data))
+    setUpdateModal(true)
   };
 
-  const currentDay = moment().format('YYYY-MM-DD');
+  const handleGetAllEvents = async () => {
+    try {
+      const [scheduleResponse, eventsResponse] = await Promise.all([
+        fetchScheduleByParishId(auth.user.parish._id),
+        fetchEventsByParishId(auth.user.parish._id)
+      ]);
 
-  const handleGetSchedule = async () => {
-    const { data, error } = await fetchScheduleByParishId(auth.user.parish._id);
-    if (!error) {
-      const mappedEvents = data.map((item) => ({
-        data: {
-          ...item
-        },
-        title:
-          item.request.certificate == "Baptism Certificate" && "Baptism Appointment" ||
-          item.request.certificate == "Death Certificate" && "Death Appointment" ||
-          item.request.certificate == "Marriage Certificate" && "Marriage Appointment" ||
-          item.request.certificate == "Confirmation Certificate" && "Confirmation Appointment",
-        date: moment(item.date).format('YYYY-MM-DD'),
-        start:
-          moment(item.startTime).format('YYYY-MM-DD') == moment(item.endTime).format('YYYY-MM-DD') ?
-            moment(item.startTime).format('YYYY-MM-DD') :
-            moment(item.startTime).toISOString(),
-        end:
-          moment(item.startTime).format('YYYY-MM-DD') == moment(item.endTime).format('YYYY-MM-DD') ?
-            moment(item.endTime).format('YYYY-MM-DD') :
-            moment(item.endTime).toISOString(),
-        color:
-          moment(item.date).format('YYYY-MM-DD') === currentDay && theme.palette.success.main ||
-          moment(item.date).format('YYYY-MM-DD') > currentDay && theme.palette.warning.main ||
-          moment(item.date).format('YYYY-MM-DD') < currentDay && theme.palette.error.main
-        ,
-      }));
-      setEvents(mappedEvents);
+      if (!scheduleResponse.error && !eventsResponse.error) {
+        const currentDay = moment().format('YYYY-MM-DD');
+
+        // Map schedules
+        const mappedSchedules = scheduleResponse.data.map((item) => ({
+          data: { ...item },
+          type: 'appointment',
+          title:
+            item.request.certificate == "Baptism Certificate" && "Baptism Appointment" ||
+            item.request.certificate == "Death Certificate" && "Death Appointment" ||
+            item.request.certificate == "Marriage Certificate" && "Marriage Appointment" ||
+            item.request.certificate == "Confirmation Certificate" && "Confirmation Appointment",
+          date: moment(item.date).format('YYYY-MM-DD'),
+          start:
+            moment(item.startTime).format('YYYY-MM-DD') == moment(item.endTime).format('YYYY-MM-DD') ?
+              moment(item.startTime).format('YYYY-MM-DD') :
+              moment(item.startTime).toISOString(),
+          end:
+            moment(item.startTime).format('YYYY-MM-DD') == moment(item.endTime).format('YYYY-MM-DD') ?
+              moment(item.endTime).format('YYYY-MM-DD') :
+              moment(item.endTime).toISOString(),
+          color:
+            moment(item.date).format('YYYY-MM-DD') === currentDay && theme.palette.success.main ||
+            moment(item.date).format('YYYY-MM-DD') > currentDay && theme.palette.warning.main ||
+            moment(item.date).format('YYYY-MM-DD') < currentDay && theme.palette.error.main
+        }));
+
+        // Map events
+        const mappedEvents = eventsResponse.data.map((item) => ({
+          data: { ...item },
+          type: 'event',
+          title: item.event,
+          start:
+            moment(item.startDate).format('YYYY-MM-DD') == moment(item.endDate).format('YYYY-MM-DD') ?
+              moment(item.startDate).format('YYYY-MM-DD') :
+              moment(item.startDate).toISOString(),
+          end:
+            moment(item.startDate).format('YYYY-MM-DD') == moment(item.endDate).format('YYYY-MM-DD') ?
+              moment(item.endDate).format('YYYY-MM-DD') :
+              moment(item.endDate).toISOString(),
+          color:
+            moment(item.endDate).format('YYYY-MM-DD') === currentDay && theme.palette.success.main ||
+            moment(item.endDate).format('YYYY-MM-DD') > currentDay && theme.palette.warning.main ||
+            moment(item.endDate).format('YYYY-MM-DD') < currentDay && theme.palette.error.main
+        }));
+
+        // Combine both datasets
+        const combinedEvents = [...mappedSchedules, ...mappedEvents];
+
+        // Set the merged events to state
+        setEvents(combinedEvents);
+      } else {
+        console.error('Error fetching schedules or events');
+      }
+    } catch (error) {
+      console.error('Error in handleGetAllEvents:', error);
     }
   };
 
   useEffect(() => {
-    handleGetSchedule();
+    handleGetAllEvents()
   }, []);
 
   return (
@@ -258,11 +299,12 @@ function ScheduleList() {
             initialView="dayGridMonth"
             events={events}
             dateClick={handleDateClick}
+            displayEventTime={false}
           />
         </Box>
       </Stack>
       <AlertModalLarge open={updateModal} onClose={() => setUpdateModal(false)}>
-        <Update selected={selected} onClose={() => setUpdateModal(false)} handleGetData={handleGetSchedule} />
+        <Update selected={selected} onClose={() => setUpdateModal(false)} handleGetData={handleGetAllEvents} selectedEvent={selectedEvent} />
       </AlertModalLarge>
     </LocalizationProvider>
   );

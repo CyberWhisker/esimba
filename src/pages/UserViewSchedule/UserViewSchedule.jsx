@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Box, Divider, MenuItem, Select, Stack, TextField, Typography } from '@mui/material'
+import { Box, Divider, MenuItem, Select, Stack, TextField, Typography, useTheme } from '@mui/material'
 import CustomCard from '../../components/CustomCard'
 import { ChevronRight } from '@mui/icons-material'
 import { LocalizationProvider } from '@mui/x-date-pickers'
@@ -12,6 +12,7 @@ import { AuthContext } from '../../context/AuthContext'
 import { fetchScheduleByParishId, fetchScheduleByUserId } from '../../api/scheduleApi'
 import Master from '../../layouts/Master'
 import { fetchChapelData } from '../../api/chapelApi'
+import { fetchEventsByParishId } from '../../api/eventApi'
 
 function UserViewSchedule() {
   return (
@@ -31,41 +32,79 @@ function UserViewSchedule() {
 function ScheduleList() {
   const [events, setEvents] = useState([]);
   const [parish, setParish] = useState('')
-  const { auth } = useContext(AuthContext)
+  const theme = useTheme();
 
-  const handleDateClick = (arg) => {
-    const clickedDate = moment(arg.date).startOf('day').toISOString();
-    const filteredEvents = events.filter((event) =>
-      moment(event.start).startOf('day').toISOString() === clickedDate
-    );
-
-    if (filteredEvents.length > 0) {
-      alert(`Events on ${arg.dateStr}: \n${filteredEvents.map((event) => event.title).join('\n')}`);
-    } else {
-      alert(`No events on ${arg.dateStr}`);
-    }
-  };
-
-  const handleGetSchedule = async () => {
+  const handleGetAllEvents = async () => {
     if (parish) {
-      const { data, error } = await fetchScheduleByParishId(parish);
-      if (!error) {
-        const mappedEvents = data.map((item) => ({
-          title:
-            item.request.certificate == "Baptism Certificate" && "Baptism Appointment" ||
-            item.request.certificate == "Death Certificate" && "Death Appointment" ||
-            item.request.certificate == "Marriage Certificate" && "Marriage Appointment" ||
-            item.request.certificate == "Confirmation Certificate" && "Confirmation Appointment",
-          date: moment(item.date).format("YYYY-MM-DD")
-        }));
-        setEvents(mappedEvents);
+      try {
+        const [scheduleResponse, eventsResponse] = await Promise.all([
+          fetchScheduleByParishId(parish),
+          fetchEventsByParishId(parish)
+        ]);
+
+        if (!scheduleResponse.error && !eventsResponse.error) {
+          const currentDay = moment().format('YYYY-MM-DD');
+
+          // Map schedules
+          const mappedSchedules = scheduleResponse.data.map((item) => ({
+            data: { ...item },
+            type: 'appointment',
+            title:
+              item.request.certificate == "Baptism Certificate" && "Baptism Appointment" ||
+              item.request.certificate == "Death Certificate" && "Death Appointment" ||
+              item.request.certificate == "Marriage Certificate" && "Marriage Appointment" ||
+              item.request.certificate == "Confirmation Certificate" && "Confirmation Appointment",
+            date: moment(item.date).format('YYYY-MM-DD'),
+            start:
+              moment(item.startTime).format('YYYY-MM-DD') == moment(item.endTime).format('YYYY-MM-DD') ?
+                moment(item.startTime).format('YYYY-MM-DD') :
+                moment(item.startTime).toISOString(),
+            end:
+              moment(item.startTime).format('YYYY-MM-DD') == moment(item.endTime).format('YYYY-MM-DD') ?
+                moment(item.endTime).format('YYYY-MM-DD') :
+                moment(item.endTime).toISOString(),
+            color:
+              moment(item.date).format('YYYY-MM-DD') === currentDay && theme.palette.success.main ||
+              moment(item.date).format('YYYY-MM-DD') > currentDay && theme.palette.warning.main ||
+              moment(item.date).format('YYYY-MM-DD') < currentDay && theme.palette.error.main
+          }));
+
+          // Map events
+          const mappedEvents = eventsResponse.data.map((item) => ({
+            data: { ...item },
+            type: 'event',
+            title: item.event,
+            start:
+              moment(item.startDate).format('YYYY-MM-DD') == moment(item.endDate).format('YYYY-MM-DD') ?
+                moment(item.startDate).format('YYYY-MM-DD') :
+                moment(item.startDate).toISOString(),
+            end:
+              moment(item.startDate).format('YYYY-MM-DD') == moment(item.endDate).format('YYYY-MM-DD') ?
+                moment(item.endDate).format('YYYY-MM-DD') :
+                moment(item.endDate).toISOString(),
+            color:
+              moment(item.endDate).format('YYYY-MM-DD') === currentDay && theme.palette.success.main ||
+              moment(item.endDate).format('YYYY-MM-DD') > currentDay && theme.palette.warning.main ||
+              moment(item.endDate).format('YYYY-MM-DD') < currentDay && theme.palette.error.main
+          }));
+
+          // Combine both datasets
+          const combinedEvents = [...mappedSchedules, ...mappedEvents];
+
+          // Set the merged events to state
+          setEvents(combinedEvents);
+        } else {
+          console.error('Error fetching schedules or events');
+        }
+      } catch (error) {
+        console.error('Error in handleGetAllEvents:', error);
       }
     }
   };
 
   useEffect(() => {
-    handleGetSchedule();
-  }, [parish]); // Empty dependency array ensures it runs only once on mount
+    handleGetAllEvents()
+  }, [parish]);
 
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -74,9 +113,9 @@ function ScheduleList() {
         <Divider />
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin]}
+          timeZone='UTC'
+          initialView="dayGridMonth"
           events={events}
-          dateClick={handleDateClick}
-          height={'80vh'}
           displayEventTime={false} // Removes time from the event display
         />
       </Stack>

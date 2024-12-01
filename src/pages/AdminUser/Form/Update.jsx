@@ -1,9 +1,11 @@
 import { Box, Button, Divider, MenuItem, Stack, TextField, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { updateUser } from '../../../api/userApi'
 import { toast } from 'react-toastify'
+import { AuthContext } from '../../../context/AuthContext'
 
 function Update({ selected, handleGetData, onClose }) {
+    const {auth} = useContext(AuthContext)
     const [formData, setFormData] = useState(selected)
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -40,6 +42,7 @@ function Update({ selected, handleGetData, onClose }) {
                     <TextField label='Email' name='email' onChange={handleChange} value={formData.email} required/>
                     <TextField label='Reset Password' name='resetPassword' onChange={handleChange} />
                     <TextField label='Role' select value={formData.role} name='role' onChange={handleChange} required>
+                        {auth.user.role == 1 && <MenuItem value={1}>Super Admin</MenuItem>}
                         <MenuItem value={2}>Admin</MenuItem>
                         <MenuItem value={3}>User</MenuItem>
                     </TextField>
