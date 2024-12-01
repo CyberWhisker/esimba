@@ -112,9 +112,9 @@ function AdminNavList() {
         <MenuItem icon={<Note />} component={<Link to='/certificate/baptism' />} active={location.pathname == '/certificate/baptism'}>
           Baptism
         </MenuItem>
-        <MenuItem icon={<Note />} component={<Link to='/certificate/death' />} active={location.pathname == '/certificate/death'}>
+        {/* <MenuItem icon={<Note />} component={<Link to='/certificate/death' />} active={location.pathname == '/certificate/death'}>
           Death
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem icon={<Note />} component={<Link to='/certificate/marriage' />} active={location.pathname == '/certificate/marriage'}>
           Marriage
         </MenuItem>
@@ -129,7 +129,7 @@ function AdminNavList() {
       </MenuItem>
 
       <MenuItem icon={<CreditCard />} component={<Link to='/transaction' />} active={location.pathname == '/transaction'}>
-        Transcation
+        Transaction
       </MenuItem>
 
       {/* <MenuItem icon={<Handshake />} component={<Link to='/donation' />} active={location.pathname == '/donation'}>

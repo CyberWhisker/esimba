@@ -142,9 +142,7 @@ function FormSection() {
             <TextField label='Sponsor Name' sx={{ width: '100%' }} name='sponsor2' onChange={handleDataChange} />
           </Stack>
           <TextField label='Cause of Death' sx={{ width: '100%' }} name='causeOfDeath' onChange={handleDataChange} />
-          <TextField label='Roman Cemetary' sx={{ width: '100%' }} name='romanCemetary' onChange={handleDataChange} />
-          <TextField label='Municipal Cemetary' sx={{ width: '100%' }} name='municipalCemetary' onChange={handleDataChange} />
-          <TextField label='Private Cemetary' sx={{ width: '100%' }} name='privateCemetary' onChange={handleDataChange} />
+          <CemetarySelect handleDataChange={handleDataChange} />
           <TextField label='Priest' name='priest' onChange={handleDataChange} />
 
           <Divider />
@@ -265,6 +263,25 @@ function DateSchedulePicker({ setFormData, formData }) {
       onChange={(value) => handleDateChange('schedule', value)}
     />
   );
+}
+
+function CemetarySelect({ handleDataChange }) {
+  const [selected, setSelected] = useState("")
+
+  return (
+    <>
+      <TextField label="Select Cemetary" value={selected} onChange={(e) => setSelected(e.target.value)} select required>
+        <MenuItem value="Roman">Roman Cemetary</MenuItem>
+        <MenuItem value="Private">Private Cemetary</MenuItem>
+        <MenuItem value="Municipal">Municipal Cemetary</MenuItem>
+      </TextField>
+      {selected == "Roman" && <TextField label='Roman Cemetary Name' sx={{ width: '100%' }} name='romanCemetary' onChange={handleDataChange} />}
+      {selected == "Municipal" && <TextField label='Municipal Cemetary Name' sx={{ width: '100%' }} name='municipalCemetary' onChange={handleDataChange} />}
+      {selected == "Private" && <TextField label='Private Cemetary Name' sx={{ width: '100%' }} name='privateCemetary' onChange={handleDataChange} />}
+
+
+    </>
+  )
 }
 
 export default DeathForm

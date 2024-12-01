@@ -11,7 +11,7 @@ function UserCertificate() {
             <Stack spacing={2} direction={'column'} justifyContent={'center'} mt={10} width={'50vh'}>
                 <Button variant='contained' size='large' sx={{minWidth: '30vh'}} color='warning' component={Link} to='/user/request/baptism'>Baptism</Button>
                 <Button variant='contained' size='large' sx={{minWidth: '30vh'}} color='warning' component={Link} to='/user/request/marriage'>Marriage</Button>
-                <Button variant='contained' size='large' sx={{minWidth: '30vh'}} color='warning' component={Link} to='/user/request/death'>Death</Button>
+                {/* <Button variant='contained' size='large' sx={{minWidth: '30vh'}} color='warning' component={Link} to='/user/request/death'>Death</Button> */}
                 <Button variant='contained' size='large' sx={{minWidth: '30vh'}} color='warning' component={Link} to='/user/request/confirmation'>Confirmation</Button>
             </Stack>
         </Box>

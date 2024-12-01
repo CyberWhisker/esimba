@@ -13,7 +13,7 @@ export const UserNav = () => {
         <>
             <MenuItem component={Link} to='/user/dashboard'>Home</MenuItem>
             {/* <MenuItem component={Link} to='/user/certificate'>Certificates</MenuItem> */}
-            <MenuItem component={Link} to='/user/viewSchedule'>Church Calendar</MenuItem>
+            <MenuItem component={Link} to='/user/viewSchedule'>Parish Calendar</MenuItem>
         </>
     )
 }

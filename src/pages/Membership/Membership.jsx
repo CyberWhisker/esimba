@@ -1,7 +1,7 @@
 import React from 'react'
 import CustomCard from '../../components/CustomCard'
-import { Box, Button, Divider, Grid2, Stack, Typography } from '@mui/material'
-import { Backspace, CheckCircle, KeyboardReturn } from '@mui/icons-material'
+import { Box, Button, Divider, Grid, Stack, Typography } from '@mui/material'
+import { CheckCircle, KeyboardReturn } from '@mui/icons-material'
 import { Link, useNavigate } from 'react-router-dom'
 import MasterAuth from '../../layouts/MasterAuth'
 
@@ -11,70 +11,91 @@ function Membership() {
   return (
     <MasterAuth>
       <Box sx={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-        <Box>
-          <Button endIcon={<KeyboardReturn/>} variant='contained' onClick={() => navigate(-1)}>Go Back</Button>
-          <Grid2 container spacing={2} sx={{ height: '100%' }} mt={2} direction={{ xs: 'column', lg: 'row' }}>
-            <Grid2 size='grow'>
-              <CustomCard>
-                <Stack justifyContent={'space-between'} direction={'column'} height={'100%'} p={2} spacing={2}>
+        <Box sx={{ width: '100%', maxWidth: '1200px' }}>
+          <Button
+            endIcon={<KeyboardReturn />}
+            variant='contained'
+            onClick={() => navigate(-1)}
+            sx={{ mb: 2, fontWeight: 'bold' }}
+          >
+            Go Back
+          </Button>
+
+          <Grid container spacing={4} sx={{ height: '100%' }} direction={{ xs: 'column', md: 'row' }}>
+            {/* Free Membership Card */}
+            <Grid item xs={12} md={6}>
+              <CustomCard sx={{ boxShadow: 3 }}>
+                <Stack justifyContent={'space-between'} direction={'column'} height={'100%'} p={4} spacing={3}>
                   <Stack spacing={2}>
-                    <Typography fontWeight={'bold'} variant='h4'>Free</Typography>
-                    <Typography fontWeight={'bold'} variant='h4'>₱ 0.00 per month</Typography>
-                    <Divider />
+                    <Typography variant="h4" fontWeight="bold" color="primary" textAlign={'center'}>Free Trial</Typography>
+                    <Typography variant="h6" color="text.secondary" textAlign={'center'}>
+                      <span style={{ fontWeight: 'bold' }}>Try 3 months of free trial</span> with full access to all features
+                    </Typography>
+                    <Divider sx={{ my: 2 }} />
                     <Stack direction={'row'} spacing={2}>
-                      <CheckCircle />
+                      <CheckCircle color="success" />
                       <Typography>Certificate Issuance</Typography>
                     </Stack>
                     <Stack direction={'row'} spacing={2}>
-                      <CheckCircle />
-                      <Typography>Event Management </Typography>
-                    </Stack>
-                    <Stack direction={'row'} spacing={2}>
-                      <CheckCircle />
-                      <Typography>Basic Member Management </Typography>
-                    </Stack>
-                    <Stack direction={'row'} spacing={2}>
-                      <CheckCircle />
-                      <Typography>Limited Users (75 users only)</Typography>
-                    </Stack>
-                  </Stack>
-                  <Button color='warning' variant='contained' component={Link} to={'/register/2'}>Sign up for Free</Button>
-                </Stack>
-              </CustomCard>
-            </Grid2>
-            <Grid2 size='grow'>
-              <CustomCard>
-                <Stack justifyContent={'space-between'} direction={'column'} height={'100%'} p={2} spacing={2}>
-                  <Stack spacing={2}>
-                    <Typography fontWeight={'bold'} variant='h4'>Premium</Typography>
-                    <Typography fontWeight={'bold'} variant='h4'>₱ 50.00 per month</Typography>
-                    <Divider />
-                    <Stack direction={'row'} spacing={2}>
-                      <CheckCircle />
-                      <Typography>Certificate Issuance</Typography>
-                    </Stack>
-                    <Stack direction={'row'} spacing={2}>
-                      <CheckCircle />
+                      <CheckCircle color="success" />
                       <Typography>Event Management</Typography>
                     </Stack>
                     <Stack direction={'row'} spacing={2}>
-                      <CheckCircle />
-                      <Typography>Accept Online Mass Intentions and Donations</Typography>
-                    </Stack>
-                    <Stack direction={'row'} spacing={2}>
-                      <CheckCircle />
-                      <Typography>Advanced Member Management</Typography>
-                    </Stack>
-                    <Stack direction={'row'} spacing={2}>
-                      <CheckCircle />
-                      <Typography>unlimited users</Typography>
+                      <CheckCircle color="success" />
+                      <Typography>User Management</Typography>
                     </Stack>
                   </Stack>
-                  <Button variant='contained' component={Link} to={'/register/1'}>Start Now</Button>
+                  <Button
+                    variant='contained'
+                    color="warning"
+                    component={Link}
+                    to={'/register/2'}
+                    fullWidth
+                    sx={{ mt: 2 }}
+                  >
+                    Sign up Now
+                  </Button>
                 </Stack>
               </CustomCard>
-            </Grid2>
-          </Grid2>
+            </Grid>
+
+            {/* Premium Membership Card */}
+            <Grid item xs={12} md={6}>
+              <CustomCard sx={{ boxShadow: 3 }}>
+                <Stack justifyContent={'space-between'} direction={'column'} height={'100%'} p={4} spacing={3}>
+                  <Stack spacing={2}>
+                    <Typography variant="h4" fontWeight="bold" color="primary" textAlign={'center'}>Premium Plan</Typography>
+                    <Typography variant="h6" color="text.secondary" textAlign={'center'}>
+                      <span style={{ fontWeight: 'bold' }}>Upgrade to 1 year premium</span> for only 
+                      <strong> ₱ 1,499 </strong> and enjoy full access to all features
+                    </Typography>
+                    <Divider sx={{ my: 2 }} />
+                    <Stack direction={'row'} spacing={2}>
+                      <CheckCircle color="success" />
+                      <Typography>Certificate Issuance</Typography>
+                    </Stack>
+                    <Stack direction={'row'} spacing={2}>
+                      <CheckCircle color="success" />
+                      <Typography>Event Management</Typography>
+                    </Stack>
+                    <Stack direction={'row'} spacing={2}>
+                      <CheckCircle color="success" />
+                      <Typography>User Management</Typography>
+                    </Stack>
+                  </Stack>
+                  <Button
+                    variant='contained'
+                    component={Link}
+                    to={'/register/1'}
+                    fullWidth
+                    sx={{ mt: 2 }}
+                  >
+                    Get Started
+                  </Button>
+                </Stack>
+              </CustomCard>
+            </Grid>
+          </Grid>
         </Box>
       </Box>
     </MasterAuth>

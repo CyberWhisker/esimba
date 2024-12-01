@@ -11,7 +11,7 @@ function UserSchedule() {
             <Stack spacing={2} direction={'column'} justifyContent={'center'} mt={10} width={'50vh'}>
                 <Button variant='contained' size='large' sx={{minWidth: '30vh'}} color='warning' component={Link} to='/user/schedule/baptism'>Baptism</Button>
                 <Button variant='contained' size='large' sx={{minWidth: '30vh'}} color='warning' component={Link} to='/user/schedule/marriage'>Marriage</Button>
-                <Button variant='contained' size='large' sx={{minWidth: '30vh'}} color='warning' component={Link} to='/user/schedule/death'>Death</Button>
+                <Button variant='contained' size='large' sx={{minWidth: '30vh'}} color='warning' component={Link} to='/user/schedule/death'>Burial</Button>
                 <Button variant='contained' size='large' sx={{minWidth: '30vh'}} color='warning' component={Link} to='/user/schedule/confirmation'>Confirmation</Button>
             </Stack>
         </Box>
