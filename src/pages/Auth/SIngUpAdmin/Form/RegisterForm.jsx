@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Button, Divider, IconButton, InputAdornment, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Divider, IconButton, InputAdornment, Stack, TextField, Typography } from '@mui/material';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AuthContext } from '../../../../context/AuthContext';
 import { registerUser } from '../../../../api/userApi';
@@ -8,6 +8,7 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { fetchSubscriptionByChapelId, updateSubscriptionWithImage } from '../../../../api/subscription';
 
 function RegisterForm() {
+    const gcashNumber = "1234-5678-9012";
     const { id } = useParams();
     const { setAuth } = useContext(AuthContext)
     const [formData, setFormData] = useState({
@@ -238,7 +239,16 @@ function RegisterForm() {
                 </Stack>
                 <Divider />
                 {id == 1 &&
-                    <TextField type='file' name='file' onChange={handleFileChange} required />
+                    <Box>
+                        <Typography variant="body1" textAlign={'center'}>
+                            Please make the payment to the following GCash number:
+                        </Typography>
+                        <Typography variant="h6" sx={{textAlign:'center', fontWeight: 'bold', color: 'secondary.main'}}>
+                            {gcashNumber}
+                        </Typography>
+                        <Typography textAlign={'center'}>Kindly provide a screenshot of the transaction as proof of payment for verification purposes. Thank you.</Typography>
+                        <TextField type='file' name='file' onChange={handleFileChange} required fullWidth />
+                    </Box>
                 }
 
                 <Button type="submit" variant="contained" color='warning'>Submit</Button>
