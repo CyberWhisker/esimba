@@ -1,11 +1,13 @@
 import React, { useContext, useEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
-import { RequestBaptismForm, RequestConfirmationForm, RequestDeathForm, UserDashboard, RequestMarriageForm, SignInPage, SignUpPage, UserCertificate, ScheduleBaptismForm, ScheduleDeathForm, ScheduleMarriageForm, ScheduleConfirmationForm, UserSchedule, AdminDashboard, AdminUser, Landing, Membership, AdminSchedule, UserViewCertificate, UserViewSchedule, AdminTransaction, AdminDonation, UserDonation, SelectRegistration, UserProfile, AdminMaintenance, AdminSubscription, ExpiredPage } from './pages'
+import { RequestBaptismForm, RequestConfirmationForm, RequestDeathForm, UserDashboard, RequestMarriageForm, SignInPage, SignUpPage, UserCertificate, ScheduleBaptismForm, ScheduleDeathForm, ScheduleMarriageForm, ScheduleConfirmationForm, UserSchedule, AdminDashboard, AdminUser, Landing, Membership, AdminSchedule, UserViewCertificate, UserViewSchedule, AdminTransaction, AdminDonation, UserDonation, SelectRegistration, UserProfile, AdminMaintenance, AdminSubscription, ExpiredPage, Verify } from './pages'
 import { AuthContext } from './context/AuthContext';
 import SignUpAdmin from './pages/Auth/SIngUpAdmin/SignUpAdmin';
 import { AdminBaptism, AdminConfirmation, AdminDeath, AdminMarriage } from './pages/AdminCertificate';
 import { AdminRequestAppointment, AdminRequestCertificate } from './pages/AdminRequest';
 import { fetchSubscriptionByChapelId } from './api/subscription';
+import RequestResetPassword from './pages/RequestResetPassword/RequestResetPassword';
+import ResetPassword from './pages/ResetPassword/ResetPassword';
 
 function ProtectedRoute({ children }) {
   const { auth } = useContext(AuthContext);
@@ -44,6 +46,9 @@ function App() {
         <Route path='/register' element={<SignUpPage />} />
         <Route path='/register/:id' element={<SignUpAdmin />} />
         <Route path='/renew' element={<ExpiredPage />} />
+        <Route path='/verify-email' element={<Verify />} />
+        <Route path="/request-reset-password" element={<RequestResetPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         {/* Main */}
         <Route path='/' element={<Landing />} />
         <Route path='/membership' element={<Membership />} />

@@ -97,8 +97,9 @@ function LoginForm() {
                 />
                 <Button variant='contained' color='warning' type='submit'>LogIn</Button>
                 <Button variant='outlined' component={Link} to='/selectRegistration' color='warning'>Register</Button>
+                <Typography textAlign={'end'} component={Link} to={'/request-reset-password'} sx={{textDecoration: '', color: 'white'}}>Reset Password</Typography>
                 <Divider />
-                <Stack direction={'row'} justifyContent={'end'}>
+                <Stack direction={'row'} >
                     <Typography>Need Help?</Typography>
                 </Stack>
             </Stack>

@@ -5,6 +5,7 @@ export { default as SelectRegistration } from './SelectRegistration/SelectRegist
 export { default as SignInPage } from './Auth/SignIn/SignIn'
 export { default as SignUpPage } from './Auth/SignUp/SignUp'
 export { default as ExpiredPage } from './Expired/Expired'
+export { default as Verify } from './Verify/Verify'
 
 //User
 export { default as UserDashboard } from './UserDashboard/UserDashboard'
