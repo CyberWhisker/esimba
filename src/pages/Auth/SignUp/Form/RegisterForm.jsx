@@ -1,18 +1,18 @@
-import React, { useContext, useState } from 'react';
-import { Button, Divider, IconButton, InputAdornment, Stack, TextField, Typography } from '@mui/material';
+import React, { useContext, useEffect, useState } from 'react';
+import { Autocomplete, Button, CircularProgress, Divider, IconButton, InputAdornment, Stack, TextField, Typography } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../../context/AuthContext';
 import { registerUser } from '../../../../api/userApi';
 import { toast } from 'react-toastify';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { fetchAddress } from '../../../../api/addressApi';
 
 function RegisterForm() {
     const { setAuth } = useContext(AuthContext)
+    const [loadingBtn, setLoadingBtn] = useState(false)
     const [formData, setFormData] = useState({
         email: '',
-        firstName: '',
-        lastName: '',
-        middleName: '',
+        name: '',
         address: '',
         phone: '',
         password: '',
@@ -32,14 +32,12 @@ function RegisterForm() {
     // Handle form submission
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const { email, firstName, lastName, middleName, address, phone, password, confirmPassword } = formData;
+        const { email, name, address, phone, password, confirmPassword } = formData;
         const newErrors = {};
 
         // Basic validation
         if (!email || !/\S+@\S+\.\S+/.test(email)) newErrors.email = 'Valid email is required';
-        if (!firstName) newErrors.firstName = 'First Name is required';
-        if (!lastName) newErrors.lastName = 'Last Name is required';
-        if (!middleName) newErrors.middleName = 'Middle Name is required';
+        if (!name) newErrors.name = 'Full Name is required';
         if (!address) newErrors.address = 'Address is required';
         if (!phone) newErrors.phone = 'Phone Number is required';
         if (!password || password.length < 6) newErrors.password = 'Password must be at least 6 characters';
@@ -47,8 +45,10 @@ function RegisterForm() {
 
         setErrors(newErrors);
         if (Object.keys(newErrors).length === 0) {
+            setLoadingBtn(true)
             const { data, error } = await registerUser(formData)
             if (error) {
+                setLoadingBtn(false)
                 toast.error(error)
             } else {
                 toast.success("Successfully registered")
@@ -74,40 +74,16 @@ function RegisterForm() {
                 <Typography variant='h5' fontWeight={'bold'}>Register</Typography>
                 <Divider />
                 <Typography fontWeight={'bold'}>Personal Information</Typography>
-                <Stack direction={'row'} spacing={1}>
-                    <TextField
-                        label="First Name"
-                        name="firstName"
-                        value={formData.firstName}
-                        onChange={handleChange}
-                        error={Boolean(errors.firstName)}
-                        helperText={errors.firstName}
-                    />
-                    <TextField
-                        label="Last Name"
-                        name="lastName"
-                        value={formData.lastName}
-                        onChange={handleChange}
-                        error={Boolean(errors.lastName)}
-                        helperText={errors.lastName}
-                    />
-                    <TextField
-                        label="Middle Name"
-                        name="middleName"
-                        value={formData.middleName}
-                        onChange={handleChange}
-                        error={Boolean(errors.middleName)}
-                        helperText={errors.middleName}
-                    />
-                </Stack>
                 <TextField
-                    label="Address"
-                    name="address"
-                    value={formData.address}
+                    label="Full Name"
+                    name="name"
                     onChange={handleChange}
-                    error={Boolean(errors.address)}
-                    helperText={errors.address}
+                    error={Boolean(errors.name)}
+                    helperText={errors.name}
                 />
+                <Stack direction={'row'} spacing={1}>
+                    <SelectAddressUser formData={formData} setFormData={setFormData} />
+                </Stack>
                 <TextField
                     label="Phone Number"
                     name="phone"
@@ -174,7 +150,8 @@ function RegisterForm() {
                         }}
                     />
                 </Stack>
-                <Button type="submit" variant="contained" color='warning'>Submit</Button>
+                {loadingBtn && <Button type="submit" variant="contained" color='warning' disabled endIcon={<CircularProgress size={20}/>}>Loading</Button>}
+                {!loadingBtn && <Button type="submit" variant="contained" color='warning'>Submit</Button>}
                 <Typography
                     variant="body2"
                     color="primary"
@@ -188,6 +165,76 @@ function RegisterForm() {
             </Stack>
         </form>
     );
+}
+
+function SelectAddressUser({ formData, setFormData }) {
+    const [address, setAddress] = useState("")
+    const [barangayData, setBarangayData] = useState([]);
+    const [addressData, setAddressData] = useState([])
+
+    const handleCityChange = (event, value) => {
+        setAddress(value)
+        const barangay = addressData.find((item) => item.city == value)
+        setFormData({
+            ...formData,
+        })
+        setBarangayData(barangay.barangays)
+    }
+
+    const handleBarangayChange = (event, value) => {
+        setFormData({
+            ...formData,
+            ['address']: `${value}, ${address}, Marinduque`
+        })
+    }
+
+    useEffect(() => {
+        const getAddress = async () => {
+            const { data, error } = await fetchAddress()
+            if (!error) {
+                setAddressData(data)
+            }
+        }
+        getAddress()
+    }, [])
+    return (
+        <>
+            <Autocomplete
+                fullWidth
+                defaultValue={''}
+                onChange={(event, value) => handleCityChange(event, value)}
+                disablePortal
+                name="city"
+                options={addressData.map((item) => item.city)}
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        label={"City"}
+                        name={"city"}
+                        fullWidth
+                    />
+                )}
+                isOptionEqualToValue={(option, value) => option === value} // for value matching
+            />
+            <Autocomplete
+                fullWidth
+                defaultValue={''}
+                onChange={(event, value) => handleBarangayChange(event, value)}
+                disablePortal
+                name="barangay"
+                options={barangayData.map((item) => item)}
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        label={"Barangay"}
+                        name={"barangay"}
+                        fullWidth
+                    />
+                )}
+                isOptionEqualToValue={(option, value) => option === value} // for value matching
+            />
+        </>
+    )
 }
 
 export default RegisterForm

@@ -27,7 +27,7 @@ function Membership() {
               <CustomCard sx={{ boxShadow: 3 }}>
                 <Stack justifyContent={'space-between'} direction={'column'} height={'100%'} p={4} spacing={3}>
                   <Stack spacing={2}>
-                    <Typography variant="h4" fontWeight="bold" color="primary" textAlign={'center'}>Free Trial</Typography>
+                    <Typography variant="h4" fontWeight="bold" color="primary" textAlign={'center'}>Premium Trial</Typography>
                     <Typography variant="h6" color="text.secondary" textAlign={'center'}>
                       <span style={{ fontWeight: 'bold' }}>Try 3 months of free trial</span> with full access to all features
                     </Typography>
@@ -64,7 +64,7 @@ function Membership() {
               <CustomCard sx={{ boxShadow: 3 }}>
                 <Stack justifyContent={'space-between'} direction={'column'} height={'100%'} p={4} spacing={3}>
                   <Stack spacing={2}>
-                    <Typography variant="h4" fontWeight="bold" color="primary" textAlign={'center'}>Premium Plan</Typography>
+                    <Typography variant="h4" fontWeight="bold" color="primary" textAlign={'center'}>Premium</Typography>
                     <Typography variant="h6" color="text.secondary" textAlign={'center'}>
                       <span style={{ fontWeight: 'bold' }}>Upgrade to 1 year premium</span> for only 
                       <strong> ₱ 1,499 </strong> and enjoy full access to all features

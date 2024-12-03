@@ -68,8 +68,8 @@ function IsLogged({ logout, auth }) {
             </MenuItem>
             <Stack direction={'row'} spacing={2}>
                 <Stack>
-                    <Typography>{auth.user.firstName} {auth.user.lastName}</Typography>
-                    <Typography>
+                    <Typography>{auth.user.name}</Typography>
+                    <Typography textAlign={'end'}>
                         {auth.user.role === 1 && 'Super Admin'}
                         {auth.user.role === 2 && 'Admin'}
                         {auth.user.role === 3 && 'User'}
