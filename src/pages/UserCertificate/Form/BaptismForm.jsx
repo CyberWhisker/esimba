@@ -127,24 +127,24 @@ function FormSection() {
           <Divider />
           <Typography variant='h4' fontWeight={'bold'}>Personal Information</Typography>
           <Stack direction={'row'} spacing={2}>
-            <TextField label='Full Name' sx={{ width: '100%' }} name='name' onChange={handleDataChange} required/>
+            <TextField label='Full Name' sx={{ width: '100%' }} name='name' onChange={handleDataChange} required />
           </Stack>
           <Stack direction={'row'} spacing={2}>
-            <DatePicker label='Date of Birth' sx={{ width: '100%' }} name='birthDate' onChange={value => handleDataDateChange('birthDate', value)} required/>
-            <DatePicker label='Date of Baptism' sx={{ width: '100%' }} name='baptismDate' onChange={value => handleDataDateChange('baptismDate', value)} required/>
+            <DatePicker label='Date of Birth' sx={{ width: '100%' }} name='birthDate' onChange={value => handleDataDateChange('birthDate', value)} required />
+            <DatePicker label='Date of Baptism' sx={{ width: '100%' }} name='baptismDate' onChange={value => handleDataDateChange('baptismDate', value)} required />
           </Stack>
           <Stack direction={'row'} spacing={2}>
-            <TextField label='Place of Birth' sx={{ width: '100%' }} name='birthAddress' onChange={handleDataChange} required/>
+            <TextField label='Place of Birth' sx={{ width: '100%' }} name='birthAddress' onChange={handleDataChange} required />
           </Stack>
           <Stack direction={'row'} spacing={2}>
-            <TextField label="Mother's Name" sx={{ width: '100%' }} name='motherName' onChange={handleDataChange} required/>
-            <TextField label="Father's Name" sx={{ width: '100%' }} name='fatherName' onChange={handleDataChange} required/>
+            <TextField label="Mother's Name" sx={{ width: '100%' }} name='motherName' onChange={handleDataChange} required />
+            <TextField label="Father's Name" sx={{ width: '100%' }} name='fatherName' onChange={handleDataChange} required />
           </Stack>
           <Stack spacing={2} direction={'row'}>
-            <TextField label='Sponsor Name' sx={{ width: '100%' }} name='sponsor1' onChange={handleDataChange} required/>
-            <TextField label='Sponsor Name' sx={{ width: '100%' }} name='sponsor2' onChange={handleDataChange} required/>
+            <TextField label='Sponsor Name' sx={{ width: '100%' }} name='sponsor1' onChange={handleDataChange} required />
+            <TextField label='Sponsor Name' sx={{ width: '100%' }} name='sponsor2' onChange={handleDataChange} required />
           </Stack>
-          <TextField label='Priest' name='priest' onChange={handleDataChange} required/>
+          <TextField label='Priest' name='priest' onChange={handleDataChange} required />
 
           <Divider />
           <PaymentForm handleFileChange={handleFileChange} formData={formData} />
@@ -210,10 +210,10 @@ function RequesterForm({ handleRequestChange }) {
             <MenuItem key={index} value={item._id}>{item.chapel}</MenuItem>
           ))}
         </TextField>
-        <TextField label='Role or Connection' sx={{ width: '100%' }} defaultValue={''} name='person' onChange={handleRequestChange} select required>
+        {/* <TextField label='Role or Connection' sx={{ width: '100%' }} defaultValue={''} name='person' onChange={handleRequestChange} select required>
           <MenuItem value="Myself">Myself</MenuItem>
           <MenuItem value="Relative">Relative</MenuItem>
-        </TextField>
+        </TextField> */}
       </Stack>
       <TextField label='Purpose' sx={{ width: '100%' }} name='purpose' onChange={handleRequestChange} required />
     </>

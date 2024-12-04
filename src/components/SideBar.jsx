@@ -141,6 +141,10 @@ function AdminNavList() {
         Maintenance
       </MenuItem>
 
+      <MenuItem icon={<Settings />} component={<Link to='/event' />} active={location.pathname == '/event'}>
+        Event Maintenance
+      </MenuItem>
+
       {auth.user.role == 1 && (
         <MenuItem icon={<Settings />} component={<Link to='/subscription' />} active={location.pathname == '/subscription'}>
           Subscription

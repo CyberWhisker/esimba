@@ -8,9 +8,7 @@ function Store({ onClose, handleGetData }) {
     const { auth } = useContext(AuthContext)
     const [dataForm, setDataForm] = useState({
         chapel: auth.user.parish._id,
-        firstName: '',
-        lastName: '',
-        middleName: '',
+        name: '',
         email: '',
         address: '',
         phone: '',
@@ -44,9 +42,7 @@ function Store({ onClose, handleGetData }) {
                     <Typography variant='h4' fontWeight={'bold'}>Store User</Typography>
                     <Divider />
                     <Typography>Personal Information</Typography>
-                    <TextField label='First Name' name='firstName' onChange={handleChange} required />
-                    <TextField label='Last Name' name='lastName' onChange={handleChange} required />
-                    <TextField label='Middle Name' name='middleName' onChange={handleChange} required />
+                    <TextField label='Full Name' name='name' onChange={handleChange} required />
                     <TextField label='Address' name='address' onChange={handleChange} required />
                     <TextField label='Phone' name='phone' onChange={handleChange} required />
                     <Divider />

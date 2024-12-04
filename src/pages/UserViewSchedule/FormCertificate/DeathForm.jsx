@@ -4,7 +4,7 @@ import Master from '../../../layouts/Master'
 import { ArrowBackRounded } from '@mui/icons-material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../../context/AuthContext'
 import { toast } from 'react-toastify'
 import { fetchChapelById, fetchChapelData } from '../../../api/chapelApi'
@@ -14,9 +14,13 @@ import { fetchScheduleByParishId } from '../../../api/scheduleApi'
 import moment from 'moment'
 import AlertModalLarge from '../../../components/AlertModalLarge'
 import ViewDeath from './View/ViewDeath'
+import { storeDeath } from '../../../api/deathApi'
+import { storeReserved } from '../../../api/reservedApi'
 
 function DeathForm() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { formData: eventData } = location.state || {};  // Default to empty object if no state
   return (
     <Master>
       <Stack sx={{ py: 1 }} spacing={2}>
@@ -35,7 +39,7 @@ function DeathForm() {
           <Grid2 container spacing={2}>
             <Grid2 size='grow'>
               <Box sx={{ justifyContent: 'center' }}>
-                <FormSection />
+                <FormSection eventData={eventData} />
               </Box>
             </Grid2>
           </Grid2>
@@ -45,13 +49,12 @@ function DeathForm() {
   )
 }
 
-function FormSection() {
+function FormSection({ eventData }) {
   const { auth } = useContext(AuthContext)
   const [viewModal, setViewModal] = useState(false)
   const [formData, setFormData] = useState({
+    ...eventData,
     user: auth.user._id,
-    request: 'Appointment',
-    certificate: 'Death Certificate',
     amount: '200'
   })
 
@@ -86,20 +89,59 @@ function FormSection() {
     setFormData({ ...formData, file: event.target.files[0] });
 
   const handleSubmit = async () => {
-    const { data, error } = await storeRequest(formData)
-    if (error) {
-      toast.error(error)
-    } else {
-      const transactionData = {
-        user: auth.user._id,
-        request: data._id,
-        chapel: data.parish,
-        file: formData.file,
-        amount: formData.amount,
-      }
-      await handleSubmitTransaction(transactionData)
+    // Ensure formData and eventData have required properties
+    if (!formData.user || !formData.parish || !formData.file || !formData.amount) {
+      toast.error('Please fill in all required fields!');
+      return; // Prevent further execution if form data is incomplete
     }
-  }
+
+    // Step 1: Create the transaction
+    const formTransaction = {
+      user: formData.user,
+      chapel: formData.parish,
+      file: formData.file,
+      amount: formData.amount,
+    };
+
+    try {
+      const { data, error } = await storeTransaction(formTransaction);
+
+      if (error) {
+        toast.error('Failed to store transaction');
+        console.error(error);
+        return;
+      }
+
+      // Step 2: If transaction is successful, store the reservation
+      const formReserved = {
+        user: formData.user,
+        transaction: data._id,
+        event: formData.eventId,
+        date: formData.date,
+      };
+
+      const { data: reservedData, error: reservedError } = await storeReserved(formReserved);
+
+      if (reservedError) {
+        toast.error('Failed to reserve event');
+        return;
+      } else {
+        const formCertificate = {
+          ...formData.data,
+          user: formData.user,
+          chapel: formData.parish
+        }
+        const { data: certData, error: certError } = await storeDeath(formCertificate)
+        if (!certError) {
+          toast.success('Successfully Submitted');
+        }
+      }
+    } catch (err) {
+      // Catch any errors during the process
+      toast.error('An unexpected error occurred');
+      console.error(err);
+    }
+  };
 
   const handleSubmitTransaction = async (transactionData) => {
     const { data, error } = await storeTransaction(transactionData)
@@ -117,9 +159,9 @@ function FormSection() {
     <LocalizationProvider dateAdapter={AdapterMoment}>
       <form style={{ width: '100%' }} onSubmit={handleViewModal}>
         <Stack direction={'column'} spacing={1}>
-          <Typography variant='h4' fontWeight={'bold'}>Requester Information</Typography>
+          {/* <Typography variant='h4' fontWeight={'bold'}>Requester Information</Typography>
           <RequesterForm handleRequestChange={handleRequestChange} formData={formData} setFormData={setFormData} />
-          <Divider />
+          <Divider /> */}
           <Typography variant='h4' fontWeight={'bold'}>Personal Information</Typography>
           <Stack direction={'row'} spacing={2}>
             <TextField label='Full Name' sx={{ width: '100%' }} name='name' onChange={handleDataChange} />

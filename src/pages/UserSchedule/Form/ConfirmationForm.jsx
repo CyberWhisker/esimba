@@ -209,10 +209,10 @@ function RequesterForm({ handleRequestChange, formData, setFormData }) {
           <DateSchedulePicker setFormData={setFormData} formData={formData} /> :
           <TextField sx={{ width: "100%" }} disabled label="Select Date Appointment" value="Please Select Chapel" />
         }
-        <TextField label='Role or Connection' sx={{ width: '100%' }} defaultValue={''} name='person' onChange={handleRequestChange} select required>
+        {/* <TextField label='Role or Connection' sx={{ width: '100%' }} defaultValue={''} name='person' onChange={handleRequestChange} select required>
           <MenuItem value="Myself">Myself</MenuItem>
           <MenuItem value="Relative">Relative</MenuItem>
-        </TextField>
+        </TextField> */}
       </Stack>
       <TextField label='Purpose' sx={{ width: '100%' }} name='purpose' onChange={handleRequestChange} required />
     </>

@@ -4,7 +4,7 @@ import Master from '../../../layouts/Master'
 import { ArrowBackRounded } from '@mui/icons-material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../../context/AuthContext'
 import { toast } from 'react-toastify'
 import { fetchChapelById, fetchChapelData } from '../../../api/chapelApi'
@@ -13,16 +13,20 @@ import { storeTransaction } from '../../../api/transactionApi'
 import { fetchScheduleByParishId } from '../../../api/scheduleApi'
 import moment from 'moment'
 import AlertModalLarge from '../../../components/AlertModalLarge'
-import ViewDeath from './View/ViewDeath'
+import ViewConfirmation from './View/ViewConfirmation'
+import { storeConfirmation } from '../../../api/confirmationApi'
+import { storeReserved } from '../../../api/reservedApi'
 
-function DeathForm() {
+function ConfirmationForm() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { formData: eventData } = location.state || {};  // Default to empty object if no state
   return (
     <Master>
       <Stack sx={{ py: 1 }} spacing={2}>
         <Stack direction={'row'} spacing={2}>
           <Button startIcon={<ArrowBackRounded />} variant='contained' onClick={() => navigate(-1)}>Go Back</Button>
-          <Typography variant='h4' fontWeight={'bold'}>Fill-out Form: Death</Typography>
+          <Typography variant='h4' fontWeight={'bold'}>Fill-out Form: Confirmation</Typography>
         </Stack>
         <Card elevation={5} sx={{
           padding: 2,
@@ -35,7 +39,7 @@ function DeathForm() {
           <Grid2 container spacing={2}>
             <Grid2 size='grow'>
               <Box sx={{ justifyContent: 'center' }}>
-                <FormSection />
+                <FormSection eventData={eventData} />
               </Box>
             </Grid2>
           </Grid2>
@@ -45,13 +49,12 @@ function DeathForm() {
   )
 }
 
-function FormSection() {
+function FormSection({ eventData }) {
   const { auth } = useContext(AuthContext)
   const [viewModal, setViewModal] = useState(false)
   const [formData, setFormData] = useState({
+    ...eventData,
     user: auth.user._id,
-    request: 'Appointment',
-    certificate: 'Death Certificate',
     amount: '200'
   })
 
@@ -86,20 +89,59 @@ function FormSection() {
     setFormData({ ...formData, file: event.target.files[0] });
 
   const handleSubmit = async () => {
-    const { data, error } = await storeRequest(formData)
-    if (error) {
-      toast.error(error)
-    } else {
-      const transactionData = {
-        user: auth.user._id,
-        request: data._id,
-        chapel: data.parish,
-        file: formData.file,
-        amount: formData.amount,
-      }
-      await handleSubmitTransaction(transactionData)
+    // Ensure formData and eventData have required properties
+    if (!formData.user || !formData.parish || !formData.file || !formData.amount) {
+      toast.error('Please fill in all required fields!');
+      return; // Prevent further execution if form data is incomplete
     }
-  }
+
+    // Step 1: Create the transaction
+    const formTransaction = {
+      user: formData.user,
+      chapel: formData.parish,
+      file: formData.file,
+      amount: formData.amount,
+    };
+
+    try {
+      const { data, error } = await storeTransaction(formTransaction);
+
+      if (error) {
+        toast.error('Failed to store transaction');
+        console.error(error);
+        return;
+      }
+
+      // Step 2: If transaction is successful, store the reservation
+      const formReserved = {
+        user: formData.user,
+        transaction: data._id,
+        event: formData.eventId,
+        date: formData.date,
+      };
+
+      const { data: reservedData, error: reservedError } = await storeReserved(formReserved);
+
+      if (reservedError) {
+        toast.error('Failed to reserve event');
+        return;
+      } else {
+        const formCertificate = {
+          ...formData.data,
+          user: formData.user,
+          chapel: formData.parish
+        }
+        const { data: certData, error: certError } = await storeConfirmation(formCertificate)
+        if (!certError) {
+          toast.success('Successfully Submitted');
+        }
+      }
+    } catch (err) {
+      // Catch any errors during the process
+      toast.error('An unexpected error occurred');
+      console.error(err);
+    }
+  };
 
   const handleSubmitTransaction = async (transactionData) => {
     const { data, error } = await storeTransaction(transactionData)
@@ -117,17 +159,16 @@ function FormSection() {
     <LocalizationProvider dateAdapter={AdapterMoment}>
       <form style={{ width: '100%' }} onSubmit={handleViewModal}>
         <Stack direction={'column'} spacing={1}>
-          <Typography variant='h4' fontWeight={'bold'}>Requester Information</Typography>
-          <RequesterForm handleRequestChange={handleRequestChange} formData={formData} setFormData={setFormData} />
-          <Divider />
+          {/* <Typography variant='h4' fontWeight={'bold'}>Requester Information</Typography>
+          <RequesterForm handleRequestChange={handleRequestChange} setFormData={setFormData} formData={formData} />
+          <Divider /> */}
           <Typography variant='h4' fontWeight={'bold'}>Personal Information</Typography>
           <Stack direction={'row'} spacing={2}>
             <TextField label='Full Name' sx={{ width: '100%' }} name='name' onChange={handleDataChange} />
           </Stack>
           <Stack direction={'row'} spacing={2}>
             <DatePicker label='Date of Birth' sx={{ width: '100%' }} name='birthDate' onChange={value => handleDataDateChange('birthDate', value)} />
-            <TextField label='Age' sx={{ width: '100%' }} name='age' onChange={handleDataChange} />
-            <DatePicker label='Date of Death' sx={{ width: '100%' }} name='deathDate' onChange={value => handleDataDateChange('deathDate', value)} />
+            <DatePicker label='Date of Baptism' sx={{ width: '100%' }} name='baptismDate' disabled value={moment(formData.date) || ''} onChange={value => handleDataDateChange('baptismDate', value)} required />
           </Stack>
           <Stack direction={'row'} spacing={2}>
             <TextField label='Place of Birth' sx={{ width: '100%' }} name='birthAddress' onChange={handleDataChange} />
@@ -136,13 +177,10 @@ function FormSection() {
             <TextField label="Mother's Name" sx={{ width: '100%' }} name='motherName' onChange={handleDataChange} />
             <TextField label="Father's Name" sx={{ width: '100%' }} name='fatherName' onChange={handleDataChange} />
           </Stack>
-          <TextField label="Spouse's Name" sx={{ width: '100%' }} name='partnerName' onChange={handleDataChange} />
           <Stack spacing={2} direction={'row'}>
             <TextField label='Sponsor Name' sx={{ width: '100%' }} name='sponsor1' onChange={handleDataChange} />
             <TextField label='Sponsor Name' sx={{ width: '100%' }} name='sponsor2' onChange={handleDataChange} />
           </Stack>
-          <TextField label='Cause of Death' sx={{ width: '100%' }} name='causeOfDeath' onChange={handleDataChange} />
-          <CemetarySelect handleDataChange={handleDataChange} />
           <TextField label='Priest' name='priest' onChange={handleDataChange} />
 
           <Divider />
@@ -151,7 +189,7 @@ function FormSection() {
         </Stack>
       </form>
       <AlertModalLarge open={viewModal} onClose={() => setViewModal(false)}>
-        <ViewDeath formData={formData} handleSubmit={handleSubmit} />
+        <ViewConfirmation formData={formData} handleSubmit={handleSubmit} />
       </AlertModalLarge>
     </LocalizationProvider>
   )
@@ -265,23 +303,4 @@ function DateSchedulePicker({ setFormData, formData }) {
   );
 }
 
-function CemetarySelect({ handleDataChange }) {
-  const [selected, setSelected] = useState("")
-
-  return (
-    <>
-      <TextField label="Select Cemetary" value={selected} onChange={(e) => setSelected(e.target.value)} select required>
-        <MenuItem value="Roman">Roman Cemetary</MenuItem>
-        <MenuItem value="Private">Private Cemetary</MenuItem>
-        <MenuItem value="Municipal">Municipal Cemetary</MenuItem>
-      </TextField>
-      {selected == "Roman" && <TextField label='Roman Cemetary Name' sx={{ width: '100%' }} name='romanCemetary' onChange={handleDataChange} />}
-      {selected == "Municipal" && <TextField label='Municipal Cemetary Name' sx={{ width: '100%' }} name='municipalCemetary' onChange={handleDataChange} />}
-      {selected == "Private" && <TextField label='Private Cemetary Name' sx={{ width: '100%' }} name='privateCemetary' onChange={handleDataChange} />}
-
-
-    </>
-  )
-}
-
-export default DeathForm
+export default ConfirmationForm

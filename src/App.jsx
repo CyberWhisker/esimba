@@ -40,6 +40,12 @@ import RequestResetPassword from './pages/RequestResetPassword/RequestResetPassw
 import ResetPassword from './pages/ResetPassword/ResetPassword';
 import { fetchUserById } from './api/userApi';
 import NotVerified from './pages/NotVerified/NotVerified';
+import AdminEvent from './pages/AdminEvent/AdminEvent';
+import moment from 'moment';
+import BaptismForm from './pages/UserViewSchedule/FormCertificate/BaptismForm';
+import ConfirmationForm from './pages/UserViewSchedule/FormCertificate/ConfirmationForm';
+import DeathForm from './pages/UserViewSchedule/FormCertificate/DeathForm';
+import MarriageForm from './pages/UserViewSchedule/FormCertificate/MarriageForm';
 
 // Wrapper for authenticated and verified user routes
 function VerifiedUserRoute({ children }) {
@@ -80,7 +86,9 @@ function ProtectedRoute({ children }) {
       if (auth?.user?.parish) {
         const { data, error } = await fetchSubscriptionByChapelId(auth.user.parish._id);
         if (!error) {
-          setIsValidSubscription(data?.status);
+          console.log(moment(data.endDate).isAfter(moment()))
+          const isSubscriptionValid = data?.status && moment(data.endDate).isAfter(moment());
+          setIsValidSubscription(isSubscriptionValid);
         }
       }
       setLoading(false);
@@ -242,7 +250,39 @@ function App() {
             </VerifiedUserRoute>
           }
         />
-
+        <Route
+          path="/user/baptismForm"
+          element={
+            <VerifiedUserRoute>
+              <BaptismForm />
+            </VerifiedUserRoute>
+          }
+        />
+        <Route
+          path="/user/confirmationForm"
+          element={
+            <VerifiedUserRoute>
+              <ConfirmationForm />
+            </VerifiedUserRoute>
+          }
+        />
+        <Route
+          path="/user/deathForm"
+          element={
+            <VerifiedUserRoute>
+              <DeathForm />
+            </VerifiedUserRoute>
+          }
+        />
+        <Route
+          path="/user/marriageForm"
+          element={
+            <VerifiedUserRoute>
+              <MarriageForm />
+            </VerifiedUserRoute>
+          }
+        />
+        {/* /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
         {/* Admin Routes */}
         <Route
           path="/admin/dashboard"
@@ -370,6 +410,16 @@ function App() {
             <VerifiedUserRoute>
               <ProtectedRoute>
                 <AdminSubscription />
+              </ProtectedRoute>
+            </VerifiedUserRoute>
+          }
+        />
+        <Route
+          path="/event"
+          element={
+            <VerifiedUserRoute>
+              <ProtectedRoute>
+                <AdminEvent />
               </ProtectedRoute>
             </VerifiedUserRoute>
           }

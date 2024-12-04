@@ -17,7 +17,10 @@ import { fetchTransactionByChapelId } from '../../api/transactionApi'
 import { Link } from 'react-router-dom'
 import AlertModalLarge from '../../components/AlertModalLarge'
 import Update from './Form/Update'
-import { fetchEventsByParishId } from '../../api/eventApi'
+import { fetchEvents, fetchEventsByParishId } from '../../api/eventApi'
+import AlertModal from '../../components/AlertModal'
+import StoreEvent from './Form/StoreEvent'
+import ViewSchedule from './Form/ViewSchedule'
 
 function AdminDashboard() {
   const handleAuthAlert = async () => {
@@ -74,7 +77,7 @@ function AdminDashboard() {
                     textDecoration: 'none', // Prevent underline on hover
                   },
                 }}>
-                <RecordList />
+                {/* <RecordList /> */}
               </Box>
             </CustomCard>
           </Grid2>
@@ -187,6 +190,9 @@ function ScheduleList() {
   const [selected, setSelected] = useState([])
   const [selectedEvent, setSelectedEvent] = useState([])
   const [events, setEvents] = useState([]);
+  const [storeEventModal, setStoreEventModal] = useState(false);
+  const [viewScheduleModal, setViewScheduleModal] = useState(false);
+  const [eventId, setEventId] = useState('');
 
   const handleDateClick = (arg) => {
     const clickedDate = moment(arg.date).startOf('day').toISOString();
@@ -270,8 +276,46 @@ function ScheduleList() {
     }
   };
 
+  const handleGetEvents = async () => {
+    const { data, error } = await fetchEventsByParishId(auth.user.parish._id)
+    const currentDay = moment()
+    if (error) {
+      toast.error("Server Error")
+    } else {
+      // Map events
+      const mappedEvents = data.map((item) => ({
+        id: item._id,
+        type: 'event',
+        title: item.event,
+        start:
+          moment(item.startDate).format('YYYY-MM-DD') == moment(item.endDate).format('YYYY-MM-DD') ?
+            moment(item.startDate).format('YYYY-MM-DD') :
+            moment(item.startDate).toISOString(),
+        end:
+          moment(item.startDate).format('YYYY-MM-DD') == moment(item.endDate).format('YYYY-MM-DD') ?
+            moment(item.endDate).format('YYYY-MM-DD') :
+            moment(item.endDate).toISOString(),
+        color:
+          moment(item.endDate).format('YYYY-MM-DD') === currentDay && theme.palette.success.main ||
+          moment(item.endDate).format('YYYY-MM-DD') > currentDay && theme.palette.warning.main ||
+          moment(item.endDate).format('YYYY-MM-DD') < currentDay && theme.palette.error.main
+      }));
+      setEvents(mappedEvents)
+    }
+  }
+
+  const handleStoreEventModal = (e) => {
+    setStoreEventModal(true)
+  }
+
+  const handleViewScheduleModal = (e) => {
+    setEventId(e.event.id)
+    setViewScheduleModal(true)
+  }
+
   useEffect(() => {
-    handleGetAllEvents()
+    // handleGetAllEvents()
+    handleGetEvents()
   }, []);
 
   return (
@@ -298,14 +342,21 @@ function ScheduleList() {
             timeZone='UTC'
             initialView="dayGridMonth"
             events={events}
-            dateClick={handleDateClick}
+            dateClick={handleStoreEventModal}
+            eventClick={handleViewScheduleModal}
             displayEventTime={false}
           />
         </Box>
       </Stack>
-      <AlertModalLarge open={updateModal} onClose={() => setUpdateModal(false)}>
+      {/* <AlertModalLarge open={updateModal} onClose={() => setUpdateModal(false)}>
         <Update selected={selected} onClose={() => setUpdateModal(false)} handleGetData={handleGetAllEvents} selectedEvent={selectedEvent} />
-      </AlertModalLarge>
+      </AlertModalLarge> */}
+      <AlertModal open={storeEventModal} onClose={() => setStoreEventModal(false)}>
+        <StoreEvent onClose={() => setStoreEventModal(false)} handleGetData={handleGetAllEvents} />
+      </AlertModal>
+      <AlertModal open={viewScheduleModal} onClose={() => setViewScheduleModal(false)}>
+        <ViewSchedule onClose={() => setViewScheduleModal(false)} eventId={eventId} />
+      </AlertModal>
     </LocalizationProvider>
   );
 }

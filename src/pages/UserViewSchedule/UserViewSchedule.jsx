@@ -13,6 +13,8 @@ import { fetchScheduleByParishId, fetchScheduleByUserId } from '../../api/schedu
 import Master from '../../layouts/Master'
 import { fetchChapelData } from '../../api/chapelApi'
 import { fetchEventsByParishId } from '../../api/eventApi'
+import AlertModal from '../../components/AlertModal'
+import StoreReserved from './Form/StoreReserved'
 
 function UserViewSchedule() {
   return (
@@ -32,6 +34,8 @@ function UserViewSchedule() {
 function ScheduleList() {
   const [events, setEvents] = useState([]);
   const [parish, setParish] = useState('')
+  const [scheduleModal, setScheduleModal] = useState(false)
+  const [eventId, setEventId] = useState('')
   const theme = useTheme();
 
   const handleGetAllEvents = async () => {
@@ -72,6 +76,7 @@ function ScheduleList() {
           // Map events
           const mappedEvents = eventsResponse.data.map((item) => ({
             data: { ...item },
+            id: item._id,
             type: 'event',
             title: item.event,
             start:
@@ -106,6 +111,13 @@ function ScheduleList() {
     handleGetAllEvents()
   }, [parish]);
 
+  const handleEventClick = (e) => {
+    setEventId(e.event.id)
+    setScheduleModal(true)
+  }
+
+
+
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
       <Stack p={2} spacing={1}>
@@ -117,8 +129,12 @@ function ScheduleList() {
           initialView="dayGridMonth"
           events={events}
           displayEventTime={false} // Removes time from the event display
+          eventClick={handleEventClick}
         />
       </Stack>
+      <AlertModal open={scheduleModal} onClose={() => setScheduleModal(false)}>
+        <StoreReserved parish={parish} onClose={() => setScheduleModal(false)} eventId={eventId} />
+      </AlertModal>
     </LocalizationProvider>
   );
 }
