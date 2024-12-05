@@ -17,11 +17,11 @@ const footerStyle = {
   p: 2
 };
 
-function Delete({selected, onClose, handleGetData}) {
+function Delete({ selected, onClose, handleGetData }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const {data, error} = await deleteRequest(selected)
+    const { data, error } = await deleteRequest(selected)
     if (error) {
       toast.error(error)
     } else {
@@ -38,10 +38,10 @@ function Delete({selected, onClose, handleGetData}) {
           Delete Confirmation
         </Typography>
       </Box>
-      <Typography id="delete-modal-description" sx={{ p:2}}>
+      <Typography id="delete-modal-description" sx={{ p: 2 }}>
         Are you sure you want to delete this item? This action cannot be undone.
       </Typography>
-      <Divider/>
+      <Divider />
       <form onSubmit={handleSubmit}>
         <Box sx={footerStyle}>
           <Button variant="outlined" onClick={onClose}>

@@ -14,7 +14,7 @@ function Update({ selected, handleGetData, onClose }) {
         }
 
         const { data, error } = await updateTransaction(newData)
-        
+
         if (error) {
             toast.error(error)
         } else {
@@ -35,9 +35,14 @@ function Update({ selected, handleGetData, onClose }) {
             <Stack spacing={1}>
                 <Typography variant='h4' fontWeight={'bold'}>Update Transaction</Typography>
                 <Divider />
-                <TextField label="Name" value={`${selected.name}`} disabled/>
-                <TextField label="Request" value={`${selected.request}`} disabled/>
-                <TextField label="Amount" name='amount' value={`${formData.amount}`} onChange={handleChange}/>
+                <TextField label="Name" value={`${selected.name}`} disabled />
+                {selected?.request?.certificate &&
+                    <TextField label="Request" value={`${selected.request.certificate} Certificate`} disabled />
+                }
+                {!selected?.request?.certificate &&
+                    <TextField label="Request" value={`Scheduled Appointment`} disabled />
+                }
+                <TextField label="Amount" name='amount' value={`${formData.amount}`} onChange={handleChange} />
                 <Button variant='contained' onClick={handleSubmit}>Submit</Button>
             </Stack>
         </Box>

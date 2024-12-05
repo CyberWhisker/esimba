@@ -124,9 +124,9 @@ function AdminNavList() {
       </SubMenu>
       <Divider />
 
-      <MenuItem icon={<CalendarMonth />} component={<Link to='/schedule' />} active={location.pathname == '/schedule'}>
+      {/* <MenuItem icon={<CalendarMonth />} component={<Link to='/schedule' />} active={location.pathname == '/schedule'}>
         Schedules
-      </MenuItem>
+      </MenuItem> */}
 
       <MenuItem icon={<CreditCard />} component={<Link to='/transaction' />} active={location.pathname == '/transaction'}>
         Transaction

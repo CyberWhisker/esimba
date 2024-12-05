@@ -8,12 +8,12 @@ export const fetchRequest = async () => {
         })
         const data = await response.json()
         if (!response.ok) {
-            return {data: [], error: data.error}
+            return { data: [], error: data.error }
         } else {
-            return {data: data, error: null}
+            return { data: data, error: null }
         }
     } catch (error) {
-        return {data: [], error: error}
+        return { data: [], error: error }
     }
 }
 
@@ -27,12 +27,31 @@ export const fetchRequestAppointment = async () => {
         })
         const data = await response.json()
         if (!response.ok) {
-            return {data: [], error: data.error}
+            return { data: [], error: data.error }
         } else {
-            return {data: data, error: null}
+            return { data: data, error: null }
         }
     } catch (error) {
-        return {data: [], error: error}
+        return { data: [], error: error }
+    }
+}
+
+export const fetchRequestByParishId = async (id) => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/api/request/getDataByParishId/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        const data = await response.json()
+        if (!response.ok) {
+            return { data: [], error: data.error }
+        } else {
+            return { data: data, error: null }
+        }
+    } catch (error) {
+        return { data: [], error: error }
     }
 }
 
@@ -46,12 +65,12 @@ export const fetchRequestAppointmentByParishId = async (id) => {
         })
         const data = await response.json()
         if (!response.ok) {
-            return {data: [], error: data.error}
+            return { data: [], error: data.error }
         } else {
-            return {data: data, error: null}
+            return { data: data, error: null }
         }
     } catch (error) {
-        return {data: [], error: error}
+        return { data: [], error: error }
     }
 }
 
@@ -65,12 +84,12 @@ export const fetchRequestCertificate = async () => {
         })
         const data = await response.json()
         if (!response.ok) {
-            return {data: [], error: data.error}
+            return { data: [], error: data.error }
         } else {
-            return {data: data, error: null}
+            return { data: data, error: null }
         }
     } catch (error) {
-        return {data: [], error: error}
+        return { data: [], error: error }
     }
 }
 
@@ -84,12 +103,12 @@ export const fetchRequestByUserId = async (id) => {
         })
         const data = await response.json()
         if (!response.ok) {
-            return {data: [], error: data.error}
+            return { data: [], error: data.error }
         } else {
-            return {data: data, error: null}
+            return { data: data, error: null }
         }
     } catch (error) {
-        return {data: [], error: error}
+        return { data: [], error: error }
     }
 }
 
@@ -103,12 +122,12 @@ export const fetchRequestCertificateByParishId = async (id) => {
         })
         const data = await response.json()
         if (!response.ok) {
-            return {data: [], error: data.error}
+            return { data: [], error: data.error }
         } else {
-            return {data: data, error: null}
+            return { data: data, error: null }
         }
     } catch (error) {
-        return {data: [], error: error}
+        return { data: [], error: error }
     }
 }
 
@@ -123,12 +142,12 @@ export const storeRequest = async (formData) => {
         })
         const data = await response.json()
         if (!response.ok) {
-            return {data: [], error: data.error}
+            return { data: [], error: data.error }
         } else {
-            return {data: data, error: null}
+            return { data: data, error: null }
         }
     } catch (error) {
-        return {data: [], error: error}
+        return { data: [], error: error }
     }
 }
 
@@ -143,12 +162,12 @@ export const updateRequest = async (formData) => {
         })
         const data = await response.json()
         if (!response.ok) {
-            return {data: [], error: data.error}
+            return { data: [], error: data.error }
         } else {
-            return {data: data, error: null}
+            return { data: data, error: null }
         }
     } catch (error) {
-        return {data: [], error: error}
+        return { data: [], error: error }
     }
 }
 
@@ -162,11 +181,11 @@ export const deleteRequest = async (formData) => {
         })
         const data = await response.json()
         if (!response.ok) {
-            return {data: [], error: data.error}
+            return { data: [], error: data.error }
         } else {
-            return {data: data, error: null}
+            return { data: data, error: null }
         }
     } catch (error) {
-        return {data: [], error: error}
+        return { data: [], error: error }
     }
 }

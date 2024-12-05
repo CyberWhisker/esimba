@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Box, Chip, Drawer, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
-import { DataGrid, GridMoreVertIcon, GridToolbar } from '@mui/x-data-grid'
+import { DataGrid, GridActionsCellItem, GridMoreVertIcon, GridToolbar } from '@mui/x-data-grid'
 import CustomCard from '../../components/CustomCard'
 import AlertModal from '../../components/AlertModal'
 import Delete from './Form/Delete'
@@ -10,6 +10,7 @@ import { toast } from 'react-toastify'
 import moment from 'moment'
 import { fetchTransactionByChapelId } from '../../api/transactionApi'
 import Update from './Form/Update'
+import { ApprovalRounded, CancelOutlined, DeleteOutline, EditOutlined } from '@mui/icons-material'
 
 function AdminTransaction() {
     return (
@@ -26,23 +27,21 @@ function AdminTransaction() {
 
 function DataTable() {
     const theme = useTheme();
-    const [anchorEl, setAnchorEl] = useState(null);
+    const { auth } = useContext(AuthContext)
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(false)
-    const [selected, setSelected] = useState(null);
-    const { auth } = useContext(AuthContext)
     const [deleteModal, setDeleteModal] = useState(false);
     const [updateModal, setUpdateModal] = useState(false);
 
+    const [selected, setSelected] = useState(false);
 
-    const handleDeleteModal = () => {
-        setDeleteModal(true)
-        handleMenuClose()
-    }
-
-    const handleUpdateModal = () => {
+    const handleEdit = async (params) => {
+        setSelected(params)
         setUpdateModal(true)
-        handleMenuClose()
+    }
+    const handleDelete = async (params) => {
+        setSelected(params)
+        setDeleteModal(true)
     }
 
 
@@ -51,21 +50,13 @@ function DataTable() {
         setUpdateModal(false)
     }
 
-    const handleMenuOpen = (event, item) => {
-        setAnchorEl(event.currentTarget)
-        setSelected(item)
-    }
-
-    const handleMenuClose = (event, item) => {
-        setAnchorEl(null)
-    }
-
     const handleGetData = async () => {
         setLoading(true)
         const { data, error } = await fetchTransactionByChapelId(auth.user.parish._id)
         if (error) {
             toast.error("Server Error")
         } else {
+            console.log(data)
             setData(data)
         }
         setLoading(false)
@@ -91,8 +82,8 @@ function DataTable() {
             headerClassName: 'headerStyle',
         },
         {
-            field: 'request',
-            headerName: 'Request',
+            field: 'category',
+            headerName: 'Category',
             flex: 1,
             headerAlign: 'center',
             headerClassName: 'headerStyle',
@@ -105,18 +96,6 @@ function DataTable() {
             headerClassName: 'headerStyle',
         },
         {
-            field: 'status',
-            headerName: 'Status',
-            flex: 1,
-            headerAlign: 'center',
-            headerClassName: 'headerStyle',
-            renderCell: (params) => (
-                <Box sx={{ textAlign: 'center' }}>
-                    {params.row.status}
-                </Box>
-            )
-        },
-        {
             field: 'date',
             headerName: 'Date',
             flex: 1,
@@ -124,29 +103,38 @@ function DataTable() {
             headerClassName: 'headerStyle',
         },
         {
-            field: 'setting',
-            headerName: 'Setting',
-            flex: 1,
+            field: 'actions',
+            headerName: 'Actions',
+            type: 'actions',
+            cellClassName: 'actions',
             headerAlign: 'center',
+            flex: 1,
             headerClassName: 'headerStyle',
-            renderCell: (params) => (
-                <Box sx={{ textAlign: 'center' }}>
-                    <GridMoreVertIcon onClick={(e) => handleMenuOpen(e, params.row)} sx={{ cursor: 'pointer' }} />
-                </Box>
-            )
+            getActions: (params) => {
+                return [
+                    <GridActionsCellItem
+                        icon={<EditOutlined />}
+                        label="Approve"
+                        onClick={() => handleEdit(params.row)}
+                        color="warning"
+                    />,
+                    <GridActionsCellItem
+                        icon={<DeleteOutline />}
+                        label="Delete"
+                        onClick={() => handleDelete(params.row)}
+                        color="error"
+                    />,
+                ];
+            },
         }
     ]
 
     const rows = data.map((item) => ({
         ...item,
         id: item._id,
-        name: `${item?.user?.lastName}, ${item?.user?.firstName} ${item?.user?.middleName[0]}.`,
-        request: item?.request?.certificate,
-        user: item.user._id,
-        status:
-            item?.request?.status == "Approve" && <Chip label="Approve" color='success' /> ||
-            item?.request?.status == "Pending" && <Chip label="Pending" color='warning' />,
-        date: moment(item.createdAt).format("DD - MMMM - YYYY"),
+        name: item.user.name,
+        category: item.reserved ? "Request Category" : "Appointment Category",
+        date: moment(item.createdAt).format('MMMM DD YYYY')
     }))
 
     return (
@@ -176,18 +164,6 @@ function DataTable() {
                         loading={loading}
                     />
                 </Box>
-                <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleMenuClose}
-                >
-                    <MenuItem onClick={handleUpdateModal}>
-                        <Typography color="warning.main">Edit</Typography>
-                    </MenuItem>
-                    {/* <MenuItem onClick={handleDeleteModal}>
-                        <Typography color="error.main">Remove</Typography>
-                    </MenuItem> */}
-                </Menu>
             </CustomCard>
             <AlertModal open={deleteModal} onClose={handleCloseModal}>
                 <Delete onClose={handleCloseModal} selected={selected} handleGetData={handleGetData} />

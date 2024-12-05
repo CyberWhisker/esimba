@@ -124,6 +124,7 @@ function FormSection({ eventData }) {
       const formReserved = {
         user: formData.user,
         transaction: data._id,
+        parish: formData.parish,
         event: formData.eventId,
         date: formData.date,
       };

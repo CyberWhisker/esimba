@@ -1,23 +1,22 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Box, Button, Chip, Divider, Drawer, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
-import { Add, ApprovalRounded, Cancel, DeleteOutline } from '@mui/icons-material'
-import { DataGrid, GridActionsCellItem, GridMoreVertIcon, GridToolbar } from '@mui/x-data-grid'
+import { Box, Button, Chip, Divider, Drawer, Stack, Typography, useTheme } from '@mui/material'
+import { Add, ApprovalRounded, Cancel as CancelIcon, DeleteOutline } from '@mui/icons-material'
+import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid'
 import CustomCard from '../../../components/CustomCard'
 import AlertModal from '../../../components/AlertModal'
 import Store from './Form/Store'
 import Delete from './Form/Delete'
 import MasterAdmin from '../../../layouts/MasterAdmin'
-import { fetchRequestAppointmentByParishId, updateRequest } from '../../../api/requestApi'
 import { toast } from 'react-toastify'
 import moment from 'moment'
-import StoreSchedule from './Form/StoreSchedule'
-import { fetchTransactionByRequestId } from '../../../api/transactionApi'
 import View from './Form/View'
-import AlertModalLarge from '../../../components/AlertModalLarge'
 import { AuthContext } from '../../../context/AuthContext'
+import { fetchReservedByParishId } from '../../../api/reservedApi'
+import Approve from './Form/Approve'
+import Cancel from './Form/Cancel'
 
 function RequestAppointment() {
-  const {auth} = useContext(AuthContext)
+  const { auth } = useContext(AuthContext)
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [storeModal, setStoreModal] = useState(false);
@@ -32,7 +31,7 @@ function RequestAppointment() {
 
   const handleGetData = async () => {
     setLoading(true)
-    const { data, error } = await fetchRequestAppointmentByParishId(auth.user.parish._id)
+    const { data, error } = await fetchReservedByParishId(auth.user.parish._id)
     if (error) {
       toast.error(error)
     } else {
@@ -49,8 +48,8 @@ function RequestAppointment() {
     <MasterAdmin>
       <Stack spacing={1}>
         <Stack direction={'row'} spacing={2}>
-          <Typography variant='h4' fontWeight={'bold'}>Appointment Request: </Typography>
-          <Button onClick={handleStoreModal} variant='contained' endIcon={<Add />} color='warning'>Add Request</Button>
+          <Typography variant='h4' fontWeight={'bold'}>Scheduled Appointment: </Typography>
+          {/* <Button onClick={handleStoreModal} variant='contained' endIcon={<Add />} color='warning'>Add Request</Button> */}
         </Stack>
         <Divider />
         <DataTable data={data} loading={loading} handleGetData={handleGetData} />
@@ -66,25 +65,17 @@ function DataTable({ data, loading, handleGetData }) {
   const theme = useTheme();
   const [selected, setSelected] = useState(null);
   const [deleteModal, setDeleteModal] = useState(false);
-  const [scheduleModal, setScheduleModal] = useState(false);
+  const [approveModal, setApproveModal] = useState(false);
+  const [cancelModal, setCancelModal] = useState(false);
 
   const handleApprove = async (params) => {
     setSelected(params)
-    setScheduleModal(true)
+    setApproveModal(true)
   }
 
   const handleCancel = async (params) => {
-    const newData = {
-      ...params,
-      status: 'Pending'
-    }
-    const { data, error } = await updateRequest(newData)
-    if (error) {
-      toast.error(error)
-    } else {
-      toast.error("Request Cancel")
-      handleGetData()
-    }
+    setSelected(params)
+    setCancelModal(true)
   }
 
   const handleDeleteModal = (params) => {
@@ -94,15 +85,17 @@ function DataTable({ data, loading, handleGetData }) {
 
 
   const handleCloseModal = () => {
+    setCancelModal(false)
     setDeleteModal(false)
-    setScheduleModal(false)
+    setApproveModal(false)
   }
 
   const rows = data.map((item) => ({
     ...item,
     id: item._id,
-    name: `${item.user.firstName} ${item.user.lastName}`,
-    scheduleView: moment(item.schedule).format('MMMM DD YYYY')
+    name: item.user.name,
+    event: item.event.event,
+    date: moment(item.date).format('MMMM DD YYYY')
   }))
 
   const columns = [
@@ -121,19 +114,11 @@ function DataTable({ data, loading, handleGetData }) {
       headerClassName: 'headerStyle',
     },
     {
-      field: 'certificateView',
+      field: 'event',
       headerName: 'Event',
       flex: 1,
       headerAlign: 'center',
-      headerClassName: 'headerStyle',
-      renderCell: ({ row }) => (
-        <>
-          {row.certificate == "Baptism Certificate" && "Baptism"}
-          {row.certificate == "Death Certificate" && "Burial"}
-          {row.certificate == "Marriage Certificate" && "Marriage"}
-          {row.certificate == "Confirmation Certificate" && "Confirmation"}
-        </>
-      )
+      headerClassName: 'headerStyle'
     },
     {
       field: 'status',
@@ -143,8 +128,11 @@ function DataTable({ data, loading, handleGetData }) {
       headerClassName: 'headerStyle',
       renderCell: (params) => (
         <Box sx={{ textAlign: 'center' }}>
-          {params.row.status != "Pending" && (
+          {params.row.status == "Approve" && (
             <Chip label="Approve" color='success' />
+          )}
+          {params.row.status == "Cancelled" && (
+            <Chip label="Cancelled" color='error' />
           )}
           {params.row.status == "Pending" && (
             <Chip label="Pending" color='warning' />
@@ -153,7 +141,7 @@ function DataTable({ data, loading, handleGetData }) {
       )
     },
     {
-      field: 'scheduleView',
+      field: 'date',
       headerName: 'Date',
       flex: 1,
       headerAlign: 'center',
@@ -188,7 +176,7 @@ function DataTable({ data, loading, handleGetData }) {
             color="success"
           />,
           <GridActionsCellItem
-            icon={<Cancel />}
+            icon={<CancelIcon />}
             label="Approve"
             onClick={() => handleCancel(params.row)}
             color="warning"
@@ -236,40 +224,29 @@ function DataTable({ data, loading, handleGetData }) {
         <Delete onClose={handleCloseModal} selected={selected} handleGetData={handleGetData} />
       </AlertModal>
 
-      <AlertModalLarge open={scheduleModal} onClose={handleCloseModal}>
-        <StoreSchedule onClose={handleCloseModal} selected={selected} handleGetData={handleGetData} />
-      </AlertModalLarge>
+      <AlertModal open={approveModal} onClose={handleCloseModal}>
+        <Approve onClose={handleCloseModal} selected={selected} handleGetData={handleGetData} />
+      </AlertModal>
+
+      <AlertModal open={cancelModal} onClose={handleCloseModal}>
+        <Cancel onClose={handleCloseModal} selected={selected} handleGetData={handleGetData} />
+      </AlertModal>
     </>
   )
 }
 
 function ViewButton({ params, handleGetData }) {
-  const [transactionData, setTransactionData] = useState([])
   const [viewModal, setViewModal] = useState(false)
-
-  const handleGetTransaction = async () => {
-    const { data, error } = await fetchTransactionByRequestId(params._id)
-    if (!error) {
-      setTransactionData({
-        ...params,
-        transaction: data[0]
-      })
-    }
-  }
-
-  useEffect(() => {
-    handleGetTransaction()
-  }, [])
 
   return (
     <>
-      {transactionData.transaction ?
+      {params.transaction ?
         <Button variant='contained' onClick={() => setViewModal(true)}>Transaction</Button> :
         <Button variant='contained' disabled color='error'>Unavilable</Button>
       }
 
       <Drawer open={viewModal} anchor='right' onClose={() => setViewModal(false)}>
-        <View selected={transactionData} onClose={() => setViewModal(false)} handleGetData={handleGetData} />
+        <View selected={params} onClose={() => setViewModal(false)} handleGetData={handleGetData} />
       </Drawer>
     </>
   )

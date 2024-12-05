@@ -1,22 +1,22 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Box, Button, Chip, Divider, Drawer, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
-import { Add } from '@mui/icons-material'
-import { DataGrid, GridMoreVertIcon, GridToolbar } from '@mui/x-data-grid'
+import { Box, Button, Chip, Divider, Drawer, Stack, Typography, useTheme } from '@mui/material'
+import { ApprovalRounded, CancelOutlined, DeleteOutline } from '@mui/icons-material'
+import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid'
 import CustomCard from '../../../components/CustomCard'
 import AlertModal from '../../../components/AlertModal'
 import Store from './Form/Store'
 import Delete from './Form/Delete'
 import MasterAdmin from '../../../layouts/MasterAdmin'
-import { fetchRequestCertificate, fetchRequestCertificateByParishId, updateRequest } from '../../../api/requestApi'
+import { fetchRequestByParishId } from '../../../api/requestApi'
 import { toast } from 'react-toastify'
 import moment from 'moment'
-import StoreCertificate from './Form/StoreCertificate'
 import View from './Form/View'
-import { fetchTransactionByRequestId } from '../../../api/transactionApi'
 import { AuthContext } from '../../../context/AuthContext'
+import Approve from './Form/Approve'
+import Cancel from './Form/Cancel'
 
 function RequestCertificate() {
-  const {auth} = useContext(AuthContext)
+  const { auth } = useContext(AuthContext)
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [storeModal, setStoreModal] = useState(false);
@@ -31,7 +31,7 @@ function RequestCertificate() {
 
   const handleGetData = async () => {
     setLoading(true)
-    const { data, error } = await fetchRequestCertificateByParishId(auth.user.parish._id)
+    const { data, error } = await fetchRequestByParishId(auth.user.parish._id)
     if (error) {
       toast.error(error)
     } else {
@@ -49,7 +49,7 @@ function RequestCertificate() {
       <Stack spacing={1}>
         <Stack direction={'row'} spacing={2}>
           <Typography variant='h4' fontWeight={'bold'}>Certificate Request: </Typography>
-          <Button onClick={handleStoreModal} variant='contained' endIcon={<Add />} color='warning'>Add Request</Button>
+          {/* <Button onClick={handleStoreModal} variant='contained' endIcon={<Add />} color='warning'>Add Request</Button> */}
         </Stack>
         <Divider />
         <DataTable data={data} loading={loading} handleGetData={handleGetData} />
@@ -63,55 +63,38 @@ function RequestCertificate() {
 
 function DataTable({ data, loading, handleGetData }) {
   const theme = useTheme();
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [selected, setSelected] = useState(null);
-  const [certificateModal, setCertificateModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
+  const [approveModal, setApproveModal] = useState(false);
+  const [cancelModal, setCancelModal] = useState(false);
 
-  const handleApprove = async () => {
-    setCertificateModal(true)
+  const [selected, setSelected] = useState(false);
+
+  const handleApprove = async (params) => {
+    setSelected(params)
+    setApproveModal(true)
   }
 
-  const handleCancel = async () => {
-    toast.error("Request Cancel")
-    const newData = {
-      ...selected,
-      status: 'Pending'
-    }
-    const { data, error } = await updateRequest(newData)
-    if (error) {
-      toast.error(error)
-    } else {
-      handleGetData()
-      handleMenuClose()
-    }
+  const handleCancel = async (params) => {
+    setSelected(params)
+    setCancelModal(true)
   }
-
-  const handleDeleteModal = () => {
-    handleMenuClose()
+  const handleDelete = async (params) => {
+    setSelected(params)
     setDeleteModal(true)
   }
 
 
   const handleCloseModal = () => {
     setDeleteModal(false)
-    setCertificateModal(false)
-  }
-
-  const handleMenuOpen = (event, item) => {
-    setAnchorEl(event.currentTarget)
-    setSelected(item)
-  }
-
-  const handleMenuClose = (event, item) => {
-    setAnchorEl(null)
+    setApproveModal(false)
+    setCancelModal(false)
   }
 
   const rows = data.map((item) => ({
     ...item,
     id: item._id,
-    name: `${item.user.firstName} ${item.user.lastName}`,
-    createdAt: moment(item.data.createdAt).format('MMMM DD YYYY')
+    name: item.user.name,
+    createdAt: moment(item.createdAt).format('MMMM DD YYYY')
   }))
 
   const columns = [
@@ -144,8 +127,11 @@ function DataTable({ data, loading, handleGetData }) {
       headerClassName: 'headerStyle',
       renderCell: (params) => (
         <Box sx={{ textAlign: 'center' }}>
-          {params.row.status != "Pending" && (
+          {params.row.status == "Approve" && (
             <Chip label="Approve" color='success' />
+          )}
+          {params.row.status == "Cancelled" && (
+            <Chip label="Cancelled" color='error' />
           )}
           {params.row.status == "Pending" && (
             <Chip label="Pending" color='warning' />
@@ -168,21 +154,40 @@ function DataTable({ data, loading, handleGetData }) {
       headerClassName: 'headerStyle',
       renderCell: (params) => (
         <Box sx={{ textAlign: 'center' }}>
-          <ViewButton params={params.row} handleGetData={handleGetData}/>
+          <ViewButton params={params.row} handleGetData={handleGetData} />
         </Box>
       )
     },
     {
-      field: 'setting',
-      headerName: 'Setting',
-      flex: 1,
+      field: 'actions',
+      headerName: 'Actions',
+      type: 'actions',
+      cellClassName: 'actions',
       headerAlign: 'center',
+      flex: 1,
       headerClassName: 'headerStyle',
-      renderCell: (params) => (
-        <Box sx={{ textAlign: 'center' }}>
-          <GridMoreVertIcon onClick={(e) => handleMenuOpen(e, params.row)} sx={{ cursor: 'pointer' }} />
-        </Box>
-      )
+      getActions: (params) => {
+        return [
+          <GridActionsCellItem
+            icon={<ApprovalRounded />}
+            label="Approve"
+            onClick={() => handleApprove(params.row)}
+            color="success"
+          />,
+          <GridActionsCellItem
+            icon={<CancelOutlined />}
+            label="Approve"
+            onClick={() => handleCancel(params.row)}
+            color="warning"
+          />,
+          <GridActionsCellItem
+            icon={<DeleteOutline />}
+            label="Delete"
+            onClick={() => handleDelete(params.row)}
+            color="error"
+          />,
+        ];
+      },
     }
   ]
   return (
@@ -213,56 +218,32 @@ function DataTable({ data, loading, handleGetData }) {
           />
         </Box>
       </CustomCard>
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-      >
-        <MenuItem onClick={handleApprove}>
-          <Typography color="success.main">Approve</Typography>
-        </MenuItem>
-        <MenuItem onClick={handleCancel}>
-          <Typography color="warning.main">Cancel</Typography>
-        </MenuItem>
-        <MenuItem onClick={handleDeleteModal}>
-          <Typography color="error.main">Remove</Typography>
-        </MenuItem>
-      </Menu>
 
       <AlertModal open={deleteModal} onClose={handleCloseModal}>
         <Delete onClose={handleCloseModal} selected={selected} handleGetData={handleGetData} />
       </AlertModal>
-
-      <AlertModal open={certificateModal} onClose={handleCloseModal}>
-        <StoreCertificate onClose={handleCloseModal} selected={selected} handleGetData={handleGetData} />
+      <AlertModal open={approveModal} onClose={handleCloseModal}>
+        <Approve onClose={handleCloseModal} selected={selected} handleGetData={handleGetData} />
+      </AlertModal>
+      <AlertModal open={cancelModal} onClose={handleCloseModal}>
+        <Cancel onClose={handleCloseModal} selected={selected} handleGetData={handleGetData} />
       </AlertModal>
     </>
   )
 }
 
 function ViewButton({ params, handleGetData }) {
-  const [transactionData, setTransactionData] = useState([])
   const [viewModal, setViewModal] = useState(false)
-
-  const handleGetTransaction = async () => {
-    const { data, error } = await fetchTransactionByRequestId(params._id)
-    if (!error) {
-      setTransactionData({
-        ...params,
-        transaction: data[0]
-      })
-    }
-  }
-
-  useEffect(() => {
-    handleGetTransaction()
-  }, [])
 
   return (
     <>
-      <Button variant='contained' onClick={() => setViewModal(true)}>Transaction</Button>
+      {params.transaction ?
+        <Button variant='contained' onClick={() => setViewModal(true)}>Transaction</Button> :
+        <Button variant='contained' disabled color='error'>Unavilable</Button>
+      }
+
       <Drawer open={viewModal} anchor='right' onClose={() => setViewModal(false)}>
-        <View selected={transactionData} onClose={() => setViewModal(false)} handleGetData={handleGetData}/>
+        <View selected={params} onClose={() => setViewModal(false)} handleGetData={handleGetData} />
       </Drawer>
     </>
   )
