@@ -47,6 +47,7 @@ import ConfirmationForm from './pages/UserViewSchedule/FormCertificate/Confirmat
 import DeathForm from './pages/UserViewSchedule/FormCertificate/DeathForm';
 import MarriageForm from './pages/UserViewSchedule/FormCertificate/MarriageForm';
 import PriestSchedule from './pages/PriestSchedule/PriestSchedule';
+import UserRequest from './pages/UserRequest/UserRequest';
 
 // Wrapper for authenticated and verified user routes
 function VerifiedUserRoute({ children }) {
@@ -193,11 +194,19 @@ function App() {
           }
         />
         {/* Request */}
-        <Route
+        {/* <Route
           path="/user/request"
           element={
             <VerifiedUserRoute>
               <UserCertificate />
+            </VerifiedUserRoute>
+          }
+        /> */}
+        <Route
+          path="/user/request"
+          element={
+            <VerifiedUserRoute>
+              <UserRequest />
             </VerifiedUserRoute>
           }
         />

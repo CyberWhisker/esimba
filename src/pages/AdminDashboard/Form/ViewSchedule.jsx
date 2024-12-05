@@ -73,6 +73,7 @@ function ViewSchedule({ eventId, onClose }) {
 
     // Fetch event data using eventId
     const handleGetData = async () => {
+        console.log(eventId)
         const { data, error } = await fetchEventById(eventId);
         if (!error) {
             setEventData(data);
@@ -94,7 +95,7 @@ function ViewSchedule({ eventId, onClose }) {
     useEffect(() => {
         handleGetData();
         handleGetReserved();
-    }, [eventId]); // Run when eventId changes
+    }, []); // Run when eventId changes
 
     return (
         <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -108,8 +109,8 @@ function ViewSchedule({ eventId, onClose }) {
                     <TextField label="Event Name" value={eventData.event || ''} disabled />
                     <DatePicker
                         label="Select Date"
-                        minDate={moment(eventData.startDate)}
-                        maxDate={moment(eventData.endDate)}
+                        minDate={moment(eventData.startDate).utc()}
+                        maxDate={moment(eventData.endDate).utc()}
                         onChange={(value) => handleDateChange('date', value)}
                     />
                     <Typography>Slot:</Typography>

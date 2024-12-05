@@ -1,13 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import { DataGrid, GridActionsCellItem, GridRowModes } from '@mui/x-data-grid';
-import { Cancel, Delete, Edit, Save } from '@mui/icons-material';
+import { Cancel, Delete as DeleteIcon, Edit, Save } from '@mui/icons-material';
 import MasterAdmin from '../../layouts/MasterAdmin';
 import CustomCard from '../../components/CustomCard';
-import { fetchEventsByParishId, updateEvent } from '../../api/eventApi';
+import { deleteEvent, fetchEventsByParishId, updateEvent } from '../../api/eventApi';
 import { AuthContext } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import moment from 'moment';
+import AlertModal from '../../components/AlertModal';
+import Delete from './Form/Delete';
 
 function AdminEvent() {
     return (
@@ -27,6 +29,8 @@ function DataTable() {
     const theme = useTheme()
     const [rows, setRows] = useState([]);
     const [rowModesModel, setRowModesModel] = useState({});
+    const [deleteModal, setDeleteModal] = useState(false)
+    const [selected, setSelected] = useState(null)
 
     const handleRowEditStop = (params, event) => {
         if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -43,8 +47,17 @@ function DataTable() {
     };
 
     const handleDeleteClick = (id) => () => {
-        setRows(rows.filter((row) => row.id !== id));
+        setSelected(id)
+        setDeleteModal(true)
     };
+
+    const confirmDelete = async () => {
+        const { data, error } = await deleteEvent(selected)
+        if (!error) {
+            toast.success("Successfully Deleted")
+            setRows(rows.filter((row) => row.id !== selected));
+        }
+    }
 
     const handleCancelClick = (id) => () => {
         setRowModesModel({
@@ -174,7 +187,7 @@ function DataTable() {
                         color="inherit"
                     />,
                     <GridActionsCellItem
-                        icon={<Delete />}
+                        icon={<DeleteIcon />}
                         label="Delete"
                         onClick={handleDeleteClick(id)}
                         color="inherit"
@@ -203,6 +216,9 @@ function DataTable() {
                 onRowEditStop={handleRowEditStop}
                 processRowUpdate={processRowUpdate}
             />
+            <AlertModal open={deleteModal} onClose={() => setDeleteModal(false)}>
+                <Delete onClose={() => setDeleteModal(false)} confirmDelete={confirmDelete} />
+            </AlertModal>
         </Box>
     );
 }

@@ -30,7 +30,7 @@ function UserDashboard() {
                             <Stack spacing={2} justifyContent={'center'} alignItems={'center'}>
                                 <Stack spacing={2} direction={'column'} justifyContent={'center'} sx={{ paddingTop: 8 }}>
                                     <Button variant='contained' color='warning' size='large' sx={{ minWidth: '55vh' }} component={Link} to='/user/request'>Request Certificate</Button>
-                                    <Button variant='contained' size='large' sx={{ minWidth: '55vh' }} component={Link} to='/user/schedule'>Schedule Event</Button>
+                                    {/* <Button variant='contained' size='large' sx={{ minWidth: '55vh' }} component={Link} to='/user/schedule'>Schedule Event</Button> */}
                                 </Stack>
                             </Stack>
                         </Box>
@@ -55,9 +55,9 @@ function InfoList() {
                     variant="h4"
                     fontWeight="bold"
                     color="primary"
-                    sx={{ 
-                        textAlign: 'center', 
-                        fontSize: { xs: 24, sm: 28 } 
+                    sx={{
+                        textAlign: 'center',
+                        fontSize: { xs: 24, sm: 28 }
                     }}
                 >
                     Office Hours

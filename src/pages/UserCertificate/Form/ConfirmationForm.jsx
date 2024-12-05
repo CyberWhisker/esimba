@@ -122,7 +122,7 @@ function FormSection() {
     <LocalizationProvider dateAdapter={AdapterMoment}>
       <form style={{ width: '100%' }} onSubmit={handleViewModal}>
         <Stack direction={'column'} spacing={1}>
-          <Typography variant='h4' fontWeight={'bold'}>Requester Information</Typography>
+          <Typography variant='h4' fontWeight={'bold'}>User Records</Typography>
           <RequesterForm handleRequestChange={handleRequestChange} />
           <Divider />
           <Typography variant='h4' fontWeight={'bold'}>Personal Information</Typography>

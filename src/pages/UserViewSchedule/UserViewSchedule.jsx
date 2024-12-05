@@ -20,7 +20,7 @@ function UserViewSchedule() {
   return (
     <Master>
       <Box sx={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingY: 1 }}>
-        <Typography variant='h2' fontWeight={'bold'}>Schedule List</Typography>
+        <Typography variant='h4' fontWeight={'bold'}>Schedule List</Typography>
       </Box>
       <Box sx={{ pb: 2 }}>
         <CustomCard>
@@ -90,7 +90,8 @@ function ScheduleList() {
             color:
               moment(item.endDate).format('YYYY-MM-DD') === currentDay && theme.palette.success.main ||
               moment(item.endDate).format('YYYY-MM-DD') > currentDay && theme.palette.warning.main ||
-              moment(item.endDate).format('YYYY-MM-DD') < currentDay && theme.palette.error.main
+              moment(item.endDate).format('YYYY-MM-DD') < currentDay && theme.palette.error.main,
+            className: 'custom-event-fullCalendar'
           }));
 
           // Combine both datasets

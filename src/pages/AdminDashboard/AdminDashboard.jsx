@@ -194,87 +194,87 @@ function ScheduleList() {
   const [viewScheduleModal, setViewScheduleModal] = useState(false);
   const [eventId, setEventId] = useState('');
 
-  const handleDateClick = (arg) => {
-    const clickedDate = moment(arg.date).startOf('day').toISOString();
-    const filteredEventsData = events
-      .filter((event) => {
-        const startDate = moment(event.start).startOf('day');
-        const endDate = moment(event.end);
+  // const handleDateClick = (arg) => {
+  //   const clickedDate = moment(arg.date).startOf('day').toISOString();
+  //   const filteredEventsData = events
+  //     .filter((event) => {
+  //       const startDate = moment(event.start).startOf('day');
+  //       const endDate = moment(event.end);
 
-        const clickedMoment = moment(clickedDate).startOf('day');
+  //       const clickedMoment = moment(clickedDate).startOf('day');
 
-        return clickedMoment.isBetween(startDate, endDate, null, '[]');
-      });
-    setSelected(filteredEventsData.filter((item) => item.type == "appointment").map((item) => item.data))
-    setSelectedEvent(filteredEventsData.filter((item) => item.type == "event").map((item) => item.data))
-    setUpdateModal(true)
-  };
+  //       return clickedMoment.isBetween(startDate, endDate, null, '[]');
+  //     });
+  //   setSelected(filteredEventsData.filter((item) => item.type == "appointment").map((item) => item.data))
+  //   setSelectedEvent(filteredEventsData.filter((item) => item.type == "event").map((item) => item.data))
+  //   setUpdateModal(true)
+  // };
 
-  const handleGetAllEvents = async () => {
-    try {
-      const [scheduleResponse, eventsResponse] = await Promise.all([
-        fetchScheduleByParishId(auth.user.parish._id),
-        fetchEventsByParishId(auth.user.parish._id)
-      ]);
+  // const handleGetAllEvents = async () => {
+  //   try {
+  //     const [scheduleResponse, eventsResponse] = await Promise.all([
+  //       fetchScheduleByParishId(auth.user.parish._id),
+  //       fetchEventsByParishId(auth.user.parish._id)
+  //     ]);
 
-      if (!scheduleResponse.error && !eventsResponse.error) {
-        const currentDay = moment().format('YYYY-MM-DD');
+  //     if (!scheduleResponse.error && !eventsResponse.error) {
+  //       const currentDay = moment().format('YYYY-MM-DD');
 
-        // Map schedules
-        const mappedSchedules = scheduleResponse.data.map((item) => ({
-          data: { ...item },
-          type: 'appointment',
-          title:
-            item.request.certificate == "Baptism Certificate" && "Baptism Appointment" ||
-            item.request.certificate == "Death Certificate" && "Death Appointment" ||
-            item.request.certificate == "Marriage Certificate" && "Marriage Appointment" ||
-            item.request.certificate == "Confirmation Certificate" && "Confirmation Appointment",
-          date: moment(item.date).format('YYYY-MM-DD'),
-          start:
-            moment(item.startTime).format('YYYY-MM-DD') == moment(item.endTime).format('YYYY-MM-DD') ?
-              moment(item.startTime).format('YYYY-MM-DD') :
-              moment(item.startTime).toISOString(),
-          end:
-            moment(item.startTime).format('YYYY-MM-DD') == moment(item.endTime).format('YYYY-MM-DD') ?
-              moment(item.endTime).format('YYYY-MM-DD') :
-              moment(item.endTime).toISOString(),
-          color:
-            moment(item.date).format('YYYY-MM-DD') === currentDay && theme.palette.success.main ||
-            moment(item.date).format('YYYY-MM-DD') > currentDay && theme.palette.warning.main ||
-            moment(item.date).format('YYYY-MM-DD') < currentDay && theme.palette.error.main
-        }));
+  //       // Map schedules
+  //       const mappedSchedules = scheduleResponse.data.map((item) => ({
+  //         data: { ...item },
+  //         type: 'appointment',
+  //         title:
+  //           item.request.certificate == "Baptism Certificate" && "Baptism Appointment" ||
+  //           item.request.certificate == "Death Certificate" && "Death Appointment" ||
+  //           item.request.certificate == "Marriage Certificate" && "Marriage Appointment" ||
+  //           item.request.certificate == "Confirmation Certificate" && "Confirmation Appointment",
+  //         date: moment(item.date).format('YYYY-MM-DD'),
+  //         start:
+  //           moment(item.startTime).format('YYYY-MM-DD') == moment(item.endTime).format('YYYY-MM-DD') ?
+  //             moment(item.startTime).format('YYYY-MM-DD') :
+  //             moment(item.startTime).toISOString(),
+  //         end:
+  //           moment(item.startTime).format('YYYY-MM-DD') == moment(item.endTime).format('YYYY-MM-DD') ?
+  //             moment(item.endTime).format('YYYY-MM-DD') :
+  //             moment(item.endTime).toISOString(),
+  //         color:
+  //           moment(item.date).format('YYYY-MM-DD') === currentDay && theme.palette.success.main ||
+  //           moment(item.date).format('YYYY-MM-DD') > currentDay && theme.palette.warning.main ||
+  //           moment(item.date).format('YYYY-MM-DD') < currentDay && theme.palette.error.main
+  //       }));
 
-        // Map events
-        const mappedEvents = eventsResponse.data.map((item) => ({
-          data: { ...item },
-          type: 'event',
-          title: item.event,
-          start:
-            moment(item.startDate).format('YYYY-MM-DD') == moment(item.endDate).format('YYYY-MM-DD') ?
-              moment(item.startDate).format('YYYY-MM-DD') :
-              moment(item.startDate).toISOString(),
-          end:
-            moment(item.startDate).format('YYYY-MM-DD') == moment(item.endDate).format('YYYY-MM-DD') ?
-              moment(item.endDate).format('YYYY-MM-DD') :
-              moment(item.endDate).toISOString(),
-          color:
-            moment(item.endDate).format('YYYY-MM-DD') === currentDay && theme.palette.success.main ||
-            moment(item.endDate).format('YYYY-MM-DD') > currentDay && theme.palette.warning.main ||
-            moment(item.endDate).format('YYYY-MM-DD') < currentDay && theme.palette.error.main
-        }));
+  //       // Map events
+  //       const mappedEvents = eventsResponse.data.map((item) => ({
+  //         data: { ...item },
+  //         type: 'event',
+  //         title: item.event,
+  //         start:
+  //           moment(item.startDate).format('YYYY-MM-DD') == moment(item.endDate).format('YYYY-MM-DD') ?
+  //             moment(item.startDate).format('YYYY-MM-DD') :
+  //             moment(item.startDate).toISOString(),
+  //         end:
+  //           moment(item.startDate).format('YYYY-MM-DD') == moment(item.endDate).format('YYYY-MM-DD') ?
+  //             moment(item.endDate).format('YYYY-MM-DD') :
+  //             moment(item.endDate).toISOString(),
+  //         color:
+  //           moment(item.endDate).format('YYYY-MM-DD') === currentDay && theme.palette.success.main ||
+  //           moment(item.endDate).format('YYYY-MM-DD') > currentDay && theme.palette.warning.main ||
+  //           moment(item.endDate).format('YYYY-MM-DD') < currentDay && theme.palette.error.main
+  //       }));
 
-        // Combine both datasets
-        const combinedEvents = [...mappedSchedules, ...mappedEvents];
+  //       // Combine both datasets
+  //       const combinedEvents = [...mappedSchedules, ...mappedEvents];
 
-        // Set the merged events to state
-        setEvents(combinedEvents);
-      } else {
-        console.error('Error fetching schedules or events');
-      }
-    } catch (error) {
-      console.error('Error in handleGetAllEvents:', error);
-    }
-  };
+  //       // Set the merged events to state
+  //       setEvents(combinedEvents);
+  //     } else {
+  //       console.error('Error fetching schedules or events');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error in handleGetAllEvents:', error);
+  //   }
+  // };
 
   const handleGetEvents = async () => {
     const { data, error } = await fetchEventsByParishId(auth.user.parish._id)
@@ -308,9 +308,9 @@ function ScheduleList() {
     setStoreEventModal(true)
   }
 
-  const handleViewScheduleModal = (e) => {
-    setEventId(e.event.id)
-    setViewScheduleModal(true)
+  const handleViewScheduleModal = async (e) => {
+    await setEventId(e.event.id)
+    await setViewScheduleModal(true)
   }
 
   useEffect(() => {
@@ -343,7 +343,7 @@ function ScheduleList() {
             initialView="dayGridMonth"
             events={events}
             dateClick={handleStoreEventModal}
-            eventClick={handleViewScheduleModal}
+            eventClick={(e) => handleViewScheduleModal(e)}
             displayEventTime={false}
           />
         </Box>
@@ -352,7 +352,7 @@ function ScheduleList() {
         <Update selected={selected} onClose={() => setUpdateModal(false)} handleGetData={handleGetAllEvents} selectedEvent={selectedEvent} />
       </AlertModalLarge> */}
       <AlertModal open={storeEventModal} onClose={() => setStoreEventModal(false)}>
-        <StoreEvent onClose={() => setStoreEventModal(false)} handleGetData={handleGetAllEvents} />
+        <StoreEvent onClose={() => setStoreEventModal(false)} handleGetData={handleGetEvents} />
       </AlertModal>
       <AlertModal open={viewScheduleModal} onClose={() => setViewScheduleModal(false)}>
         <ViewSchedule onClose={() => setViewScheduleModal(false)} eventId={eventId} />

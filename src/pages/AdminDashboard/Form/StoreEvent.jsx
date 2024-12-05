@@ -49,7 +49,7 @@ function StoreEvent({ onClose, handleGetData }) {
     const handleDateChange = (name, value) => {
         setFormData({
             ...formData,
-            [name]: value
+            [name]: moment(value)
         })
     }
 

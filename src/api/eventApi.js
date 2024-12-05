@@ -95,9 +95,9 @@ export const updateEvent = async (formData) => {
     }
 }
 
-export const deleteEvent = async (formData) => {
+export const deleteEvent = async (id) => {
     try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/api/event/${formData._id}`, {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_API}/api/event/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

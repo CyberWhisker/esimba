@@ -39,7 +39,7 @@ function StoreReserved({ eventId, onClose, parish }) {
         const filteredByDate = reservedData.filter((item) => moment(item.date).isSame(moment(value), 'day'));
         setFormData({
             ...formData,
-            [name]: moment(value).toISOString() // Ensure to call toISOString() properly
+            [name]: moment(value).utc().toISOString()
         });
         setFilteredReserved(filteredByDate)
         setRemaining(slot - filteredByDate.length)
@@ -55,7 +55,8 @@ function StoreReserved({ eventId, onClose, parish }) {
         }
 
         // Navigate to the baptism form and pass the formData
-        if (eventData.event_type == "Baptsim") {
+        console.log(eventData)
+        if (eventData.event_type == "Baptism") {
             navigate('/user/baptismForm', { state: { formData } });
         }
         if (eventData.event_type == "Confirmation") {
@@ -106,8 +107,8 @@ function StoreReserved({ eventId, onClose, parish }) {
                     <TextField label="Event Name" value={eventData.event || ''} disabled />
                     <DatePicker
                         label="Select Date"
-                        minDate={moment(eventData.startDate)}
-                        maxDate={moment(eventData.endDate)}
+                        minDate={moment(eventData.startDate).utc()}
+                        maxDate={moment(eventData.endDate).utc()}
                         onChange={(value) => handleDateChange('date', value)}
                     />
                     <Typography>Slot:</Typography>
