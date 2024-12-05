@@ -7,18 +7,18 @@ import backgroundImg from '/appImg/Background.jpg';
 import SideBar from '../components/SideBar';
 
 const darkTheme = createTheme({
-    palette: {
-        mode: 'dark',
-    },
-    components: {
-        MuiCard: {
-            styleOverrides: {
-                root: {
-                    borderRadius: 15,
-                },
-            },
+  palette: {
+    mode: 'dark',
+  },
+  components: {
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: 15,
         },
+      },
     },
+  },
 });
 
 function MasterAdmin({ children }) {
@@ -27,58 +27,58 @@ function MasterAdmin({ children }) {
   const handleToggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
-    return (
-        <ThemeProvider theme={darkTheme}>
-            <CssBaseline />
-            <Box
-                sx={{
-                  minHeight: '100vh',
-                  position: 'relative',
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}
-            >
-                {/* Background Image Layer */}
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundImage: `url(${backgroundImg})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        opacity: 0.3,
-                        zIndex: -1,
-                    }}
-                />
+  return (
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <Box
+        sx={{
+          minHeight: '100vh',
+          position: 'relative',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        {/* Background Image Layer */}
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundImage: `url(${backgroundImg})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: 0.3,
+            zIndex: -1,
+          }}
+        />
 
-                {/* Content Layer */}
-                <Box sx={{
-                  minHeight: '100vh', 
-                  display: 'flex', // Make the sidebar and content side by side
-                }}>
-                  <SideBar isOpen={isSidebarOpen} onToggle={handleToggleSidebar} />
-                  <Box 
-                    sx={{
-                      flexGrow: 1,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <TopBar/>
-                    <Container sx={{py: 2}}>
-                      {children}
-                    </Container>
-                    <Footer/>
-                  </Box>
-                </Box>
-            </Box>
-            <CustomToast />
-        </ThemeProvider>
-    );
+        {/* Content Layer */}
+        <Box sx={{
+          minHeight: '100vh',
+          display: 'flex', // Make the sidebar and content side by side
+        }}>
+          <SideBar isOpen={isSidebarOpen} onToggle={handleToggleSidebar} />
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+            }}
+          >
+            <TopBar />
+            <Container sx={{ py: 2, height: '100%' }}>
+              {children}
+            </Container>
+            <Footer />
+          </Box>
+        </Box>
+      </Box>
+      <CustomToast />
+    </ThemeProvider>
+  );
 }
 
 export default MasterAdmin;

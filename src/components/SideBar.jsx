@@ -150,6 +150,11 @@ function AdminNavList() {
           Subscription
         </MenuItem>
       )}
+      {auth.user.role == 1 && (
+        <MenuItem icon={<Settings />} component={<Link to='/priestSchedule' />} active={location.pathname == '/priestSchedule'}>
+          Priest Schedule
+        </MenuItem>
+      )}
       <Divider />
     </>
   );
