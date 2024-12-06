@@ -55,8 +55,10 @@ function StoreRequest({ onClose, formData, setFormData, handleToggle }) {
                 user: formData.user,
                 parish: formData.parish,
                 transaction: data._id,
+                certificateId: formData.certificateId,
                 certificate: formData.certificate,
             }
+            console.log(requestForm)
             const { data: requestData, error: requestError } = await storeRequest(requestForm)
             if (requestError) {
                 toast.error("Request Failed")

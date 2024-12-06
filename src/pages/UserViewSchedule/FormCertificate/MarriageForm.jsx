@@ -1,5 +1,5 @@
 import { Box, Button, Card, Divider, Grid2, MenuItem, Stack, TextField, Typography } from '@mui/material'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Master from '../../../layouts/Master'
 import { ArrowBackRounded } from '@mui/icons-material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
@@ -7,15 +7,13 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { useLocation, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../../context/AuthContext'
 import { toast } from 'react-toastify'
-import { fetchChapelById, fetchChapelData } from '../../../api/chapelApi'
-import { storeRequest } from '../../../api/requestApi'
 import { storeTransaction } from '../../../api/transactionApi'
-import { fetchScheduleByParishId } from '../../../api/scheduleApi'
 import moment from 'moment'
 import AlertModalLarge from '../../../components/AlertModalLarge'
 import ViewMarriage from './View/ViewMarriage'
 import { storeMarriage } from '../../../api/marriageApi'
 import { storeReserved } from '../../../api/reservedApi'
+import axios from 'axios';
 
 function MarriageForm() {
   const navigate = useNavigate();
@@ -91,47 +89,31 @@ function FormSection({ eventData }) {
     })
   }
 
-  const handleFileChange = (event) =>
-    setFormData({ ...formData, file: event.target.files[0] });
-
   const handleSubmit = async () => {
     // Ensure formData and eventData have required properties
-    if (!formData.user || !formData.parish || !formData.file || !formData.amount) {
+    if (!formData.user || !formData.parish || !formData.amount) {
       toast.error('Please fill in all required fields!');
       return; // Prevent further execution if form data is incomplete
     }
 
-    // Step 1: Create the transaction
-    const formTransaction = {
-      user: formData.user,
-      chapel: formData.parish,
-      file: formData.file,
-      amount: formData.amount,
-    };
-
     try {
-      const { data, error } = await storeTransaction(formTransaction);
-
-      if (error) {
-        toast.error('Failed to store transaction');
-        console.error(error);
-        return;
-      }
 
       // Step 2: If transaction is successful, store the reservation
       const formReserved = {
         user: formData.user,
-        transaction: data._id,
+        parish: formData.parish,
         event: formData.eventId,
         date: formData.date,
+        amount: formData.amount,
       };
 
       const { data: reservedData, error: reservedError } = await storeReserved(formReserved);
-
+      console.log(reservedError)
       if (reservedError) {
         toast.error('Failed to reserve event');
         return;
       } else {
+        await handleSubmitFile(reservedData, formData)
         const formCertificate = {
           ...formData.data,
           user: formData.user,
@@ -149,17 +131,38 @@ function FormSection({ eventData }) {
     }
   };
 
-  const handleSubmitTransaction = async (transactionData) => {
-    const { data, error } = await storeTransaction(transactionData)
-    if (!error) {
-      toast.success("Successfully Submitted")
+  const [files, setFiles] = useState({});
+
+
+  const handleSubmitFile = async (reservedData, propsData) => {
+
+    const formData = new FormData();
+    formData.append('user', propsData.user);
+    formData.append('reserve', reservedData._id);
+    if (files.cenomar) formData.append('cenomar', files.cenomar);
+    if (files.picture) formData.append('picture', files.picture);
+    if (files.marriageLicense) formData.append('marriageLicense', files.marriageLicense);
+    if (files.baptismal) formData.append('baptismal', files.baptismal);
+    if (files.confirmation) formData.append('confirmation', files.confirmation);
+    if (files.publication) formData.append('publication', files.publication);
+    if (files.permission) formData.append('permission', files.permission);
+
+    try {
+      const response = await axios.post('http://localhost:4000/api/requirement/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      console.log(response.data.message || 'Requirements uploaded successfully!');
+    } catch (error) {
+      console.log(error.response?.data?.error || 'Failed to upload requirements.');
     }
-  }
+  };
 
   const handleViewModal = (e) => {
     e.preventDefault()
     setViewModal(true)
   }
+
+
 
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -194,9 +197,9 @@ function FormSection({ eventData }) {
 
           <Divider />
           <MarriageSelect handleRequestChange={handleRequestChange} formData={formData} />
-
           <Divider />
-          <PaymentForm handleFileChange={handleFileChange} formData={formData} />
+          <RequirementForm setFiles={setFiles} />
+          <Divider />
           <Button type='submit' variant='contained' color='warning'>Proceed</Button>
         </Stack>
       </form>
@@ -207,34 +210,31 @@ function FormSection({ eventData }) {
   )
 }
 
-function PaymentForm({ handleFileChange, formData }) {
-  const [gcash, setGcash] = useState({})
-
-  const handleGetdata = async () => {
-    if (formData.parish) {
-      const { data, error } = await fetchChapelById(formData.parish)
-      if (!error) {
-        setGcash(data)
-      }
-    }
-  }
-
-  useEffect(() => {
-    handleGetdata()
-  }, [formData.parish])
-
+function RequirementForm({ setFiles }) {
+  const handleFileChange = (event, fieldName) => {
+    setFiles((prevFiles) => ({
+      ...prevFiles,
+      [fieldName]: event.target.files[0],
+    }));
+  };
   return (
-    <>
-      <Typography variant='h4' fontWeight={'bold'}>Payment</Typography>
-      <Typography>Account Information</Typography>
-      <Stack direction={'row'} spacing={2}>
-        <TextField label='Gcash Number' value={gcash.gcash || ""} sx={{ width: '100%' }} disabled />
-        <TextField label='Amount' value={formData.amount} sx={{ width: '100%' }} disabled />
-      </Stack>
-      <Divider />
-      <Typography>Upload GCash Reciept</Typography>
-      <TextField type='file' name='file' onChange={handleFileChange} required />
-    </>
+    <Stack spacing={1}>
+      <Typography variant='h4' fontWeight={'bold'}>Requirements</Typography>
+      <Typography>CENOMAR (Certificate of No Marriage)</Typography>
+      <TextField type='file' onChange={(e) => handleFileChange(e, 'cenomar')} required />
+      <Typography>ID Picture (3 copies 1x1 and 2 copies of 5 R size)</Typography>
+      <TextField type='file' onChange={(e) => handleFileChange(e, 'picture')} required />
+      <Typography>Marriage License</Typography>
+      <TextField type='file' onChange={(e) => handleFileChange(e, 'marriageLicense')} required />
+      <Typography>Baptismal Certificate w/ annotation of "for marriage purposes"</Typography>
+      <TextField type='file' onChange={(e) => handleFileChange(e, 'baptismal')} required />
+      <Typography>Confirmation Certificate w/ annotation of "for marriage purposes"</Typography>
+      <TextField type='file' onChange={(e) => handleFileChange(e, 'confirmation')} required />
+      <Typography>3 Banns Publications </Typography>
+      <TextField type='file' onChange={(e) => handleFileChange(e, 'publication')} required />
+      <Typography>Parents Permission (18-24 years old)</Typography>
+      <TextField type='file' onChange={(e) => handleFileChange(e, 'permission')} />
+    </Stack>
   )
 }
 
@@ -291,77 +291,6 @@ function MarriageSelect({ handleRequestChange, formData }) {
       </TextField>
     </>
   )
-}
-
-function RequesterForm({ handleRequestChange, formData, handleRequestDateChange }) {
-  const [chapelData, setChapelData] = useState([])
-
-  const handleGetChapel = async () => {
-    const { data, error } = await fetchChapelData()
-    if (!error) {
-      setChapelData(data)
-    }
-  }
-
-  useState(() => {
-    handleGetChapel()
-  }, [])
-  return (
-    <>
-      <Stack direction={'row'} spacing={2}>
-        <TextField label='Select Chapel' sx={{ width: '100%' }} defaultValue={''} name='parish' onChange={handleRequestChange} select required>
-          {chapelData.map((item, index) => (
-            <MenuItem key={index} value={item._id}>{item.chapel}</MenuItem>
-          ))}
-        </TextField>
-        {formData.parish ?
-          <DateSchedulePicker formData={formData} handleRequestDateChange={handleRequestDateChange} /> :
-          <TextField sx={{ width: "100%" }} disabled label="Select Date Appointment" value="Please Select Chapel" />
-        }
-        {/* <TextField label='Role or Connection' sx={{ width: '100%' }} defaultValue={''} name='person' onChange={handleRequestChange} select required>
-          <MenuItem value="Myself">Myself</MenuItem>
-          <MenuItem value="Relative">Relative</MenuItem>
-        </TextField> */}
-      </Stack>
-      <TextField label='Purpose' sx={{ width: '100%' }} name='purpose' onChange={handleRequestChange} required />
-    </>
-  )
-}
-
-function DateSchedulePicker({ formData, handleRequestDateChange }) {
-  const [disabledDatesData, setDisabledDatesData] = useState([]);
-
-  // Function to disable specific dates
-  const shouldDisableDate = (date) => {
-    const formattedDate = moment(date).format('YYYY-MM-DD');
-    return disabledDatesData.includes(formattedDate);
-  };
-
-  const handleGetSchedule = async () => {
-    const { data, error } = await fetchScheduleByParishId(formData.parish);
-    if (!error) {
-      const dates = data.map((item) => moment(item.request.schedule).format('YYYY-MM-DD'));
-      if (dates.length >= 2) {
-        setDisabledDatesData(dates);
-      }
-    }
-  };
-
-  useEffect(() => {
-    handleGetSchedule();
-  }, []); // Empty dependency array ensures it runs once on mount
-
-  return (
-    <DatePicker
-      sx={{ width: '100%' }}
-      minDate={moment()} // Disable past dates
-      label="Select Date Appointment"
-      name="schedule"
-      value={formData.schedule || null}
-      shouldDisableDate={shouldDisableDate} // Disable specific dates
-      onChange={(value) => handleRequestDateChange('schedule', value)}
-    />
-  );
 }
 
 export default MarriageForm

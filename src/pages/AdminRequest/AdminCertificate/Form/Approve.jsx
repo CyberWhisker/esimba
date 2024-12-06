@@ -3,6 +3,10 @@ import { Box, Typography, Button, Divider } from '@mui/material';
 import { toast } from 'react-toastify';
 import { deleteRequest, updateRequest } from '../../../../api/requestApi';
 import { updateReserved } from '../../../../api/reservedApi';
+import { updateBaptism } from '../../../../api/baptismApi';
+import { updateConfirmation } from '../../../../api/confirmationApi';
+import { updateMarriage } from '../../../../api/marriageApi';
+import { updateDeath } from '../../../../api/deathApi';
 
 const headerStyle = {
     p: 2,
@@ -19,7 +23,7 @@ const footerStyle = {
 };
 
 function Approve({ selected, onClose, handleGetData }) {
-
+    console.log(selected)
     const handleSubmit = async (e) => {
         e.preventDefault()
         const formData = {
@@ -27,9 +31,52 @@ function Approve({ selected, onClose, handleGetData }) {
             status: 'Approve'
         }
         await updateRequest(formData)
+
+
+        if (selected.certificate == 'Baptism') {
+            handleUpdateBaptism(selected)
+        }
+        if (selected.certificate == 'Confirmation') {
+            handleUpdateConfirmation(selected)
+        }
+        if (selected.certificate == 'Burial') {
+            handleUpdateDeath(selected)
+        }
+        if (selected.certificate == 'Marriage') {
+            handleUpateMarriage(selected)
+        }
+
         toast.success("Successfully Updated")
         handleGetData()
         onClose()
+    }
+    const handleUpdateBaptism = async (item) => {
+        const newForm = {
+            _id: item.certificateId,
+            status: 'Approve'
+        }
+        await updateBaptism(newForm)
+    }
+    const handleUpdateConfirmation = async (item) => {
+        const newForm = {
+            _id: item.certificateId,
+            status: 'Approve'
+        }
+        await updateConfirmation(newForm)
+    }
+    const handleUpateMarriage = async (item) => {
+        const newForm = {
+            _id: item.certificateId,
+            status: 'Approve'
+        }
+        await updateMarriage(newForm)
+    }
+    const handleUpdateDeath = async (item) => {
+        const newForm = {
+            _id: item.certificateId,
+            status: 'Approve'
+        }
+        await updateDeath(newForm)
     }
 
     return (

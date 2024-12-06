@@ -48,6 +48,8 @@ import DeathForm from './pages/UserViewSchedule/FormCertificate/DeathForm';
 import MarriageForm from './pages/UserViewSchedule/FormCertificate/MarriageForm';
 import PriestSchedule from './pages/PriestSchedule/PriestSchedule';
 import UserRequest from './pages/UserRequest/UserRequest';
+import AdminPrice from './pages/AdminPrice/AdminPrice';
+import AdminReport from './pages/AdminReport/AdminReport';
 
 // Wrapper for authenticated and verified user routes
 function VerifiedUserRoute({ children }) {
@@ -444,6 +446,32 @@ function App() {
             </VerifiedUserRoute>
           }
         />
+        <Route
+          path="/price"
+          element={
+            <VerifiedUserRoute>
+              <ProtectedRoute>
+                <AdminPrice />
+              </ProtectedRoute>
+            </VerifiedUserRoute>
+          }
+        />
+        <Route
+          path="/report"
+          element={
+            <VerifiedUserRoute>
+              <ProtectedRoute>
+                <AdminReport />
+              </ProtectedRoute>
+            </VerifiedUserRoute>
+          }
+        />
+        {/* <Route
+          path="/testUpload"
+          element={
+            <MarriageFiles />
+          }
+        /> */}
       </Routes>
     </BrowserRouter>
   );

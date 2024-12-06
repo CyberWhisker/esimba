@@ -16,6 +16,7 @@ import AlertModalLarge from '../../../components/AlertModalLarge'
 import ViewBaptism from './View/ViewBaptism'
 import { storeReserved } from '../../../api/reservedApi'
 import { storeBaptism } from '../../../api/baptismApi'
+import axios from 'axios'
 
 function BaptismForm({ }) {
   const navigate = useNavigate();
@@ -93,40 +94,22 @@ function FormSection({ eventData }) {
     })
   }
 
-  const handleFileChange = (event) =>
-    setFormData({ ...formData, file: event.target.files[0] });
-
   const handleSubmit = async () => {
     // Ensure formData and eventData have required properties
-    if (!formData.user || !formData.parish || !formData.file || !formData.amount) {
+    if (!formData.user || !formData.parish || !formData.amount) {
       toast.error('Please fill in all required fields!');
       return; // Prevent further execution if form data is incomplete
     }
 
-    // Step 1: Create the transaction
-    const formTransaction = {
-      user: formData.user,
-      chapel: formData.parish,
-      file: formData.file,
-      amount: formData.amount,
-    };
-
     try {
-      const { data, error } = await storeTransaction(formTransaction);
-
-      if (error) {
-        toast.error('Failed to store transaction');
-        console.error(error);
-        return;
-      }
 
       // Step 2: If transaction is successful, store the reservation
       const formReserved = {
         user: formData.user,
-        transaction: data._id,
         parish: formData.parish,
         event: formData.eventId,
         date: formData.date,
+        amount: formData.amount,
       };
 
       const { data: reservedData, error: reservedError } = await storeReserved(formReserved);
@@ -135,6 +118,7 @@ function FormSection({ eventData }) {
         toast.error('Failed to reserve event');
         return;
       } else {
+        await handleSubmitFile(reservedData, formData)
         const formCertificate = {
           ...formData.data,
           user: formData.user,
@@ -149,6 +133,28 @@ function FormSection({ eventData }) {
       // Catch any errors during the process
       toast.error('An unexpected error occurred');
       console.error(err);
+    }
+  };
+
+  const [files, setFiles] = useState({});
+
+
+  const handleSubmitFile = async (reservedData, propsData) => {
+
+    const formData = new FormData();
+    formData.append('user', propsData.user);
+    formData.append('reserve', reservedData._id);
+    if (files.birthCertificate) formData.append('birthCertificate', files.birthCertificate);
+    if (files.baptismalSponsor) formData.append('baptismalSponsor', files.baptismalSponsor);
+    // if (files.sponsor) formData.append('sponsor', files.sponsor);
+
+    try {
+      const response = await axios.post('http://localhost:4000/api/requirement/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      console.log(response.data.message || 'Requirements uploaded successfully!');
+    } catch (error) {
+      console.log(error.response?.data?.error || 'Failed to upload requirements.');
     }
   };
 
@@ -187,7 +193,8 @@ function FormSection({ eventData }) {
           <TextField label='Purpose' sx={{ width: '100%' }} name='purpose' onChange={handleRequestChange} required />
 
           <Divider />
-          <PaymentForm handleFileChange={handleFileChange} formData={formData} />
+          <RequirementForm setFiles={setFiles} />
+          <Divider />
           <Button type='submit' variant='contained' color='warning'>Proceed</Button>
         </Stack>
       </form>
@@ -198,105 +205,24 @@ function FormSection({ eventData }) {
   )
 }
 
-function PaymentForm({ handleFileChange, formData }) {
-  const [gcash, setGcash] = useState({})
-
-  const handleGetdata = async () => {
-    if (formData.parish) {
-      const { data, error } = await fetchChapelById(formData.parish)
-      if (!error) {
-        setGcash(data)
-      }
-    }
-  }
-
-  useEffect(() => {
-    handleGetdata()
-  }, [formData.parish])
-
-  return (
-    <>
-      <Typography variant='h4' fontWeight={'bold'}>Payment</Typography>
-      <Typography>Account Information</Typography>
-      <Stack direction={'row'} spacing={2}>
-        <TextField label='Gcash Number' value={gcash.gcash || ""} sx={{ width: '100%' }} disabled />
-        <TextField label='Amount' value='200' sx={{ width: '100%' }} disabled />
-      </Stack>
-      <Divider />
-      <Typography>Upload GCash Reciept</Typography>
-      <TextField type='file' name='file' onChange={handleFileChange} required />
-    </>
-  )
-}
-
-function RequesterForm({ handleRequestChange, formData, handleRequestDateChange }) {
-  const [chapelData, setChapelData] = useState([])
-
-  const handleGetChapel = async () => {
-    const { data, error } = await fetchChapelData()
-    if (!error) {
-      setChapelData(data)
-    }
-  }
-
-  useState(() => {
-    handleGetChapel()
-  }, [])
-  return (
-    <>
-      <Stack direction={'row'} spacing={2}>
-        <TextField label='Select Chapel' sx={{ width: '100%' }} defaultValue={''} name='parish' onChange={handleRequestChange} select required>
-          {chapelData.map((item, index) => (
-            <MenuItem key={index} value={item._id}>{item.chapel}</MenuItem>
-          ))}
-        </TextField>
-        {formData.parish ?
-          <DateSchedulePicker handleRequestDateChange={handleRequestDateChange} formData={formData} /> :
-          <TextField sx={{ width: "100%" }} disabled label="Select Date Appointment" value="Please Select Chapel" />
-        }
-        {/* <TextField label='Role or Connection' sx={{ width: '100%' }} defaultValue={''} name='person' onChange={handleRequestChange} select required>
-          <MenuItem value="Myself">Myself</MenuItem>
-          <MenuItem value="Relative">Relative</MenuItem>
-        </TextField> */}
-      </Stack>
-      <TextField label='Purpose' sx={{ width: '100%' }} name='purpose' onChange={handleRequestChange} required />
-    </>
-  )
-}
-
-function DateSchedulePicker({ handleRequestDateChange, formData }) {
-  const [disabledDatesData, setDisabledDatesData] = useState([]);
-
-  // Function to disable specific dates
-  const shouldDisableDate = (date) => {
-    const formattedDate = moment(date).format('YYYY-MM-DD');
-    return disabledDatesData.includes(formattedDate);
+function RequirementForm({ setFiles }) {
+  const handleFileChange = (event, fieldName) => {
+    setFiles((prevFiles) => ({
+      ...prevFiles,
+      [fieldName]: event.target.files[0],
+    }));
   };
-
-  const handleGetSchedule = async () => {
-    const { data, error } = await fetchScheduleByParishId(formData.parish);
-    if (!error) {
-      const dates = data.map((item) => moment(item.request.schedule).format('YYYY-MM-DD'));
-      if (dates.length >= 2) {
-        setDisabledDatesData(dates);
-      }
-    }
-  };
-
-  useEffect(() => {
-    handleGetSchedule();
-  }, [formData.parish]); // Empty dependency array ensures it runs once on mount
-
   return (
-    <DatePicker
-      sx={{ width: '100%' }}
-      minDate={moment()} // Disable past dates
-      label="Select Date Appointment"
-      name="schedule"
-      shouldDisableDate={shouldDisableDate} // Disable specific dates
-      onChange={(value) => handleRequestDateChange('schedule', value)}
-    />
-  );
+    <Stack spacing={1}>
+      <Typography variant='h4' fontWeight={'bold'}>Requirements</Typography>
+      <Typography>Birth Certificate</Typography>
+      <TextField type='file' onChange={(e) => handleFileChange(e, 'birthCertificate')} required />
+      <Typography>Baptismal Certificate Sponsor</Typography>
+      <TextField type='file' onChange={(e) => handleFileChange(e, 'baptismalSponsor')} required />
+      {/* <Typography>5 Pairs Sponsors</Typography>
+      <TextField type='file' onChange={(e) => handleFileChange(e, 'sponsor')} required /> */}
+    </Stack>
+  )
 }
 
 export default BaptismForm

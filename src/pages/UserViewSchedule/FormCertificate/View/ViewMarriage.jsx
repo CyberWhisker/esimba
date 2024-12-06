@@ -47,7 +47,7 @@ function ViewMarriage({ formData, handleSubmit }) {
                         <Stack direction={'row'} spacing={2}>
                             <TextField label='Place of Birth' sx={{ width: '100%' }} value={uerData.birthAddress || ""} name='birthAddress' required disabled />
                         </Stack>
-                        <TextField label="Partner Name" sx={{ width: '100%' }} name='partnerName' value={uerData.partnerName || ""} disabled/>
+                        <TextField label="Partner Name" sx={{ width: '100%' }} name='partnerName' value={uerData.partnerName || ""} disabled />
                         <Stack direction={'row'} spacing={2} >
                             <TextField label="Mother's Name" sx={{ width: '100%' }} value={uerData.motherName || ""} name='motherName' required disabled />
                             <TextField label="Father's Name" sx={{ width: '100%' }} value={uerData.fatherName || ""} name='fatherName' required disabled />

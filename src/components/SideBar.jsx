@@ -132,6 +132,10 @@ function AdminNavList() {
         Transaction
       </MenuItem>
 
+      <MenuItem icon={<CreditCard />} component={<Link to='/report' />} active={location.pathname == '/report'}>
+        Report
+      </MenuItem>
+
       {/* <MenuItem icon={<Handshake />} component={<Link to='/donation' />} active={location.pathname == '/donation'}>
         Donation
       </MenuItem> */}
@@ -150,11 +154,16 @@ function AdminNavList() {
           Subscription
         </MenuItem>
       )}
-      {auth.user.role == 1 && (
+      {/* {auth.user.role == 1 && (
         <MenuItem icon={<Settings />} component={<Link to='/priestSchedule' />} active={location.pathname == '/priestSchedule'}>
           Priest Schedule
         </MenuItem>
-      )}
+      )} */}
+      {/* {auth.user.role == 1 && (
+        <MenuItem icon={<Settings />} component={<Link to='/price' />} active={location.pathname == '/priestSchedule'}>
+          Price Maintenance
+        </MenuItem>
+      )} */}
       <Divider />
     </>
   );

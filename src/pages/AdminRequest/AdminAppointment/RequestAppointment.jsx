@@ -240,10 +240,7 @@ function ViewButton({ params, handleGetData }) {
 
   return (
     <>
-      {params.transaction ?
-        <Button variant='contained' onClick={() => setViewModal(true)}>Transaction</Button> :
-        <Button variant='contained' disabled color='error'>Unavilable</Button>
-      }
+      <Button variant='contained' onClick={() => setViewModal(true)}>Requirements</Button>
 
       <Drawer open={viewModal} anchor='right' onClose={() => setViewModal(false)}>
         <View selected={params} onClose={() => setViewModal(false)} handleGetData={handleGetData} />

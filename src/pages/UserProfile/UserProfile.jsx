@@ -26,6 +26,10 @@ import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
 import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
 import { fetchScheduleByUserId } from '../../api/scheduleApi'
 import { fetchRequestByUserId } from '../../api/requestApi'
+import { fetchReservedByUserId } from '../../api/reservedApi'
+import AlertModal from '../../components/AlertModal'
+import CancelReserve from './Form/CancelReserve'
+import StoreTransaction from './Form/StoreTransaction'
 
 function UserProfile() {
     return (
@@ -33,7 +37,7 @@ function UserProfile() {
             <Stack mt={2} spacing={2}>
                 <Grid2 container spacing={2}>
                     <Grid2 size="grow">
-                        <Box sx={{height: '47vh'}}>
+                        <Box sx={{ height: '47vh' }}>
                             <Typography variant='h4' fontWeight={'bold'}>Profile</Typography>
                             <ProfileEdit />
                         </Box>
@@ -52,6 +56,14 @@ function UserProfile() {
                     </Grid2>
                     <Grid2 size={'grow'} >
                         <UserViewSchedule />
+                    </Grid2>
+                </Grid2>
+                <Divider />
+
+                <Typography variant='h4' fontWeight={'bold'}>Schedule List:</Typography>
+                <Grid2 container spacing={2} pb={2}>
+                    <Grid2 size={12} >
+                        <DataTableReserve />
                     </Grid2>
                 </Grid2>
             </Stack>
@@ -317,7 +329,12 @@ function DataTable({ data, loading, handlePrintFile, selected, setSelected }) {
             headerClassName: 'headerStyle',
             renderCell: (params) => (
                 <Box sx={{ textAlign: 'center' }}>
-                    <Button variant='contained' onClick={() => handlePrintFile(params.row)}>Certificate</Button>
+                    {params.row.status == 'Approve' && (
+                        <Button variant='contained' onClick={() => handlePrintFile(params.row)}>Certificate</Button>
+                    )}
+                    {params.row.status != 'Release' && (
+                        <Button variant='contained' disabled>{params.row.status}</Button>
+                    )}
                 </Box>
             )
         },
@@ -405,14 +422,11 @@ function ScheduleList() {
     };
 
     const handleGetSchedule = async () => {
-        const { data, error } = await fetchScheduleByUserId(auth.user._id);
+        const { data, error } = await fetchReservedByUserId(auth.user._id);
         if (!error) {
+            console.log()
             const mappedEvents = data.map((item) => ({
-                title:
-                    item.request.certificate == "Baptism Certificate" && "Baptism Appointment" ||
-                    item.request.certificate == "Death Certificate" && "Death Appointment" ||
-                    item.request.certificate == "Marriage Certificate" && "Marriage Appointment" ||
-                    item.request.certificate == "Confirmation Certificate" && "Confirmation Appointment",
+                title: item.event.event,
                 date: moment(item.date).format("YYYY-MM-DD")
             }));
             setEvents(mappedEvents);
@@ -508,6 +522,135 @@ function RequestList() {
                     rows={rows}
                 />
             </Box>
+        </CustomCard>
+    )
+}
+
+function DataTableReserve() {
+    const { auth } = useContext(AuthContext)
+    const [cancelModel, setCancelModel] = useState(false)
+    const [storeTransactionModel, setStoreTransactionModel] = useState(false)
+    const [selected, setSelected] = useState(false)
+    const theme = useTheme();
+    const [data, setData] = useState([])
+
+    const hanldeGetData = async () => {
+        const { data, error } = await fetchReservedByUserId(auth.user._id)
+        if (!error) {
+            console.log(data)
+            setData(data)
+        }
+    }
+
+    const handleCancel = (params) => {
+        setSelected(params)
+        setCancelModel(true)
+    }
+
+    const handlePayment = (params) => {
+        setSelected(params)
+        setStoreTransactionModel(true)
+    }
+
+    const handelCloseModel = () => {
+        setCancelModel(false)
+        setStoreTransactionModel(false)
+    }
+
+    useEffect(() => {
+        hanldeGetData()
+    }, [])
+
+    const columns = [
+        {
+            field: 'event',
+            headerName: 'Event',
+            flex: 1,
+            headerAlign: 'center',
+            headerClassName: 'headerStyle',
+        },
+        {
+            field: 'date',
+            headerName: 'Date',
+            flex: 1,
+            headerAlign: 'center',
+            headerClassName: 'headerStyle',
+        },
+        {
+            field: 'status',
+            headerName: 'Status',
+            flex: 1,
+            headerAlign: 'center',
+            headerClassName: 'headerStyle',
+            renderCell: (params) => (
+                <Box sx={{ textAlign: 'center' }}>
+                    {params.row.status == "Approve" && (
+                        <Chip label="Approve" color='success' />
+                    )}
+                    {params.row.status == "Pending" && (
+                        <Chip label="Pending" color='warning' />
+                    )}
+                    {params.row.status == "Cancelled" && (
+                        <Chip label="Cancelled" color='error' />
+                    )}
+                </Box>
+            )
+        },
+        {
+            field: 'action',
+            headerName: 'Action',
+            flex: 1,
+            headerAlign: 'center',
+            headerClassName: 'headerStyle',
+            renderCell: (params) => (
+                <Box sx={{ textAlign: 'center' }}>
+                    {params.row.transaction && (
+                        <Button variant='contained' color='success' disabled>{params.row.transaction.status}</Button>
+                    )}
+                    {!params.row.transaction && params.row.status == 'Pending' && (
+                        <Button variant='contained' color='error' onClick={() => handleCancel(params.row)}>Cancel</Button>
+                    )}
+                    {!params.row.transaction && params.row.status == 'Approve' && (
+                        <Button variant='contained' color='success' onClick={() => handlePayment(params.row)}>Payment</Button>
+                    )}
+                    {!params.row.transaction && params.row.status == 'Cancelled' && (
+                        <Button variant='contained' color='success' disabled>Unavailable</Button>
+                    )}
+                </Box>
+            )
+        },
+    ]
+
+    const rows = data.map((item) => ({
+        ...item,
+        id: item._id,
+        amount: item.amount,
+        eventData: item.event,
+        transaction: item.transaction,
+        event: item.event.event,
+        date: moment(item.date).format('MMMM DD YYYY'),
+    }))
+    return (
+        <CustomCard>
+            <Box
+                sx={{
+                    '& .headerStyle': {
+                        backgroundColor: theme.palette.warning.main,
+                    },
+                    height: '47vh',
+                }}
+            >
+                <DataGrid
+                    columns={columns}
+                    rows={rows}
+                />
+            </Box>
+            <AlertModal open={cancelModel} onClose={handelCloseModel}>
+                <CancelReserve selected={selected} onClose={handelCloseModel} />
+            </AlertModal>
+            <AlertModal open={storeTransactionModel} onClose={handelCloseModel}>
+                <StoreTransaction selected={selected} onClose={handelCloseModel} handleGetData={hanldeGetData} />
+            </AlertModal>
         </CustomCard>
     )
 }

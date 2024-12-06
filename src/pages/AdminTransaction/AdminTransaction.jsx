@@ -10,7 +10,8 @@ import { toast } from 'react-toastify'
 import moment from 'moment'
 import { fetchTransactionByChapelId } from '../../api/transactionApi'
 import Update from './Form/Update'
-import { ApprovalRounded, CancelOutlined, DeleteOutline, EditOutlined } from '@mui/icons-material'
+import { ApprovalOutlined, ApprovalRounded, CancelOutlined, DeleteOutline, EditOutlined } from '@mui/icons-material'
+import Approve from './Form/Approve'
 
 function AdminTransaction() {
     return (
@@ -32,8 +33,14 @@ function DataTable() {
     const [loading, setLoading] = useState(false)
     const [deleteModal, setDeleteModal] = useState(false);
     const [updateModal, setUpdateModal] = useState(false);
+    const [approveModal, setApproveModal] = useState(false);
 
     const [selected, setSelected] = useState(false);
+
+    const handleApprove = async (params) => {
+        setSelected(params)
+        setApproveModal(true)
+    }
 
     const handleEdit = async (params) => {
         setSelected(params)
@@ -46,6 +53,7 @@ function DataTable() {
 
 
     const handleCloseModal = () => {
+        setApproveModal(false)
         setDeleteModal(false)
         setUpdateModal(false)
     }
@@ -103,6 +111,26 @@ function DataTable() {
             headerClassName: 'headerStyle',
         },
         {
+            field: 'status',
+            headerName: 'Status',
+            flex: 1,
+            headerAlign: 'center',
+            headerClassName: 'headerStyle',
+            renderCell: (params) => (
+                <Box sx={{ textAlign: 'center' }}>
+                    {params.row.status == "Approve" && (
+                        <Chip label="Approve" color='success' />
+                    )}
+                    {params.row.status == "Cancelled" && (
+                        <Chip label="Cancelled" color='error' />
+                    )}
+                    {params.row.status == "Pending" && (
+                        <Chip label="Pending" color='warning' />
+                    )}
+                </Box>
+            )
+        },
+        {
             field: 'actions',
             headerName: 'Actions',
             type: 'actions',
@@ -112,6 +140,12 @@ function DataTable() {
             headerClassName: 'headerStyle',
             getActions: (params) => {
                 return [
+                    <GridActionsCellItem
+                        icon={<ApprovalOutlined />}
+                        label="Approve"
+                        onClick={() => handleApprove(params.row)}
+                        color="success"
+                    />,
                     <GridActionsCellItem
                         icon={<EditOutlined />}
                         label="Approve"
@@ -171,6 +205,9 @@ function DataTable() {
             <Drawer open={updateModal} onClose={handleCloseModal} anchor='right'>
                 <Update selected={selected} handleGetData={handleGetData} onClose={handleCloseModal} />
             </Drawer>
+            <AlertModal open={approveModal} onClose={handleCloseModal} anchor='right'>
+                <Approve selected={selected} handleGetData={handleGetData} onClose={handleCloseModal} />
+            </AlertModal>
         </>
     )
 }

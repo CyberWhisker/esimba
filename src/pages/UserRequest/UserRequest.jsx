@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import Master from '../../layouts/Master'
 import { Box, Button, Chip, Divider, Grid2, Stack, Typography } from '@mui/material'
 import CustomCard from '../../components/CustomCard'
@@ -8,6 +8,7 @@ import AlertModal from '../../components/AlertModal'
 import StoreRequest from './Form/StoreRequest'
 import { fetchConfirmationByUserId } from '../../api/confirmationApi'
 import { fetchMarriageByUserId } from '../../api/marriageApi'
+import { useReactToPrint } from 'react-to-print'
 
 function UserRequest() {
     return (
@@ -43,15 +44,25 @@ function CertificateList() {
         console.log(toggle)
     }
 
+
+    const [selected, setSelected] = useState({});
+    const contentRef = useRef(null)
+    const printFile = useReactToPrint({ contentRef })
+    const handlePrintFile = async (params) => {
+        await setSelected(params)
+        printFile()
+    }
+
     return (
         <Grid2 container spacing={2}>
-            <BaptismList handleRequestModal={handleRequestModal} toggle={toggle} />
-            <ConfirmationList handleRequestModal={handleRequestModal} toggle={toggle} />
-            <MarriageList handleRequestModal={handleRequestModal} toggle={toggle} />
+            <BaptismList handleRequestModal={handleRequestModal} toggle={toggle} handlePrintFile={handlePrintFile} />
+            <ConfirmationList handleRequestModal={handleRequestModal} toggle={toggle} handlePrintFile={handlePrintFile} />
+            <MarriageList handleRequestModal={handleRequestModal} toggle={toggle} handlePrintFile={handlePrintFile} />
 
             <AlertModal open={openRequestModal} onClose={() => setRequestModal(false)}>
                 <StoreRequest formData={formData} setFormData={setFormData} onClose={() => setRequestModal(false)} handleToggle={handleToggle} />
             </AlertModal>
+            <Certificate contentRef={contentRef} selected={selected} />
         </Grid2>
     )
 }
@@ -142,7 +153,7 @@ function ConfirmationList({ handleRequestModal, toggle }) {
     )
 }
 
-function MarriageList({ handleRequestModal, toggle }) {
+function MarriageList({ handleRequestModal, toggle, handlePrintFile }) {
     const { auth } = useContext(AuthContext)
     const [data, setData] = useState([])
 
@@ -176,6 +187,7 @@ function MarriageList({ handleRequestModal, toggle }) {
                             <Divider />
                             <Box p={2}>
                                 <Button variant='contained' fullWidth color='warning' onClick={() => handleRequestModal({ ...item, certificate: 'Marriage', amount: 200 })} disabled={item.status != 'Hold'}>Request</Button>
+                                {/* <Button variant='contained' fullWidth color='warning' onClick={() => handlePrintFile({ ...item, certificate: 'Marriage', amount: 200 })} disabled={item.status != 'Hold'}>Request</Button> */}
                             </Box>
                         </Stack>
                     </CustomCard>
@@ -185,6 +197,28 @@ function MarriageList({ handleRequestModal, toggle }) {
     )
 }
 
+function Certificate({ contentRef, selected }) {
+    return (
+        <div>
+            <div style={{ display: 'none' }}>
+                <div ref={contentRef} style={{ color: 'black' }}>
+                    {selected.type == "Baptism Certificate" && (
+                        <BaptismLayout selected={selected} />
+                    )}
+                    {selected.type == "Death Certificate" && (
+                        <DeathLayout selected={selected} />
+                    )}
+                    {selected.type == "Confirmation Certificate" && (
+                        <ConfirmationLayout selected={selected} />
+                    )}
+                    {selected.type == "Marriage Certificate" && (
+                        <MarriageLayout selected={selected} />
+                    )}
+                </div>
+            </div>
+        </div>
+    )
+}
 
 
 export default UserRequest
