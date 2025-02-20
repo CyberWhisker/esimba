@@ -283,7 +283,8 @@ function ScheduleList() {
       toast.error("Server Error")
     } else {
       // Map events
-      const mappedEvents = data.map((item) => ({
+      const formattedData = data.filter((item) => item.status == "Approved")
+      const mappedEvents = formattedData.map((item) => ({
         id: item._id,
         type: 'event',
         title: item.event,

@@ -1,4 +1,4 @@
-import { Box, Divider, Stack, useTheme } from '@mui/material';
+import { Box, Button, Divider, Stack, useTheme } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 import { Menu, MenuItem, Sidebar, SubMenu } from 'react-pro-sidebar';
 import Logo from '/appImg/Logo.png';
@@ -23,44 +23,49 @@ function SideBar() {
           height: '100%',
         }}
       >
-        <Stack direction={'row'} justifyContent={open ? 'center' : 'space-between'} p={1} alignItems={'center'}>
-          {!open && <img src={Logo} alt='Logo' style={{ height: '6vh' }} />}
-          <ChevronLeft
-            sx={{
-              height: '6vh',
-              cursor: 'pointer',
-              transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
-              transition: '.3s',
-            }}
-            onClick={handleToggleOpen}
-          />
+        <Stack direction={'column'} justifyContent={'space-between'} height={'100%'}>
+          <Box>
+            <Stack direction={'row'} justifyContent={open ? 'center' : 'space-between'} p={1} alignItems={'center'}>
+              {!open && <img src={Logo} alt='Logo' style={{ height: '6vh' }} />}
+              <ChevronLeft
+                sx={{
+                  height: '6vh',
+                  cursor: 'pointer',
+                  transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: '.3s',
+                }}
+                onClick={handleToggleOpen}
+              />
+            </Stack>
+            <Divider />
+            <Menu
+              menuItemStyles={{
+                button: ({ level, active }) => {
+                  if (level === 0) {
+                    return {
+                      backgroundColor: active ? theme.palette.warning.main : undefined, // Active color
+                      '&:hover': {
+                        backgroundColor: theme.palette.warning.main, // Hover color
+                      },
+                      color: '#fff', // Text color for better contrast
+                    };
+                  } else if (level === 1) { // Custom styles for SubMenu items
+                    return {
+                      backgroundColor: active ? theme.palette.warning.main : 'rgba(128, 0, 0, 0.6)', // SubMenu background color
+                      '&:hover': {
+                        backgroundColor: theme.palette.warning.main, // Hover color
+                      },
+                      color: '#fff', // Text color for better contrast
+                    };
+                  }
+                },
+              }}
+            >
+              <AdminNavList />
+            </Menu>
+          </Box>
+          <Button fullWidth color='warning' variant='contained' component={Link} to='/renew'>Subscribe</Button>
         </Stack>
-        <Divider />
-        <Menu
-          menuItemStyles={{
-            button: ({ level, active }) => {
-              if (level === 0) {
-                return {
-                  backgroundColor: active ? theme.palette.warning.main : undefined, // Active color
-                  '&:hover': {
-                    backgroundColor: theme.palette.warning.main, // Hover color
-                  },
-                  color: '#fff', // Text color for better contrast
-                };
-              } else if (level === 1) { // Custom styles for SubMenu items
-                return {
-                  backgroundColor: active ? theme.palette.warning.main : 'rgba(128, 0, 0, 0.6)', // SubMenu background color
-                  '&:hover': {
-                    backgroundColor: theme.palette.warning.main, // Hover color
-                  },
-                  color: '#fff', // Text color for better contrast
-                };
-              }
-            },
-          }}
-        >
-          <AdminNavList />
-        </Menu>
       </Box>
     </Sidebar>
   );
@@ -147,6 +152,10 @@ function AdminNavList() {
 
       <MenuItem icon={<Settings />} component={<Link to='/event' />} active={location.pathname == '/event'}>
         Event Maintenance
+      </MenuItem>
+
+      <MenuItem icon={<Settings />} component={<Link to='/price' />} active={location.pathname == '/price'}>
+        Price Maintenance
       </MenuItem>
 
       {auth.user.role == 1 && (

@@ -22,9 +22,9 @@ function ViewMarriage({ formData, handleSubmit }) {
     const navigate = useNavigate()
     const handleSubmitClick = () => {
         handleSubmit()
-        setTimeout(() => {
-            navigate('/user/profile');
-        }, 3);
+        // setTimeout(() => {
+        //     navigate('/user/profile');
+        // }, 3);
     }
     return (
         <>

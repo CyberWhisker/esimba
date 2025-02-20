@@ -1,5 +1,5 @@
 import { Box, Button, Card, Divider, Grid2, MenuItem, Stack, TextField, Typography } from '@mui/material'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Master from '../../../layouts/Master'
 import { ArrowBackRounded } from '@mui/icons-material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
@@ -14,6 +14,7 @@ import ViewMarriage from './View/ViewMarriage'
 import { storeMarriage } from '../../../api/marriageApi'
 import { storeReserved } from '../../../api/reservedApi'
 import axios from 'axios';
+import { fetchPrice } from '../../../api/priceApi'
 
 function MarriageForm() {
   const navigate = useNavigate();
@@ -108,7 +109,6 @@ function FormSection({ eventData }) {
       };
 
       const { data: reservedData, error: reservedError } = await storeReserved(formReserved);
-      console.log(reservedError)
       if (reservedError) {
         toast.error('Failed to reserve event');
         return;
@@ -283,13 +283,45 @@ function MarriageSelect({ handleRequestChange, formData }) {
           </ul>
         </Card>
       }
-      <TextField select name='amount' label="Marriage Type" value={formData.amount} onChange={handleRequestChange} required>
-        <MenuItem value={"1200"}>Kasal sa Loob ng Misa sa Regular na Oras at Araw</MenuItem>
-        <MenuItem value={"2000"}>Kasal sa Loob ng Misa Labas sa Regular na Oras At Araw</MenuItem>
-        <MenuItem value={"1500"}>Kasal sa Loob ng Misa sa Kapilya sa Barangay</MenuItem>
-        <MenuItem value={"1500"}>Kasal sa Loob ng Misa sa Kapilya PagKatapos ng Piyesta</MenuItem>
-      </TextField>
+      <PricesItem value={formData.amount} onChange={handleRequestChange} />
     </>
+  )
+}
+
+function PricesItem({ value, onChange }) {
+  const [data, setData] = useState([])
+
+  const handleGetData = async () => {
+    const { data, error } = await fetchPrice()
+    if (error) {
+      toast.error('Failed to fetch data')
+    } else {
+      const newData = data.filter((item) => item.type === 'marriage' && item.name !== 'Certificate')
+      setData(newData)
+    }
+  }
+
+  useEffect(() => {
+    handleGetData();
+  }, [])
+
+  return (
+    <TextField
+      select
+      name='amount'
+      label="Marriage Type"
+      value={value || ''}
+      onChange={onChange}
+      required
+    >
+      {data.length > 0 ? (
+        data.map((item, index) => (
+          <MenuItem value={item.price} key={index}>{item.name}</MenuItem>
+        ))
+      ) : (
+        <MenuItem disabled>Loading...</MenuItem>
+      )}
+    </TextField>
   )
 }
 

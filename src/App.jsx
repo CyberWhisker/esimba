@@ -90,9 +90,13 @@ function ProtectedRoute({ children }) {
       if (auth?.user?.parish) {
         const { data, error } = await fetchSubscriptionByChapelId(auth.user.parish._id);
         if (!error) {
-          console.log(moment(data.endDate).isAfter(moment()))
-          const isSubscriptionValid = data?.status && moment(data.endDate).isAfter(moment());
-          setIsValidSubscription(isSubscriptionValid);
+          if (data?.status && moment(data.endDate).isSameOrBefore(moment())) {
+            console.log("Subscription is expired");
+            setIsValidSubscription(false);
+          } else {
+            console.log("Subscription is active");
+            setIsValidSubscription(true);
+          }
         }
       }
       setLoading(false);
@@ -103,7 +107,9 @@ function ProtectedRoute({ children }) {
   if (loading) return <div>Loading...</div>;
   if (!auth) return <Navigate to="/login" replace />;
   if (auth?.user?.role == 3) return <Navigate to="/login" replace />;
-  if (!isValidSubscription) return <Navigate to="/renew" replace />;
+  if (auth?.user?.role != 1) {
+    if (!isValidSubscription) return <Navigate to="/renew" replace />;
+  }
 
   return children;
 }

@@ -50,7 +50,8 @@ function ScheduleList() {
           const currentDay = moment().format('YYYY-MM-DD');
 
           // Map schedules
-          const mappedSchedules = scheduleResponse.data.map((item) => ({
+          const formattedData = scheduleResponse.data.filter((item) => item.status == "Approved")
+          const mappedSchedules = formattedData.map((item) => ({
             data: { ...item },
             type: 'appointment',
             title:

@@ -9,6 +9,7 @@ import StoreRequest from './Form/StoreRequest'
 import { fetchConfirmationByUserId } from '../../api/confirmationApi'
 import { fetchMarriageByUserId } from '../../api/marriageApi'
 import { useReactToPrint } from 'react-to-print'
+import { fetchPrice } from '../../api/priceApi'
 
 function UserRequest() {
     return (
@@ -25,6 +26,24 @@ function CertificateList() {
     const [openRequestModal, setRequestModal] = useState(false)
     const [toggle, setToggle] = useState(false)
     const [formData, setFormData] = useState({})
+    const [pricesBaptism, setPriceBaptism] = useState('300')
+    const [priceMarriage, setPriceMarriage] = useState('300')
+    const [priceConfirmation, setPriceConfirmation] = useState('300')
+
+    const handleGetPrices = async () => {
+        const { data, error } = await fetchPrice()
+        if (!error) {
+            if (data.length > 0) {
+                const baptism = data.find((item) => item.type == 'baptismal' && item.name == 'Certificate')
+                const confirmation = data.find((item) => item.type == 'confirmation' && item.name == 'Certificate')
+                const marriage = data.find((item) => item.type == 'marriage' && item.name == 'Certificate')
+                setPriceBaptism(baptism.price)
+                setPriceConfirmation(confirmation.price)
+                setPriceMarriage(marriage.price)
+            }
+        }
+    }
+
 
     const handleRequestModal = (item) => {
         const data = {
@@ -53,11 +72,15 @@ function CertificateList() {
         printFile()
     }
 
+    useEffect(() => {
+        handleGetPrices()
+    }, [])
+
     return (
         <Grid2 container spacing={2}>
-            <BaptismList handleRequestModal={handleRequestModal} toggle={toggle} handlePrintFile={handlePrintFile} />
-            <ConfirmationList handleRequestModal={handleRequestModal} toggle={toggle} handlePrintFile={handlePrintFile} />
-            <MarriageList handleRequestModal={handleRequestModal} toggle={toggle} handlePrintFile={handlePrintFile} />
+            <BaptismList handleRequestModal={handleRequestModal} toggle={toggle} handlePrintFile={handlePrintFile} prices={pricesBaptism} />
+            <ConfirmationList handleRequestModal={handleRequestModal} toggle={toggle} handlePrintFile={handlePrintFile} prices={priceConfirmation} />
+            <MarriageList handleRequestModal={handleRequestModal} toggle={toggle} handlePrintFile={handlePrintFile} prices={priceMarriage} />
 
             <AlertModal open={openRequestModal} onClose={() => setRequestModal(false)}>
                 <StoreRequest formData={formData} setFormData={setFormData} onClose={() => setRequestModal(false)} handleToggle={handleToggle} />
@@ -67,7 +90,7 @@ function CertificateList() {
     )
 }
 
-function BaptismList({ handleRequestModal, toggle }) {
+function BaptismList({ handleRequestModal, toggle, prices }) {
     const { auth } = useContext(AuthContext)
     const [data, setData] = useState([])
 
@@ -96,7 +119,7 @@ function BaptismList({ handleRequestModal, toggle }) {
                             <Stack spacing={1} p={2}>
                                 <Typography>Name: {item.name}</Typography>
                                 <Typography>Parish: {item.chapel.chapel}</Typography>
-                                <Typography>Amount: 100.00</Typography>
+                                <Typography>Amount: {prices}</Typography>
                             </Stack>
                             <Divider />
                             <Box p={2}>
@@ -110,7 +133,7 @@ function BaptismList({ handleRequestModal, toggle }) {
     )
 }
 
-function ConfirmationList({ handleRequestModal, toggle }) {
+function ConfirmationList({ handleRequestModal, toggle, prices }) {
     const { auth } = useContext(AuthContext)
     const [data, setData] = useState([])
 
@@ -139,7 +162,7 @@ function ConfirmationList({ handleRequestModal, toggle }) {
                             <Stack spacing={1} p={2}>
                                 <Typography>Name: {item.name}</Typography>
                                 <Typography>Parish: {item.chapel.chapel}</Typography>
-                                <Typography>Amount: 100.00</Typography>
+                                <Typography>Amount: {prices}</Typography>
                             </Stack>
                             <Divider />
                             <Box p={2}>
@@ -153,7 +176,7 @@ function ConfirmationList({ handleRequestModal, toggle }) {
     )
 }
 
-function MarriageList({ handleRequestModal, toggle, handlePrintFile }) {
+function MarriageList({ handleRequestModal, toggle, handlePrintFile, prices }) {
     const { auth } = useContext(AuthContext)
     const [data, setData] = useState([])
 
@@ -182,7 +205,7 @@ function MarriageList({ handleRequestModal, toggle, handlePrintFile }) {
                             <Stack spacing={1} p={2}>
                                 <Typography>Name: {item.name}</Typography>
                                 <Typography>Parish: {item.chapel.chapel}</Typography>
-                                <Typography>Amount: 100.00</Typography>
+                                <Typography>Amount: {prices}</Typography>
                             </Stack>
                             <Divider />
                             <Box p={2}>

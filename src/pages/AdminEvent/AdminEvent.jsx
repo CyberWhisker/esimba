@@ -4,7 +4,7 @@ import { DataGrid, GridActionsCellItem, GridRowModes } from '@mui/x-data-grid';
 import { Cancel, Delete as DeleteIcon, Edit, Save } from '@mui/icons-material';
 import MasterAdmin from '../../layouts/MasterAdmin';
 import CustomCard from '../../components/CustomCard';
-import { deleteEvent, fetchEventsByParishId, updateEvent } from '../../api/eventApi';
+import { deleteEvent, fetchEvents, fetchEventsByParishId, updateEvent } from '../../api/eventApi';
 import { AuthContext } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import moment from 'moment';
@@ -86,17 +86,32 @@ function DataTable() {
     };
 
     const handleGetData = async () => {
-        const { data, error } = await fetchEventsByParishId(auth.user.parish._id)
-        if (error) {
-            toast.error("Server Errro")
+        if (auth.user.role === 2) {
+            const { data, error } = await fetchEventsByParishId(auth.user.parish._id)
+            if (error) {
+                toast.error("Server Errro")
+            } else {
+                const formatedData = data.map((item) => ({
+                    ...item,
+                    id: item._id,
+                    startDate: moment(item.startDate).toDate(),
+                    endDate: moment(item.endDate).toDate()
+                }))
+                setRows(formatedData)
+            }
         } else {
-            const formatedData = data.map((item) => ({
-                ...item,
-                id: item._id,
-                startDate: moment(item.startDate).toDate(),
-                endDate: moment(item.endDate).toDate()
-            }))
-            setRows(formatedData)
+            const { data, error } = await fetchEvents()
+            if (error) {
+                toast.error("Server Errro")
+            } else {
+                const formatedData = data.map((item) => ({
+                    ...item,
+                    id: item._id,
+                    startDate: moment(item.startDate).toDate(),
+                    endDate: moment(item.endDate).toDate()
+                }))
+                setRows(formatedData)
+            }
         }
     }
 
@@ -113,11 +128,25 @@ function DataTable() {
             headerAlign: 'center',
             headerClassName: 'headerStyle',
         },
+        ...(auth.user.role === 1
+            ? [{
+                field: 'parish',
+                headerName: 'Parish',
+                flex: 1,
+                headerAlign: 'center',
+                headerClassName: 'headerStyle',
+                renderCell: (params) => (
+                    <Box sx={{ textAlign: 'center' }}>
+                        {params.row.parish.chapel}
+                    </Box>
+                )
+            }]
+            : []),
         {
             field: 'event_type',
             headerName: 'Event Type',
-            flex: 1,
             editable: true,
+            flex: 1,
             headerAlign: 'center',
             headerClassName: 'headerStyle',
             type: 'singleSelect',
@@ -126,7 +155,6 @@ function DataTable() {
         {
             field: 'startDate',
             headerName: 'Start Date',
-            flex: 1,
             editable: true,
             type: 'date',
             headerAlign: 'center',
@@ -135,7 +163,6 @@ function DataTable() {
         {
             field: 'endDate',
             headerName: 'End Date',
-            flex: 1,
             editable: true,
             type: 'date',
             headerAlign: 'center',
@@ -145,12 +172,21 @@ function DataTable() {
             field: 'slot',
             headerName: 'Slot',
             type: 'number',
-            flex: 1,
             editable: true,
             headerAlign: 'center',
             headerClassName: 'headerStyle',
             type: 'singleSelect',
             valueOptions: [1, 2, 3, 4, 5],
+
+        },
+        {
+            field: 'status',
+            headerName: 'Status',
+            editable: auth.user.role == 1 ? true : false,
+            headerAlign: 'center',
+            headerClassName: 'headerStyle',
+            type: 'singleSelect',
+            valueOptions: ["Approved", "Pending", "Cancel"],
 
         },
         {
