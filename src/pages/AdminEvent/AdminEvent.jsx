@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Box, Stack, Typography, useTheme } from '@mui/material';
+import { Avatar, Box, Button, Card, Grid2, IconButton, Stack, TextField, Typography, useTheme } from '@mui/material';
 import { DataGrid, GridActionsCellItem, GridRowModes } from '@mui/x-data-grid';
 import { Cancel, Delete as DeleteIcon, Edit, Save } from '@mui/icons-material';
 import MasterAdmin from '../../layouts/MasterAdmin';
@@ -10,11 +10,14 @@ import { toast } from 'react-toastify';
 import moment from 'moment';
 import AlertModal from '../../components/AlertModal';
 import Delete from './Form/Delete';
+import { fetchPriestByParishId, storePriest, updatePriest } from '../../api/priestApi';
 
 function AdminEvent() {
     return (
         <MasterAdmin>
             <Stack spacing={1}>
+                <Typography variant='h4' fontWeight={'bold'}>Priest Maintenance</Typography>
+                <PriestDetails />
                 <Typography variant='h4' fontWeight={'bold'}>Event Maintenance</Typography>
                 <CustomCard>
                     <DataTable />
@@ -143,6 +146,25 @@ function DataTable() {
             }]
             : []),
         {
+            field: 'priest',
+            headerName: 'Priest',
+            flex: 1,
+            headerAlign: 'center',
+            headerClassName: 'headerStyle',
+            renderCell: (params) => (
+                <Box sx={{ textAlign: 'center' }}>
+                    {params.row.priest?.name ? (
+                        <Stack spacing={1} direction='row' alignItems={'center'}>
+                            <Avatar src={`/profileImg/${params.row.priest.image}`} />
+                            <Typography >
+                                {params.row.priest.name}
+                            </Typography>
+                        </Stack>
+                    ) : 'Unavailable'}
+                </Box>
+            )
+        },
+        {
             field: 'event_type',
             headerName: 'Event Type',
             editable: true,
@@ -256,6 +278,123 @@ function DataTable() {
                 <Delete onClose={() => setDeleteModal(false)} confirmDelete={confirmDelete} />
             </AlertModal>
         </Box>
+    );
+}
+
+function PriestDetails() {
+    const { auth } = useContext(AuthContext);
+    const [formData, setFormData] = useState({})
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        })
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const newFormData = {
+            ...formData,
+            parish: auth.user.parish._id
+        }
+        const { data, error } = await fetchPriestByParishId(auth.user.parish._id)
+        if (data) {
+            const { data, error } = await updatePriest(newFormData)
+            if (error) {
+                toast.error("Server error")
+            } else {
+                toast.success("Successfully Submitted")
+            }
+        } else {
+            const { data, error } = await storePriest(newFormData)
+            if (error) {
+                toast.error("Server error")
+            } else {
+                toast.success("Successfully Submitted")
+            }
+        }
+    }
+
+    const handleGetData = async () => {
+        const { data, error } = await fetchPriestByParishId(auth.user.parish._id)
+        if (error) {
+            console.log("Server Error")
+        } else {
+            setFormData({
+                image: data.image,
+                parish: data.parish,
+                name: data.name,
+                position: data.position,
+            })
+        }
+    }
+
+    useEffect(() => {
+        handleGetData()
+    }, [])
+
+    return (
+        <Grid2 container>
+            <Grid2 size={5}>
+                <CustomCard>
+                    <form onSubmit={handleSubmit} style={{ padding: '2vh' }}>
+                        <Stack spacing={2} direction={'row'} alignItems={'center'}>
+                            <UpdateProfile formData={formData} setFormData={setFormData} />
+                            <Stack spacing={1} sx={{ width: '100%' }}>
+                                <TextField
+                                    label='Name'
+                                    name='name'
+                                    value={formData.name || ''}
+                                    onChange={handleChange}
+                                    fullWidth
+                                />
+                                <TextField
+                                    label='Position'
+                                    name='position'
+                                    value={formData.position || ''}
+                                    onChange={handleChange}
+                                    fullWidth
+                                />
+                            </Stack>
+                        </Stack>
+                        <Button type='submit' sx={{ marginTop: 2 }} variant='contained' color='warning' fullWidth>Save</Button>
+                    </form>
+                </CustomCard>
+            </Grid2>
+        </Grid2>
+    )
+}
+
+function UpdateProfile({ formData, setFormData }) {
+    const [preview, setPreview] = useState(null); // Store preview image
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setFormData({ ...formData, file });
+            setPreview(URL.createObjectURL(file)); // Create preview URL
+        }
+    };
+
+    const handleAvatarClick = () => {
+        document.getElementById('fileInput').click(); // Trigger file input
+    };
+
+    return (
+        <div>
+            <input
+                type="file"
+                id="fileInput"
+                style={{ display: 'none' }}
+                accept="image/*"
+                onChange={handleFileChange}
+            />
+            <Avatar
+                src={formData.image ? `/profileImg/${formData.image}` : preview}
+                sx={{ height: '10vh', width: '10vh', cursor: 'pointer' }}
+                onClick={handleAvatarClick}
+            />
+        </div>
     );
 }
 export default AdminEvent
